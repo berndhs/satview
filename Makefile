@@ -54,7 +54,9 @@ TESTCXXFLAGS= -v -g  -L/usr/lib64 -lfltk_images -lpng -lz -ljpeg -lfltk \
 
 TARGET = viewsat
 
-all: $(TARGET) 
+all:
+	cd dcomp/; make all
+	make $(TARGET)
 
 version:
 	touch version.h
@@ -97,6 +99,7 @@ tar:
 	ls -l $(TARGET).tar.gz
 
 clean:
+	cd dcomp; make clean
 	rm $(TARGET) $(OBJ)
 
 depend:  
