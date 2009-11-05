@@ -1,0 +1,237 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0109 
+header_name {.h} 
+code_name {.cpp}
+comment {
+//
+//  Copyright (C) 2009 - Bernd H Stramm
+//
+
+} {in_source in_header
+} 
+
+comment {/** @brief This is generated from FLUID, for the most part.
+*/} {in_source in_header
+} 
+
+decl {\#include "berndsutil.h"} {public
+} 
+
+decl {\#include "version.h"} {} 
+
+decl {\#define SATVIEW_USE_FLTK 1} {public global
+} 
+
+decl {\#define SATVIEW_USE_SDL 0} {public global
+} 
+
+decl {using namespace berndsutil;} {} 
+
+class DisplayControl {open
+} {
+  decl {\#include "berndsutil.h"} {}
+  Function {DisplayControl()} {open
+  } {
+    Fl_Window Selection {
+      label {Satview Control} open
+      xywh {154 184 345 400} type Double resizable visible
+    } {
+      Fl_Group {} {open
+        xywh {5 115 335 85} box THIN_UP_BOX color 147
+      } {
+        Fl_Button DitchDB {
+          label {Clear Data}
+          callback DitchDB_cb
+          xywh {20 155 65 40} color 88 selection_color 208 align 128
+        }
+        Fl_Button ReloadDB {
+          label {Reload Data}
+          callback ReloadDB_cb
+          xywh {195 155 65 40} box THIN_UP_BOX color 50 align 128
+        }
+        Fl_Button ConnectDB {
+          label Connect
+          callback ConnectDB_cb
+          xywh {105 165 70 30} box THIN_UP_BOX
+        }
+        Fl_Input ServerName {
+          label Server
+          callback ServerName_cb
+          xywh {30 120 230 25} color 70 align 2 when 1
+        }
+        Fl_Round_Button WebCheck {
+          label Web
+          user_data DirectCheck
+          callback WebCheck_cb
+          xywh {265 130 75 15} down_box ROUND_DOWN_BOX
+        }
+        Fl_Round_Button DirectCheck {
+          label Direct
+          user_data WebCheck
+          callback DirectCheck_cb
+          xywh {265 150 25 25} down_box ROUND_DOWN_BOX
+        }
+      }
+      Fl_Group {} {open
+        xywh {5 5 335 110} box THIN_UP_BOX
+      } {
+        Fl_Input Filename {
+          label {Image }
+          callback Filename_cb
+          xywh {75 15 195 25}
+        }
+        Fl_Button ChangeImage {
+          label {Load New}
+          callback ChangeImage_cb
+          xywh {275 5 60 35} labelsize 10 align 128
+        }
+        Fl_Input ChangeDate {
+          label {Date }
+          callback ChangeDate_cb
+          xywh {75 80 195 25}
+        }
+        Fl_Input Seconds {
+          label {Seconds }
+          xywh {75 50 195 25}
+        }
+      }
+      Fl_Button Quit {
+        label Quit
+        callback Quit_cb
+        xywh {285 50 45 45} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 4 selection_color 1
+      }
+      Fl_Group {} {
+        label {Run Forward} open
+        xywh {175 210 75 180} box THIN_UP_BOX align 145
+      } {
+        Fl_Button RunForward {
+          label All
+          callback RunForward_cb
+          xywh {180 250 60 25}
+        }
+        Fl_Button Run6 {
+          label {6 hours}
+          user_data {new Store<int>(6*60*60)}
+          callback RunForTo_cb
+          xywh {180 330 60 20}
+        }
+        Fl_Button RunDay {
+          label {1 day}
+          user_data {new Store<int>(24*60*60)}
+          callback RunForTo_cb
+          xywh {180 305 60 25}
+        }
+        Fl_Button RunWeek {
+          label {1 week}
+          user_data {new Store<int>(7*24*60*60)}
+          callback RunForTo_cb
+          xywh {180 280 60 25}
+        }
+        Fl_Button StepFore {
+          label Step
+          user_data {new Store<int>(1)}
+          callback Step_cb
+          xywh {180 355 60 25}
+        }
+      }
+      Fl_Group {} {
+        label {Run   Back} open
+        xywh {90 210 75 180} box THIN_UP_BOX align 145
+      } {
+        Fl_Button RunBackAll {
+          label All
+          callback RunBack_cb
+          xywh {95 250 60 25}
+        }
+        Fl_Button RunBack6 {
+          label {6 hours}
+          user_data {new Store<int>(-6*60*60)}
+          callback RunBackTo_cb
+          xywh {95 330 60 20}
+        }
+        Fl_Button RunBackDay {
+          label {1 day}
+          user_data {new Store<int>(-24*60*60)}
+          callback RunBackTo_cb
+          xywh {95 305 60 25}
+        }
+        Fl_Button RunBackWeek {
+          label {1 week}
+          user_data {new Store<int>(-7*24*60*60)}
+          callback RunBackTo_cb
+          xywh {95 280 60 25}
+        }
+        Fl_Button StepBack {
+          label Step
+          user_data {new Store<int>(-1)}
+          callback Step_cb
+          xywh {95 355 60 25}
+        }
+      }
+      Fl_Group {} {
+        label Rewind open
+        xywh {5 220 70 150} box THIN_UP_BOX align 145
+      } {
+        Fl_Button RewindAll {
+          label All
+          callback RewindAll_cb
+          xywh {10 260 60 25}
+        }
+        Fl_Button Rewind6 {
+          label {6 hours}
+          user_data {new Store<int>(-6*60*60)}
+          callback RewindTo_cb
+          xywh {10 340 60 20}
+        }
+        Fl_Button RewindDay {
+          label {1 day}
+          user_data {new Store<int>(-24*60*60)}
+          callback RewindTo_cb
+          xywh {10 315 60 25}
+        }
+        Fl_Button RewindWeek {
+          label {1 week}
+          user_data {new Store<int>(-7*24*60*60)}
+          callback RewindTo_cb
+          xywh {10 290 60 25}
+        }
+      }
+      Fl_Group {} {
+        label Advance open
+        xywh {265 220 70 150} box THIN_UP_BOX align 145
+      } {
+        Fl_Button WindAll {
+          label All
+          callback WindAll_cb
+          xywh {270 260 60 25}
+        }
+        Fl_Button Wind6 {
+          label {6 hours}
+          user_data {new Store<int>(6*60*60)}
+          callback WindForeTo_cb
+          xywh {270 340 60 20}
+        }
+        Fl_Button WIndDay {
+          label {1 day}
+          user_data {new Store<int>(24*60*60)}
+          callback WindForeTo_cb
+          xywh {270 315 60 25}
+        }
+        Fl_Button WindWeek {
+          label {1 week}
+          user_data {new Store<int>(7*24*60*60)}
+          callback WindForeTo_cb
+          xywh {270 290 60 25}
+        }
+      }
+    }
+    Fl_Window ImageWin {
+      label {Satview Image} open
+      xywh {35 288 700 580} type Double hide resizable
+    } {
+      Fl_Box PicBox {
+        xywh {5 3 685 571} resizable
+      }
+    }
+  }
+} 
