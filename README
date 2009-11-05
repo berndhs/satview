@@ -1,0 +1,13 @@
+dcomp:
+
+The directory dcomp/ contains a derivative of the jpeg library.
+This is needed to display jpg images. dcomp contains only the DEcompression
+part of jpeglib.
+
+If a build fails at the link stage, check whether dcomp is compiled 
+correctly.
+
+copydb:
+
+copydb is build separately (make copydb), NOT with make all.
+
