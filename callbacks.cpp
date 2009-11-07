@@ -151,6 +151,7 @@ void ShowPic (SatPicBuf *pBuf)
       DC.Filename->value(pBuf->PicName().c_str());
       DC.Selection->show();
       DC.ImageWin->show();
+      Fl::check();
       if (pOldBuf) {
         if (pOldBuf != pBuf) {
           pOldBuf->Forget_Image();
