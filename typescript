@@ -1,0 +1,30 @@
+Script started on Sat 03 Oct 2009 03:19:53 AM EDT
+]0;bernd@ijontichy:~/mywork/sample_codes/satview[?1034h[bernd@ijontichy satview]$ make
+g++ -g -O3 -Wall -Wextra -pedantic -Wno-long-long `GraphicsMagick++-config --cppflags --cxxflags` `sdl-config --cflags` `fltk-config --cxxflags` satview.o viewmain.o satpiclist.o satpicbuf.o -lmysqlpp `fltk-config --ldflags` `GraphicsMagick++-config --libs` `sdl-config --libs` -L /home/bernd/lib -lberndsutil -lSDL_image -o viewsat
+satview.o: In function `Fl_Widget::callback(void (*)(Fl_Widget*, void*))':
+/usr/include/FL/Fl_Widget.H:153: undefined reference to `Filename_cb(Fl_Input*, void*)'
+/usr/include/FL/Fl_Widget.H:153: undefined reference to `ChangeSecs_cb(Fl_Value_Input*, void*)'
+/usr/include/FL/Fl_Widget.H:153: undefined reference to `RunForward_cb(Fl_Button*, void*)'
+satview.o: In function `Fl_Widget::callback(void (*)(Fl_Widget*, void*), void*)':
+/usr/include/FL/Fl_Widget.H:152: undefined reference to `Step_cb(Fl_Button*, void*)'
+/usr/include/FL/Fl_Widget.H:152: undefined reference to `Step_cb(Fl_Button*, void*)'
+/usr/include/FL/Fl_Widget.H:152: undefined reference to `RunBack_cb(Fl_Button*, void*)'
+satview.o: In function `Fl_Widget::callback(void (*)(Fl_Widget*, void*))':
+/usr/include/FL/Fl_Widget.H:153: undefined reference to `Quit_cb(Fl_Button*, void*)'
+/usr/include/FL/Fl_Widget.H:153: undefined reference to `ChangeDate_cb(Fl_Input*, void*)'
+/usr/include/FL/Fl_Widget.H:153: undefined reference to `Filename_cb(Fl_Input*, void*)'
+/usr/include/FL/Fl_Widget.H:153: undefined reference to `ChangeSecs_cb(Fl_Value_Input*, void*)'
+/usr/include/FL/Fl_Widget.H:153: undefined reference to `RunForward_cb(Fl_Button*, void*)'
+satview.o: In function `Fl_Widget::callback(void (*)(Fl_Widget*, void*), void*)':
+/usr/include/FL/Fl_Widget.H:152: undefined reference to `Step_cb(Fl_Button*, void*)'
+/usr/include/FL/Fl_Widget.H:152: undefined reference to `Step_cb(Fl_Button*, void*)'
+/usr/include/FL/Fl_Widget.H:152: undefined reference to `RunBack_cb(Fl_Button*, void*)'
+satview.o: In function `Fl_Widget::callback(void (*)(Fl_Widget*, void*))':
+/usr/include/FL/Fl_Widget.H:153: undefined reference to `Quit_cb(Fl_Button*, void*)'
+/usr/include/FL/Fl_Widget.H:153: undefined reference to `ChangeDate_cb(Fl_Input*, void*)'
+collect2: ld returned 1 exit status
+make: *** [viewsat] Error 1
+]0;bernd@ijontichy:~/mywork/sample_codes/satview[bernd@ijontichy satview]$ exit
+exit
+
+Script done on Sat 03 Oct 2009 03:19:57 AM EDT
