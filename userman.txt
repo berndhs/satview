@@ -1,0 +1,66 @@
+Satview User Manual
+===================
+Bernd Stramm <bernd.stramm@gmail.com>
+v1.0, November 2009
+
+Satview is a little distributed system that can collect and present
+weather satellite images for personal use.
+
+Structure
+---------
+The system consists of three layers:
+
++ Data Aquisition Layer
++ Satview Storage Layer
++ Satview User Interface Layer
+
+=== Data Aquisition ===
+
+The Data Aquisition Layer is provided by the friendly people who operate
+weather satellites, and make their images available to the public. The only
+part involving satview is when satview downloads their images. When
+implementing this part of satview, care must be taken to respect copyrights
+and similar issues. 
+
+Currently data aquisition is done by simple scripts that download images from
+well known locations to fixed locations on a Storage Layer server, and then 
+store the images from the fixed locations into a database (MySql at this time)
+on the server. Currently the server aquiring the images form the 
+public sources is the same server that stores the database, although this
+is not strictly necessary.
+
+=== Satview Storage Layer ===
+The Storage Layer keeps a (MySql) database containing satellite images,
+indexed by a time stamp (when the image was aquired) and an image name. It
+is assumed that images of the same name represent the same geographical area.
+The Storage Layer provides two interfaces to the User Interface Layer:
++ the http Web Interface, and
++ the mysqld 
+
+The mysqld interface is the same as any mysqld interface, nothing new is added 
+on the database side.
+
+The Web Interface works with a simple HTTP GET API, which encasulates the
+mysqld interface locally on the server. Currently the Web Interface runs
+in PHP/Apache on the same server as the mysql database. This is not strictly
+speaking necessary (the Web Interface code opens a database connection on
+"localhost", it could open a connection anywhere).
+
+=== Satview User Interface ===
+The User Interface program loads images from the database server on the
+Satview Storage Layer, and displays them in a simple GUI. The Gui allows
+stepping through images, or running through a number of sequeltial
+images to view short animations. The controls operate much like
+tape player controls. The Gui allows the user to change database servers
+and change image names, so that different geographical areas can be
+observed. The Gui also allows switching the interface to the Storage Layer
+between web (HTTP) and direct (mysql) interfaces. 
+
+The User Interface Layer Gui provides an in-memory cache at the user's
+side of the system. 
+
+The User Interface Layer also provides a command line program to copy image
+data between different Storage Layer servers. This is useful for the (typical)
+case where a user perfers to view data from a local server, but the local
+server does not do aquisition 24 hours a day.
+
