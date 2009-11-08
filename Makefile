@@ -23,6 +23,9 @@ SRC = satview.cpp viewmain.cpp satpiclist.cpp satpicbuf.cpp callbacks.cpp \
 HDR = satview.h viewmain.h satpicbuf.h satpiclist.h dbconnect.h  \
 	version.h satview-config.h blob-image.h sjdatasrc.h
 
+DCOMP = ./dcomp
+DCOMPLIB = libsatjpeg.a
+
 MAKEFILE = Makefile
 
 DOC = Doxyfile userman.txt
@@ -52,16 +55,13 @@ CXX = g++
 CXXOPTIM = -O2
 CXXFLAGS = -g $(CXXOPTIM) -Wall -Wextra -pedantic -Wno-long-long \
 	 $(EXTRA_CXX_FLAGS)
-TESTCXXFLAGS= -v -g  -L/usr/lib64 -lfltk_images -lpng -lz -ljpeg -lfltk \
-		-I/usr/include/freetype2 \
-		 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE \
-		-D_THREAD_SAFE -D_REENTRANT
-
-
 
 TARGET = viewsat
 
-all: $(TARGET) 
+all: $(DCOMP)/$(DCOMPLIB) $(TARGET)
+
+$(DCOMP)/$(DCOMPLIB):
+	cd $(DCOMP); make all
 
 version:
 	touch version.h
@@ -70,8 +70,6 @@ version:
 $(TARGET): $(OBJ) $(MAKEFILE)
 	$(CXX) $(CXXFLAGS) $(OBJ) $(LIBS) -o $(TARGET)
 
-tmptest: tmptest.cpp Makefile
-	$(CXX) $(CXXFLAGS) tmptest.cpp $(LIBS)   -o tmptest -lfltk_images -lfltk -lpng -lz -ljpeg
 
 copydb: copydb.o dbconnect.o
 	$(CXX) copydb.o dbconnect.o $(LIBS) -o copydb
