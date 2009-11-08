@@ -2,7 +2,7 @@
 CXX = g++
 CFLAGS = -g -O2
 
-MODULENAME= satjpeg
+MODULENAME= libsatjpeg
 
 INFILES = \
 jaricom.cpp \

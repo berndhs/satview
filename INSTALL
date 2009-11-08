@@ -1,0 +1,33 @@
+Linux
+-----
+
+Use make, don't be a wimp.
+
+If you do make install, it will try to put the executable in your 
+$(HOME)/bin/ directory. If you are not a self respecting person
+who has a $(HOME)/bin/ directory, change or override INSTALLDIR to put it
+someplace else.
+
+A remark on fltk: they provide compile and link settings with fltk-config,
+don't use that. It will include things you don't want.
+
+Windows
+-------
+
+This works in Visual Studio 2008 Express. Even the stuff in the dcomp/
+directory. I will post all the settings when I get around to it.
+
+You need to get the FLTK headers and libraries, I'm not shipping those.
+This works with fltk 1.1.9, NOT fltk 2. Probably won't work with
+fltk 1.3 either. Be advised to NOT USE the fltk jpeg library, it will
+conflict with the dcomp/ stuff. Also the fltk jpeg library does not
+do what you need for this software, so there is no point in linking
+to it.
+
+On windows you also need to link to WinSock2 libraries. I have not
+tried to run this on CygWin or minGW. It will probably work with the
+right sockets.
+
+I haven't had the patience to use the MySql CPP Connector stuff on Windows.
+So for now it's only the web interface on Windows.
+

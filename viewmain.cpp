@@ -2,6 +2,7 @@
 #include "satpiclist.h"
 #include "satview.h"
 #include "version.h"
+#include "satview-defaults.h"
 
 //
 //  Copyright (C) 2009 - Bernd H Stramm 
@@ -53,10 +54,10 @@ sdl_init()
 }
 #endif
 
-string DefaultFile("ECIR.JPG");
-string server0("localhost");
-string server1("www.bernd-stramm.com");
-string server2("192.168.1.152");
+string DefaultFile(SATVIEW_DEFAULT_PICNAME);
+string server0(SATVIEW_DEFAULT_S0);
+string server1(SATVIEW_DEFAULT_S1);
+string server2(SATVIEW_DEFAULT_S2);
 
 
 string server;

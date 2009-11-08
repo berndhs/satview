@@ -1,0 +1,750 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.2.5" />
+<style type="text/css">
+/* Debug borders */
+p, li, dt, dd, div, pre, h1, h2, h3, h4, h5, h6 {
+/*
+  border: 1px solid red;
+*/
+}
+
+body {
+  margin: 1em 5% 1em 5%;
+}
+
+a {
+  color: blue;
+  text-decoration: underline;
+}
+a:visited {
+  color: fuchsia;
+}
+
+em {
+  font-style: italic;
+}
+
+strong {
+  font-weight: bold;
+}
+
+tt {
+  color: navy;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #527bbd;
+  font-family: sans-serif;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+
+h1, h2, h3 {
+  border-bottom: 2px solid silver;
+}
+h2 {
+  padding-top: 0.5em;
+}
+h3 {
+  float: left;
+}
+h3 + * {
+  clear: left;
+}
+
+div.sectionbody {
+  font-family: serif;
+  margin-left: 0;
+}
+
+hr {
+  border: 1px solid silver;
+}
+
+p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+pre {
+  padding: 0;
+  margin: 0;
+}
+
+span#author {
+  color: #527bbd;
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+span#email {
+}
+span#revision {
+  font-family: sans-serif;
+}
+
+div#footer {
+  font-family: sans-serif;
+  font-size: small;
+  border-top: 2px solid silver;
+  padding-top: 0.5em;
+  margin-top: 4.0em;
+}
+div#footer-text {
+  float: left;
+  padding-bottom: 0.5em;
+}
+div#footer-badges {
+  float: right;
+  padding-bottom: 0.5em;
+}
+
+div#preamble,
+div.tableblock, div.imageblock, div.exampleblock, div.verseblock,
+div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
+div.admonitionblock {
+  margin-right: 10%;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+div.admonitionblock {
+  margin-top: 2.5em;
+  margin-bottom: 2.5em;
+}
+
+div.content { /* Block element content. */
+  padding: 0;
+}
+
+/* Block element titles. */
+div.title, caption.title {
+  font-family: sans-serif;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+div.title + * {
+  margin-top: 0;
+}
+
+td div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content + div.title {
+  margin-top: 0.0em;
+}
+
+div.sidebarblock > div.content {
+  background: #ffffee;
+  border: 1px solid silver;
+  padding: 0.5em;
+}
+
+div.listingblock {
+  margin-right: 0%;
+}
+div.listingblock > div.content {
+  border: 1px solid silver;
+  background: #f4f4f4;
+  padding: 0.5em;
+}
+
+div.quoteblock > div.content {
+  padding-left: 2.0em;
+}
+
+div.attribution {
+  text-align: right;
+}
+div.verseblock + div.attribution {
+  text-align: left;
+}
+
+div.admonitionblock .icon {
+  vertical-align: top;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #527bbd;
+  padding-right: 0.5em;
+}
+div.admonitionblock td.content {
+  padding-left: 0.5em;
+  border-left: 2px solid silver;
+}
+
+div.exampleblock > div.content {
+  border-left: 2px solid silver;
+  padding: 0.5em;
+}
+
+div.verseblock div.content {
+  white-space: pre;
+}
+
+div.imageblock div.content { padding-left: 0; }
+div.imageblock img { border: 1px solid silver; }
+span.image img { border-style: none; }
+
+dl {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+dt {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  font-style: italic;
+}
+dd > *:first-child {
+  margin-top: 0;
+}
+
+ul, ol {
+    list-style-position: outside;
+}
+div.olist2 ol {
+  list-style-type: lower-alpha;
+}
+
+div.tableblock > table {
+  border: 3px solid #527bbd;
+}
+thead {
+  font-family: sans-serif;
+  font-weight: bold;
+}
+tfoot {
+  font-weight: bold;
+}
+
+div.hlist {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+div.hlist td {
+  padding-bottom: 5px;
+}
+td.hlist1 {
+  vertical-align: top;
+  font-style: italic;
+  padding-right: 0.8em;
+}
+td.hlist2 {
+  vertical-align: top;
+}
+
+@media print {
+  div#footer-badges { display: none; }
+}
+
+div#toctitle {
+  color: #527bbd;
+  font-family: sans-serif;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 1.0em;
+  margin-bottom: 0.1em;
+}
+
+div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+div.toclevel2 {
+  margin-left: 2em;
+  font-size: 0.9em;
+}
+div.toclevel3 {
+  margin-left: 4em;
+  font-size: 0.9em;
+}
+div.toclevel4 {
+  margin-left: 6em;
+  font-size: 0.9em;
+}
+/* Workarounds for IE6's broken and incomplete CSS2. */
+
+div.sidebar-content {
+  background: #ffffee;
+  border: 1px solid silver;
+  padding: 0.5em;
+}
+div.sidebar-title, div.image-title {
+  font-family: sans-serif;
+  font-weight: bold;
+  margin-top: 0.0em;
+  margin-bottom: 0.5em;
+}
+
+div.listingblock div.content {
+  border: 1px solid silver;
+  background: #f4f4f4;
+  padding: 0.5em;
+}
+
+div.quoteblock-content {
+  padding-left: 2.0em;
+}
+
+div.exampleblock-content {
+  border-left: 2px solid silver;
+  padding-left: 0.5em;
+}
+
+/* IE6 sets dynamically generated links as visited. */
+div#toc a:visited { color: blue; }
+</style>
+<title>Satview Manual</title>
+</head>
+<body>
+<div id="header">
+<h1>Satview Manual</h1>
+<span id="author">Bernd Stramm</span><br />
+<span id="email"><tt>&lt;<a href="mailto:bernd.stramm@gmail.com">bernd.stramm@gmail.com</a>&gt;</tt></span><br />
+<span id="revision">version 1.0,</span>
+November 2009
+</div>
+<div id="preamble">
+<div class="sectionbody">
+<div class="para"><p>Satview is a little distributed system that can collect and present
+weather satellite images for personal use.</p></div>
+<div class="para"><p>This manual briefly describes what the satview programs are for, and how
+they work. The manual describes the <a href="#structure">structure</a> of the system and
+<a href="#usage">how to use</a> the system. Included are also remarks on how to
+<a href="#further">further develop</a> these things. Some <a href="#specs">specifications</a> are
+provided if you want to modify the system,
+or <a href="#ownservers">target it to your own servers</a>.</p></div>
+</div>
+</div>
+<h2 id="stucture">1. Structure</h2>
+<div class="sectionbody">
+<div class="para"><p>The system consists of three layers:</p></div>
+<div class="olist"><ol>
+<li>
+<p>
+<a href="#sat-da">Data Aquisition Layer</a>
+</p>
+</li>
+<li>
+<p>
+<a href="#sat-sl">Satview Storage Layer</a>
+</p>
+</li>
+<li>
+<p>
+<a href="#sat-ui">Satview User Interface Layer</a>
+</p>
+</li>
+</ol></div>
+<h3 id="sat-da">1.1. Data Aquisition</h3><div style="clear:left"></div>
+<div class="para"><p>The Data Aquisition Layer is provided by the friendly people who operate
+weather satellites, and make their images available to the public. The only
+part involving satview is when satview downloads their images. When
+implementing this part of satview, care must be taken to respect copyrights
+and similar issues.</p></div>
+<div class="para"><p>Currently data aquisition is done by simple scripts that download images from
+well known locations to fixed locations on a Storage Layer server, and then
+store the images from the fixed locations into a database (MySql at this time)
+on the server. Currently the server aquiring the images form the
+public sources is the same server that stores the database, although this
+is not strictly necessary.</p></div>
+<div class="sidebarblock">
+<div class="sidebar-content">
+<div class="para"><p><strong>Note:</strong>
+An excellent source of wheater information is the
+United States National Weather
+Service <a href="http://nws.noaa.gov/">http://nws.noaa.gov</a> provided
+by <a href="http://www.noaa.gov/">NOAA</a>. Consult your local government for
+their own weather service. If they don't make satellite images
+publicly available, tell them that they should.</p></div>
+</div></div>
+<h3 id="sat-sl">1.2. Satview Storage Layer</h3><div style="clear:left"></div>
+<div class="para"><p>The Storage Layer keeps a (MySql) database containing satellite images,
+indexed by a time stamp (when the image was aquired) and an image name. It
+is assumed that images of the same name represent the same geographical area.
+The Storage Layer provides two interfaces to the User Interface Layer:</p></div>
+<div class="olist"><ol>
+<li>
+<p>
+the http Web Interface, and
+</p>
+</li>
+<li>
+<p>
+the mysqld Interface
+</p>
+</li>
+</ol></div>
+<div class="para"><p>The mysqld interface is the same as any mysqld interface, nothing new is added
+on the database side.
+[Note]</p></div>
+<div class="sidebarblock">
+<div class="sidebar-content">
+<div class="para"><p><strong>Note:</strong>
+Satview uses a C++ interface library that you can
+get from
+the <a href="http://dev.mysql.com/doc/refman/5.1/en/connector-cpp.html">MySql website</a>.
+You can alse get it from the repositories of some Linux distributions.
+C++ does not seem to be particularly high on MySql's list of priorities.
+However the database interface needed by Satview is extremely simple,
+so this is not a major consideration. In fact MySql is being used here
+simply because I had one around, there is nothing special about it.
+If you want to use some other database, it will work just as well.</p></div>
+</div></div>
+<div class="para"><p>The Web Interface works with a simple HTTP GET API, which encasulates the
+mysqld interface locally on the server. Currently the Web Interface runs
+in PHP/Apache on the same server as the mysql database. This is not strictly
+speaking necessary (the Web Interface code opens a database connection on
+"localhost", it could open a connection anywhere).</p></div>
+<h3 id="sat-ui">1.3. Satview User Interface</h3><div style="clear:left"></div>
+<div class="para"><p>The User Interface program loads images from the database server on the
+Satview Storage Layer, and displays them in a simple GUI. The Gui allows
+stepping through images, or running through a number of sequeltial
+images to view short animations. The controls operate much like
+tape player controls. The Gui allows the user to change database servers
+and change image names, so that different geographical areas can be
+observed. The Gui also allows switching the interface to the Storage Layer
+between web (HTTP) and direct (mysql) interfaces.</p></div>
+<div class="para"><p>The User Interface Layer Gui provides an in-memory cache at the user's
+side of the system.</p></div>
+<div class="para"><p>The User Interface Layer also provides a command line program to copy image
+data between different Storage Layer servers. This is useful for the (typical)
+case where a user perfers to view data from a local server, but the local
+server does not do aquisition 24 hours a day.</p></div>
+</div>
+<h2 id="usage">2. How to Use Satview</h2>
+<div class="sectionbody">
+<div class="para"><p>The only thing an end-user really has to know is the viewer Gui. This is called
+from the command line:</p></div>
+<div class="listingblock">
+<div class="title">Example: Calling the GUI in Linux</div>
+<div class="content">
+<pre><tt>$ viewsat [&lt;interface&gt;] [&lt;server&gt;]</tt></pre>
+</div></div>
+<div class="para"><p>where</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&lt;interface&gt; can be
+  dir      - use the direct mysql interface
+  web      - ues the HTTP Web interface</tt></pre>
+</div></div>
+<div class="para"><p>and</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>&lt;server&gt; can be
+  S0       - use localhost
+  S1       - use the the default remote server
+  S2       - reserved, don't use this</tt></pre>
+</div></div>
+<div class="para"><p>Since there are no really public servers at this time (don't expect any
+soon either), it is best that these defaults are set individually,
+see <a href="#ui-default-source">further instructions</a> below.</p></div>
+<div class="para"><p>The user interface allows changing the host and the interface after the program
+is running. Changing either one means that all currently cached images
+are discarded, and a new index is loaded.</p></div>
+<div class="para"><p>The controls look like a window with some buttons and a little text:</p></div>
+<div class="imageblock">
+<div class="content">
+<img src="controlwin.png" alt="The control window" title="The control window"/>
+</div>
+</div>
+<div class="para"><p>where the buttons do more or less what the labeling says they do.
+The images look like weather satellite images and are displayed in a separate
+window:</p></div>
+<div class="imageblock">
+<div class="content">
+<img src="imagewin.png" alt="weather satellite image" title="weather satellite image"/>
+</div>
+</div>
+</div>
+<h2 id="ownservers">3. Using Your Own Servers</h2>
+<div class="sectionbody">
+<div class="para"><p>Using your own servers is highly recommended, since I am not interested
+in financially supporting everyone's desire to watch weather satellite pictures.</p></div>
+<div class="para"><p>Using your own database server is also very simple. You need one single table for
+this. The table can be in a database by itself, which can simplify managing
+access privileges. See the <a href="#database-defs">Database Definitions</a> to define your own.
+Note that these are the minimum requirements, if your table contains more
+it doesn't hurt. Just be aware that <strong>storeID.php</strong> will only supply
+the fields defined for Satview.</p></div>
+<div class="para"><p>One resonable way of doing this is to use a remote host that grabs the
+images every few hours using <strong>cron</strong> to run <strong>getit.sh</strong> and <strong>storeinDB.php</strong>,
+and using <strong>copydb</strong> to refresh a local database.</p></div>
+</div>
+<h2 id="further">4. Future Development</h2>
+<div class="sectionbody">
+<div class="para"><p>I will probably add a cmake build system to this. Also I'm not sure
+that I like the encoding of the images on the web interface, I may change that.
+The web interface could also be more specific when it comes to
+sending the index, currently it sends all of it. That will probably
+change very soon.</p></div>
+</div>
+<h2 id="specs">5. Specifications</h2>
+<div class="sectionbody">
+<div class="para"><p>This section gives some implementation details. We have the individual
+pieces of code that make up the system:</p></div>
+<div class="olist"><ol>
+<li>
+<p>
+Aquisition
+</p>
+<div class="olist2"><ol>
+<li>
+<p>
+getit.sh
+</p>
+</li>
+</ol></div>
+</li>
+<li>
+<p>
+Storage
+</p>
+<div class="olist2"><ol>
+<li>
+<p>
+storeIR.php
+</p>
+</li>
+<li>
+<p>
+satserv.php
+</p>
+</li>
+</ol></div>
+</li>
+<li>
+<p>
+User Interface
+</p>
+<div class="olist2"><ol>
+<li>
+<p>
+viewsat
+</p>
+</li>
+<li>
+<p>
+copydb
+</p>
+</li>
+</ol></div>
+</li>
+</ol></div>
+<h3 id="_user_interface">5.1. User Interface</h3><div style="clear:left"></div>
+<div class="para"><p>To change the user interface defaults, change the file <strong>satview-defaults.h</strong>:</p></div>
+<div class="listingblock" id="ui-default-source">
+<div class="title">Example: satview-defaults.h</div>
+<div class="content">
+<pre><tt>#define SATVIEW_DEFAULT_PICNAME     "ECIR.JPG"
+
+#define SATVIEW_DEFAULT_S0          "localhost"
+#define SATVIEW_DEFAULT_S1          "www.bernd-stramm.com"
+#define SATVIEW_DEFAULT_S2          "192.168.1.152"</tt></pre>
+</div></div>
+<h3 id="_database">5.2. Database</h3><div style="clear:left"></div>
+<div class="para"><p>The database table containing the images has 5 fields. The two fields
+named <strong>index</strong> and <strong>picname</strong> combined are required to be unique,
+and can be made an index.</p></div>
+<div class="sidebarblock" id="database-defs">
+<div class="sidebar-content">
+<div class="sidebar-title">Database Field Definitions</div>
+<p>
+<table border="1">
+<tr >
+<th>Field </th>
+<th>Type</th>
+<th>Collation </th>
+<th> Attributes </th>
+<th> Null </th>
+<th>Default  </th>
+</tr>
+
+<tr>
+<td><i>
+ident  </i></td>
+<td>bigint(20) </td>
+<td> </td>
+<td> </td>
+<td>No</td>
+<td>None</td>
+</tr>
+
+<tr>
+<td><i>picname</i></td>
+<td>varchar(255)</td>
+<td>latin1_swedish_ci</td>
+<td> </td>
+<td>No</td>
+<td> None </td>
+</tr>
+
+<tr>
+<td><i>storetime</i></td>
+<td>timestamp</td>
+<td> </td>
+<td> </td>
+<td>No </td>
+<td>CURRENT_TIMESTAMP   </td>
+</tr>
+
+<tr>
+<td><i>remark</i></td>
+<td>text</td>
+<td>    latin1_swedish_ci</td>
+<td> </td>
+<td>No</td>
+<td>None </td>
+</tr>
+
+<tr>
+<td><i>image</i></td>
+<td>longblob</td>
+<td> </td>
+<td>    BINARY</td>
+<td>No</td>
+<td>None </td>
+</td>
+</table>
+</div></div>
+<h3 id="_web_interface">5.3. Web Interface</h3><div style="clear:left"></div>
+<div class="para"><p>Look in <strong>satserv.php</strong>. Basically you can ask for the index of
+available images with a get</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>GET .../satserve.php?fn=index</tt></pre>
+</div></div>
+<div class="para"><p>and for individual images</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>GET .../satserve.php?fn=item&amp;k1=&lt;ident&gt;&amp;k2=&lt;picname&gt;</tt></pre>
+</div></div>
+<div class="para"><p>where ident and picname are encoded as ASCII/hex, e.g. <em>123</em> is <em>313233</em>.
+All the encoding is done like that, to avoid issues like spaces inside
+strings. I could have bothered with the traditional complicated escape
+characters for every possible exception, but why?</p></div>
+<div class="para"><p>At the time of this writing, my personal web
+server provides data on the web interface. It is not wise to
+count on it being there.</p></div>
+<h3 id="_dcomp">5.4. dcomp/</h3><div style="clear:left"></div>
+<div class="para"><p>The <strong>dcomp/</strong> directory contains decompression code for JPEG. This is taken
+mostly from the website of the <a href="http://www.ijg.org/">Independent JPEG Group</a>,
+in particular version 7. The reason for this is that <a href="http://fltk.org/">FLTK</a>
+does not provide in-memory jpeg decompression, and neither does any other
+GUI tool that I have found. Hence I provided my own hooks into the jpeg
+library code. Since this introduces ugly dependencies on specific versions,
+I repackaged the decompression part of the jpeg library as C++ code. That's
+what is in dcomp/.</p></div>
+<div class="para"><p>The only way around this mess is for the user interface to write the jpeg file
+to a temporary file on the file system, and read this back to display
+the decompressed image. This means that the user interface has to make some
+assumptions about what it is running on, such as</p></div>
+<div class="olist"><ol>
+<li>
+<p>
+there is a file system
+</p>
+</li>
+</ol></div>
+<div class="para"><p>which I didn't want to do.</p></div>
+<h3 id="_prerequisits">5.5. Prerequisits</h3><div style="clear:left"></div>
+<div class="para"><p>To build and run the parts of Satview, the current version uses:</p></div>
+<div class="olist"><ol>
+<li>
+<p>
+On the user interface
+</p>
+<div class="olist2"><ol>
+<li>
+<p>
+C++
+&#8230; Gcc or Visual C++
+</p>
+</li>
+<li>
+<p>
+FLTK 1.1.9 (<strong>not</strong> FLTK 2 or FLTK 1.3)
+</p>
+</li>
+<li>
+<p>
+Gnu sockets or WinSock2
+</p>
+</li>
+</ol></div>
+</li>
+<li>
+<p>
+On the server you need
+</p>
+<div class="olist2"><ol>
+<li>
+<p>
+PHP5 on the server
+</p>
+</li>
+<li>
+<p>
+Apache or something else that serves PHP over HTTP
+</p>
+</li>
+<li>
+<p>
+wget on the server
+</p>
+</li>
+<li>
+<p>
+cron
+</p>
+</li>
+</ol></div>
+</li>
+</ol></div>
+<div class="sidebarblock">
+<div class="sidebar-content">
+<div class="para"><p><strong>Memory:</strong> The Satview user interface viewer
+buffers the jpeg version of all images that have been viewed
+in the current session, plus <strong>one</strong> decompressed image. It does not
+save anything between sessions.</p></div>
+</div></div>
+<h4 id="_how_to_build">5.5.1. How to Build</h4>
+<div class="para"><p>Read the INSTALL file.</p></div>
+<h4 id="_where_to_change_sockets">5.5.2. Where to Change Sockets</h4>
+<div class="para"><p>Look in <strong>dbconnect.h</strong> and <strong>dbconnect.cpp</strong>, that is where the communication
+between the database and the user interface is implemented.</p></div>
+<h4 id="_where_to_change_the_web_interface">5.5.3. Where to Change the Web Interface</h4>
+<div class="para"><p>Look in <strong>dbconnect.h</strong>, <strong>dbconnect.cpp</strong> on the user interface side, and
+in <strong>satserv.php</strong> on the server side.</p></div>
+<h4 id="_can_i_run_something_like_this_my_browser">5.5.4. Can I Run Something Like This My Browser</h4>
+<div class="para"><p>Why would you want to?</p></div>
+</div>
+<h2 id="_license_and_warranty">6. License and Warranty</h2>
+<div class="sectionbody">
+<div class="para"><p>This is free open source software, hence the usual licensing. And the
+usual warranty, or lack thereof:</p></div>
+<div class="para"><p>These programs are distributed under the terms of the
+GNU General Public License version 3.</p></div>
+<div class="para"><p>See the file <strong>COPYING</strong> for the complete text of the license. You can
+also find it on http://www.gnu.org.</p></div>
+<div class="para"><p>This software is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty
+of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p></div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Version 1.0<br />
+Last updated 2009-11-08 18:05:50 EDT
+</div>
+</div>
+</body>
+</html>

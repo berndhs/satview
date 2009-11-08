@@ -1,20 +1,29 @@
-Satview User Manual
-===================
+Satview Manual
+==============
 Bernd Stramm <bernd.stramm@gmail.com>
 v1.0, November 2009
 
 Satview is a little distributed system that can collect and present
 weather satellite images for personal use.
 
-Structure
----------
+This manual briefly describes what the satview programs are for, and how
+they work. The manual describes the xref:structure[structure] of the system and
+xref:usage[how to use] the system. Included are also remarks on how to
+xref:further[further develop] these things. Some xref:specs[specifications] are 
+provided if you want to modify the system, 
+or xref:ownservers[target it to your own servers].
+
+[[stucture]]
+== Structure
+
 The system consists of three layers:
 
-+ Data Aquisition Layer
-+ Satview Storage Layer
-+ Satview User Interface Layer
++ xref:sat-da[Data Aquisition Layer]
++ xref:sat-sl[Satview Storage Layer]
++ xref:sat-ui[Satview User Interface Layer]
 
-=== Data Aquisition ===
+[[sat-da]]
+=== Data Aquisition
 
 The Data Aquisition Layer is provided by the friendly people who operate
 weather satellites, and make their images available to the public. The only
@@ -29,16 +38,43 @@ on the server. Currently the server aquiring the images form the
 public sources is the same server that stores the database, although this
 is not strictly necessary.
 
-=== Satview Storage Layer ===
+[Note]
+****
+*Note:*
+An excellent source of wheater information is the 
+United States National Weather 
+Service http://nws.noaa.gov/[http://nws.noaa.gov] provided 
+by http://www.noaa.gov/[NOAA]. Consult your local government for
+their own weather service. If they don't make satellite images 
+publicly available, tell them that they should.
+****
+
+[[sat-sl]]
+=== Satview Storage Layer 
+
 The Storage Layer keeps a (MySql) database containing satellite images,
 indexed by a time stamp (when the image was aquired) and an image name. It
 is assumed that images of the same name represent the same geographical area.
 The Storage Layer provides two interfaces to the User Interface Layer:
-+ the http Web Interface, and
-+ the mysqld 
+
+. the http Web Interface, and
+. the mysqld Interface
 
 The mysqld interface is the same as any mysqld interface, nothing new is added 
-on the database side.
+on the database side. 
+[Note]
+****
+*Note:*
+Satview uses a C\+\+ interface library that you can
+get from 
+the http://dev.mysql.com/doc/refman/5.1/en/connector-cpp.html[MySql website]. 
+You can alse get it from the repositories of some Linux distributions. 
+C\+\+ does not seem to be particularly high on MySql's list of priorities. 
+However the database interface needed by Satview is extremely simple,
+so this is not a major consideration. In fact MySql is being used here
+simply because I had one around, there is nothing special about it. 
+If you want to use some other database, it will work just as well.
+****
 
 The Web Interface works with a simple HTTP GET API, which encasulates the
 mysqld interface locally on the server. Currently the Web Interface runs
@@ -46,7 +82,9 @@ in PHP/Apache on the same server as the mysql database. This is not strictly
 speaking necessary (the Web Interface code opens a database connection on
 "localhost", it could open a connection anywhere).
 
+[[sat-ui]]
 === Satview User Interface ===
+
 The User Interface program loads images from the database server on the
 Satview Storage Layer, and displays them in a simple GUI. The Gui allows
 stepping through images, or running through a number of sequeltial
@@ -64,3 +102,278 @@ data between different Storage Layer servers. This is useful for the (typical)
 case where a user perfers to view data from a local server, but the local
 server does not do aquisition 24 hours a day.
 
+[[usage]]
+== How to Use Satview ==
+
+The only thing an end-user really has to know is the viewer Gui. This is called
+from the command line:
+
+.Calling the GUI in Linux
+[source,sh]
+----
+$ viewsat [<interface>] [<server>]
+----
+
+where 
+
+----
+<interface> can be
+  dir      - use the direct mysql interface
+  web      - ues the HTTP Web interface
+----
+
+and
+
+----
+<server> can be
+  S0       - use localhost
+  S1       - use the the default remote server
+  S2       - reserved, don't use this
+----
+
+Since there are no really public servers at this time (don't expect any
+soon either), it is best that these defaults are set individually, 
+see xref:ui-default-source[further instructions] below.
+
+
+The user interface allows changing the host and the interface after the program
+is running. Changing either one means that all currently cached images
+are discarded, and a new index is loaded.
+
+The controls look like a window with some buttons and a little text:
+
+image::controlwin.png[The control window]
+
+where the buttons do more or less what the labeling says they do.
+The images look like weather satellite images and are displayed in a separate
+window:
+
+image::imagewin.png[weather satellite image]
+
+[[ownservers]]
+== Using Your Own Servers ==
+
+Using your own servers is highly recommended, since I am not interested
+in financially supporting everyone's desire to watch weather satellite pictures.
+
+Using your own database server is also very simple. You need one single table for
+this. The table can be in a database by itself, which can simplify managing
+access privileges. See the xref:database-defs[Database Definitions] to define your own.
+Note that these are the minimum requirements, if your table contains more
+it doesn't hurt. Just be aware that *storeID.php* will only supply
+the fields defined for Satview.
+
+One resonable way of doing this is to use a remote host that grabs the
+images every few hours using *cron* to run *getit.sh* and *storeinDB.php*,
+and using *copydb* to refresh a local database.
+
+
+[[further]]
+== Future Development ==
+
+I will probably add a cmake build system to this. Also I'm not sure
+that I like the encoding of the images on the web interface, I may change that.
+The web interface could also be more specific when it comes to
+sending the index, currently it sends all of it. That will probably
+change very soon. 
+
+[[specs]]
+== Specifications ==
+This section gives some implementation details. We have the individual 
+pieces of code that make up the system:
+
+. Aquisition
+.. getit.sh
+. Storage
+.. storeIR.php
+.. satserv.php
+. User Interface
+.. viewsat
+.. copydb
+
+=== User Interface ===
+
+To change the user interface defaults, change the file *satview-defaults.h*:
+
+[[ui-default-source]]
+.satview-defaults.h
+[source:]
+----
+#define SATVIEW_DEFAULT_PICNAME     "ECIR.JPG"
+
+#define SATVIEW_DEFAULT_S0          "localhost"
+#define SATVIEW_DEFAULT_S1          "www.bernd-stramm.com"
+#define SATVIEW_DEFAULT_S2          "192.168.1.152"
+----
+
+
+=== Database ===
+The database table containing the images has 5 fields. The two fields
+named *index* and *picname* combined are required to be unique, 
+and can be made an index. 
+
+[[database-defs]]
+.Database Field Definitions
+****
+++++
+<p>
+<table border="1">
+<tr >
+<th>Field </th>
+<th>Type</th>
+<th>Collation </th>
+<th> Attributes </th>
+<th> Null </th>
+<th>Default  </th>
+</tr>
+
+<tr>
+<td><i>
+ident  </i></td>
+<td>bigint(20) </td>
+<td> </td>
+<td> </td>
+<td>No</td>
+<td>None</td>
+</tr>
+
+<tr>
+<td><i>picname</i></td>
+<td>varchar(255)</td>
+<td>latin1_swedish_ci</td>
+<td> </td>
+<td>No</td>
+<td> None </td>
+</tr>
+
+<tr>
+<td><i>storetime</i></td>
+<td>timestamp</td>
+<td> </td>
+<td> </td>
+<td>No </td>
+<td>CURRENT_TIMESTAMP 	</td>
+</tr>
+
+<tr>
+<td><i>remark</i></td>
+<td>text</td>
+<td>	latin1_swedish_ci</td>
+<td> </td>
+<td>No</td>
+<td>None </td>
+</tr>
+
+<tr>
+<td><i>image</i></td>
+<td>longblob</td>
+<td> </td>
+<td>	BINARY</td>
+<td>No</td>
+<td>None </td>
+</td>
+</table>
+++++
+****
+
+=== Web Interface ===
+
+Look in *satserv.php*. Basically you can ask for the index of
+available images with a get
+
+[source:http]
+----
+GET .../satserve.php?fn=index
+----
+
+and for individual images
+
+[source:http]
+----
+GET .../satserve.php?fn=item&k1=<ident>&k2=<picname>
+----
+
+where ident and picname are encoded as ASCII/hex, e.g. '123' is '313233'.
+All the encoding is done like that, to avoid issues like spaces inside 
+strings. I could have bothered with the traditional complicated escape
+characters for every possible exception, but why?
+
+At the time of this writing, my personal web
+server provides data on the web interface. It is not wise to
+count on it being there.
+
+=== dcomp/ ===
+
+The *dcomp/* directory contains decompression code for JPEG. This is taken
+mostly from the website of the http://www.ijg.org/[Independent JPEG Group], 
+in particular version 7. The reason for this is that http://fltk.org/[FLTK]
+does not provide in-memory jpeg decompression, and neither does any other
+GUI tool that I have found. Hence I provided my own hooks into the jpeg
+library code. Since this introduces ugly dependencies on specific versions,
+I repackaged the decompression part of the jpeg library as C\+\+ code. That's 
+what is in dcomp/.
+
+The only way around this mess is for the user interface to write the jpeg file
+to a temporary file on the file system, and read this back to display
+the decompressed image. This means that the user interface has to make some
+assumptions about what it is running on, such as
+
+. there is a file system
+
+which I didn't want to do.
+
+=== Prerequisits ===
+
+To build and run the parts of Satview, the current version uses:
+
+. On the user interface
+.. C\+\+
+... Gcc or Visual C\+\+
+.. FLTK 1.1.9 (*not* FLTK 2 or FLTK 1.3)
+.. Gnu sockets or WinSock2
+. On the server you need
+.. PHP5 on the server
+.. Apache or something else that serves PHP over HTTP
+.. wget on the server
+.. cron 
+
+[Note]
+****
+*Memory:* The Satview user interface viewer
+buffers the jpeg version of all images that have been viewed
+in the current session, plus *one* decompressed image. It does not
+save anything between sessions.
+****
+
+==== How to Build ====
+
+Read the INSTALL file.
+
+==== Where to Change Sockets ====
+
+Look in *dbconnect.h* and *dbconnect.cpp*, that is where the communication
+between the database and the user interface is implemented.
+
+==== Where to Change the Web Interface
+
+Look in *dbconnect.h*, *dbconnect.cpp* on the user interface side, and
+in *satserv.php* on the server side.
+
+==== Can I Run Something Like This My Browser ====
+
+Why would you want to?
+
+== License and Warranty ==
+
+This is free open source software, hence the usual licensing. And the 
+usual warranty, or lack thereof:
+
+These programs are distributed under the terms of the 
+GNU General Public License version 3.
+
+See the file *COPYING* for the complete text of the license. You can
+also find it on http://www.gnu.org.
+
+This software is distributed in the hope that it will be useful, 
+but WITHOUT ANY WARRANTY; without even the implied warranty 
+of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 

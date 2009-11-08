@@ -28,20 +28,22 @@ DCOMPMOD = libsatjpeg
 DCOMPLIB = $(DCOMPMOD).a
 DCOMPSHIP = $(DCOMP)/*.cpp $(DCOMP)/*.h $(DCOMP)/Makefile
 
-ALLSHIP = $(SRC) $(HDR) $(TOOLS) $(DCOMPSHIP)
+INSTALLDIR=$(HOME)/bin
 
 MAKEFILE = Makefile
 
-DOC = Doxyfile userman.txt
+DOC = Doxyfile userman.txt COPYING
 TOOLS = $(MAKEFILE) satview.fl $(DOC) copydb.cpp
+
+PICS = controlwin.png imagewin.png
+
+ALLSHIP = $(SRC) $(HDR) $(TOOLS) $(DCOMPSHIP) userman.html $(PICS)
 
 OBJ=$(SRC:.cpp=.o)
 
 FLTKLIB= -lfltk_images -lpng -lz -lfltk
 
-LIBS = -L$(HOME)/lib  \
-	 -lberndsutil \
-	-L./dcomp \
+LIBS = -L./dcomp \
 	-lsatjpeg\
 	-L/usr/local/lib \
 	-lmysqlcppconn \
@@ -51,7 +53,6 @@ LIBS = -L$(HOME)/lib  \
 INC_PATH =  /usr/local/include/
 
 INC = -I $(INC_PATH)/cppconn/ \
-	-I $(HOME)/include
 
 EXTRA_CXX_FLAGS=`fltk-config --cxxflags`
 
@@ -88,13 +89,13 @@ satview.h: satview.fl
 	fluid -c satview.fl
 
 install:
-	install $(TARGET) $(HOME)/bin
+	install $(TARGET) $(INSTALLDIR)
 
 docu:
 	doxygen
 
 userman.html: userman.txt
-	asciidoc userman.txt
+	asciidoc -n userman.txt
 
 backup:
 	make snapshot
@@ -111,6 +112,9 @@ ship:
 
 clean:
 	rm $(TARGET) $(OBJ)
+
+dep:
+	echo "" > dep
 
 depend:  
 	echo "" > dep
