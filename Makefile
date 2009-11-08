@@ -21,7 +21,8 @@ SRC = satview.cpp viewmain.cpp satpiclist.cpp satpicbuf.cpp callbacks.cpp \
 	dbconnect.cpp version.cpp blob-image.cpp sjdatasrc.cpp
 
 HDR = satview.h viewmain.h satpicbuf.h satpiclist.h dbconnect.h  \
-	version.h satview-config.h blob-image.h sjdatasrc.h
+	version.h satview-config.h blob-image.h sjdatasrc.h \
+	berndsutil.h fault.h
 
 DCOMP = ./dcomp
 DCOMPMOD = libsatjpeg
@@ -32,7 +33,7 @@ INSTALLDIR=$(HOME)/bin
 
 MAKEFILE = Makefile
 
-DOC = Doxyfile userman.txt COPYING
+DOC = Doxyfile userman.txt COPYING INSTALL
 TOOLS = $(MAKEFILE) satview.fl $(DOC) copydb.cpp
 
 PICS = controlwin.png imagewin.png
