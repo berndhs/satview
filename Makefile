@@ -24,7 +24,11 @@ HDR = satview.h viewmain.h satpicbuf.h satpiclist.h dbconnect.h  \
 	version.h satview-config.h blob-image.h sjdatasrc.h
 
 DCOMP = ./dcomp
-DCOMPLIB = libsatjpeg.a
+DCOMPMOD = libsatjpeg
+DCOMPLIB = $(DCOMPMOD).a
+DCOMPSHIP = $(DCOMP)/*.cpp $(DCOMP)/*.h $(DCOMP)/Makefile
+
+ALLSHIP = $(SRC) $(HDR) $(TOOLS) $(DCOMPSHIP)
 
 MAKEFILE = Makefile
 
@@ -101,6 +105,9 @@ snapshot:
 tar:
 	tar zcvf $(TARGET).tar.gz $(SRC) $(HDR) $(TOOLS)
 	ls -l $(TARGET).tar.gz
+
+ship:
+	tar zcvf $(TARGET).all.tar.gz $(ALLSHIP)
 
 clean:
 	rm $(TARGET) $(OBJ)
