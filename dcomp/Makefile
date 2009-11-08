@@ -2,6 +2,8 @@
 CXX = g++
 CFLAGS = -g -O2
 
+MODULENAME= satjpeg
+
 INFILES = \
 jaricom.cpp \
 jcomapi.cpp \
@@ -42,7 +44,10 @@ HDR = allj.h cderror.h cdjpeg.h jaricom.h jconfig.h jdct.h \
 
 OBJ= $(SRC:.cpp=.o)
 
-TARGET = libsatjpeg.a
+TARCONTENT= $(SRC) $(HDR) Makefile
+
+
+TARGET = $(MODULENAME).a
 
 all: $(TARGET)
 
@@ -53,7 +58,10 @@ clean:
 	rm $(TARGET) $(OBJ)
 
 snapshot:
-	tar zcvf $(TARGET).`date -u +"%Y%m%d-%H%M%S-u"`.tar.gz $(SRC) $(HDR) Makefile
+	tar zcvf $(MODULENAME).`date -u +"%Y%m%d-%H%M%S-u"`.tar.gz $(TARCONTENT)
+
+ship:
+	tar zcvf $(MODULENAME).tar.gz $(TARCONTENT)
 
 .SUFFIXES:
 
