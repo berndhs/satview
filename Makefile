@@ -64,7 +64,7 @@ CXXFLAGS = -g $(CXXOPTIM) -Wall -Wextra -pedantic -Wno-long-long \
 
 TARGET = viewsat
 
-all: $(DCOMP)/$(DCOMPLIB) $(TARGET)
+all: $(DCOMP)/$(DCOMPLIB) $(TARGET) copydb
 
 $(DCOMP)/$(DCOMPLIB):
 	cd $(DCOMP); make all
@@ -90,7 +90,7 @@ satview.h: satview.fl
 	fluid -c satview.fl
 
 install:
-	install $(TARGET) $(INSTALLDIR)
+	install $(TARGET) copydb $(INSTALLDIR)
 
 docu:
 	doxygen
