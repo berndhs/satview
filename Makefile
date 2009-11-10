@@ -112,7 +112,7 @@ ship:
 	tar zcvf $(TARGET).all.tar.gz $(ALLSHIP)
 
 clean:
-	rm $(TARGET) $(OBJ)
+	rm $(TARGET) $(OBJ) copydb copydb.o
 
 dep:
 	echo "" > dep

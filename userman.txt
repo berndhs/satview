@@ -177,6 +177,21 @@ The web interface could also be more specific when it comes to
 sending the index, currently it sends all of it. That will probably
 change very soon. 
 
+Also nice would be a feature to tag individual images, so they can be
+referred back to later. Perhaps a sequence of tagged images could be
+made into an animation.
+
+Of course there is no reason that only weather images are the subject.
+Basically anything that has is a natural sequence, and that can
+be captured as images, makes sense to use. Making the file name
+choice (picname) more general, probably with a browser, would make
+this easier.
+
+Currently the main satview program is just a viewer - it doesn't store 
+anything, or process any images. Some ambitious person could add more
+functionality. Storing selected images or sequences perhaps, with markup
+of images. 
+
 [[specs]]
 == Specifications ==
 This section gives some implementation details. We have the individual 
@@ -368,6 +383,7 @@ Why would you want to?
 This is free open source software, hence the usual licensing. And the 
 usual warranty, or lack thereof:
 
+****
 These programs are distributed under the terms of the 
 GNU General Public License version 3.
 
@@ -377,3 +393,4 @@ also find it on http://www.gnu.org.
 This software is distributed in the hope that it will be useful, 
 but WITHOUT ANY WARRANTY; without even the implied warranty 
 of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+****
