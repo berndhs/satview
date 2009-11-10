@@ -374,7 +374,7 @@ between the database and the user interface is implemented.
 Look in *dbconnect.h*, *dbconnect.cpp* on the user interface side, and
 in *satserv.php* on the server side.
 
-==== Can I Run Something Like This My Browser ====
+==== Can I Run Something Like This in My Browser ====
 
 Why would you want to?
 
