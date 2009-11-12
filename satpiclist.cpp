@@ -213,7 +213,10 @@ namespace satview {
   SatPicList::Current()
   {
     if (mIt == mBufMap.end()) {
-      return 0;
+      mIt--;
+      if (mIt == mBufMap.end()) {  // empty
+        return 0;
+      }
     }
     return mIt->second;
   }

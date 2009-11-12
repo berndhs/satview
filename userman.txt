@@ -1,7 +1,7 @@
 Satview Manual
 ==============
 Bernd Stramm <bernd.stramm@gmail.com>
-v1.0, November 2009
+v1.0.1, November 2009
 
 Satview is a little distributed system that can collect and present
 weather satellite images for personal use.
@@ -394,3 +394,10 @@ This software is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty 
 of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 ****
+
+
+____
+
+ 
+~Copyright (C) 2009 http://www.bernd-stramm.com/[Bernd Stramm] All Rights Reserved~
+____

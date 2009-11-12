@@ -59,7 +59,8 @@ EXTRA_CXX_FLAGS=`fltk-config --cxxflags`
 
 CXX = g++
 CXXOPTIM = -O2
-CXXFLAGS = -g $(CXXOPTIM) -Wall -Wextra -pedantic -Wno-long-long \
+CXXDEBUG = -g
+CXXFLAGS = $(CXXDEBUG) $(CXXOPTIM) -Wall -Wextra -pedantic -Wno-long-long \
 	 $(EXTRA_CXX_FLAGS)
 
 TARGET = viewsat
