@@ -119,6 +119,7 @@ namespace satview {
   SatPicBuf::Get_Image()
   {
     if (mHaveRGB && (mDisplayBuf != 0)) {
+      Fl::wait(0.2);
       return mDisplayBuf;
     }
     if (!mHaveBlob) {
