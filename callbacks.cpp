@@ -36,6 +36,7 @@
 #include "satpiclist.h"
 #include "satpicbuf.h"
 #include "berndsutil.h"
+#include "callbacks.h"
 
 /** @brief this file contains all the callbacks, they come from the FLTK
  * object.
@@ -48,6 +49,10 @@ using namespace std;
 
 static std::stack<string> calls;
 
+void Wait (double secs)
+{
+  Fl::wait(secs);
+}
 
 void DirectCheck_cb (Fl_Round_Button *pW, void *nada)
 {
