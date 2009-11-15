@@ -45,7 +45,7 @@ class SatPicBuf {
 
   SatPicBuf (unsigned long int id, string pn, string st, string rem);
 
-  Fl_RGB_Image * Get_Image();  // don't call delete, call Forget_Image instead
+  QImage * Get_Image();  // don't call delete, call Forget_Image instead
 
   void           Forget_Image();  
   

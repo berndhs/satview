@@ -39,15 +39,17 @@
 #include "satview-config.h"
 #include "sjdatasrc.h"
 
-#  include <FL/Fl_Image.H>
+#include <QImage>
 
 namespace satview {
 
-class FL_EXPORT Blob_Image : public Fl_RGB_Image {
+class Blob_Image : public QImage {
 
   public:
 
   Blob_Image(sjdata & data_source);
+
+  uchar * array;
 };
 
 } // namespace

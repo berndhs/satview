@@ -1,5 +1,5 @@
-#include "version.h"
-#include <string>
+#ifndef VIEWMAIN_H
+#define VIEWMAIN_H
 
 //
 //  Copyright (C) 2009 - Bernd H Stramm 
@@ -12,14 +12,14 @@
 // of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
-namespace satview {
+//
 
-  std::string CloudTrackVersion("0.1");
-  
-  std::string Version ()
-  { 
-    return std::string(CloudTrackVersion + " " + std::string(__DATE__) + " "
-		       + std::string(__TIME__));
-  }
+#define SATVIEW_USE_FLTK 1
+#define SATVIEW_USE_SDL 0
 
-}
+#include "satview.h"
+
+
+extern ControlPanel CP;
+
+#endif 

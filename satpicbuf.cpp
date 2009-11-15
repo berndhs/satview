@@ -116,7 +116,7 @@ namespace satview {
    */
 
 
-  Fl_RGB_Image * 
+  QImage * 
   SatPicBuf::Get_Image()
   {
     if (mHaveRGB && (mDisplayBuf != 0)) {
@@ -149,7 +149,7 @@ namespace satview {
     blob_box.inlen = mImageLen;
     blob_box.cur_pos = 0; 
     mDisplayBuf =  new Blob_Image(blob_box);    
-    Fl_RGB_Image * pImage = mDisplayBuf;
+    QImage * pImage = mDisplayBuf;
     mHaveRGB = (pImage != 0);
     return pImage;
   }

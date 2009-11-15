@@ -54,6 +54,12 @@ all: $(TARGET)
 $(TARGET): $(OBJ) Makefile
 	ar rcs $(TARGET) $(OBJ)
 
+echosrc:
+	@echo $(SRC)
+
+echohdr:
+	@echo $(HDR)
+
 clean:
 	rm $(TARGET) $(OBJ)
 

@@ -4,7 +4,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = satview
+PROJECT_NAME           = cloudtrak
 PROJECT_NUMBER         = 0.0
 OUTPUT_DIRECTORY       = 
 CREATE_SUBDIRS         = NO
@@ -93,7 +93,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = /home/bernd/mywork/sample_codes/satview/
+INPUT                  = /home/bernd/mywork/sample_codes/satview-qt/
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.c \
                          *.cc \

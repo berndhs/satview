@@ -19,7 +19,7 @@
 //
 
 #include "blob-image.h"
-#include <config.h>
+/*  #include <config.h>    not sure why this was include, or what this is */
 #include <stdio.h>
 #include <stdlib.h>
 #include <setjmp.h>
@@ -65,12 +65,12 @@ struct fl_jpeg_error_mgr {
 #ifdef HAVE_LIBJPEG
 extern "C" {
   static void
-  fl_jpeg_error_handler(j_common_ptr dinfo) {	// I - Decompressor info
-    longjmp(((fl_jpeg_error_mgr *)(dinfo->err))->errhand_, 1);
+  sj_jpeg_error_handler(j_common_ptr dinfo) {	// I - Decompressor info
+    longjmp(((sj_jpeg_error_mgr *)(dinfo->err))->errhand_, 1);
   }
 
   static void
-  fl_jpeg_output_handler(j_common_ptr) {	// I - Decompressor info (not used)
+  sj_jpeg_output_handler(j_common_ptr) {	// I - Decompressor info (not used)
   }
 }
 #endif // HAVE_LIBJPEG
@@ -81,10 +81,10 @@ extern "C" {
 //
 
 Blob_Image::Blob_Image (sjdata & data_source)  
-  : Fl_RGB_Image(0,0,0) {
+  : QImage(array,0,0) {
 #ifdef HAVE_LIBJPEG
   satview_jpeg::jpeg_decompress_struct	dinfo;	// Decompressor info
-  fl_jpeg_error_mgr		jerr;	// Error handler info
+  sj_jpeg_error_mgr		jerr;	// Error handler info
   JSAMPROW			row;	// Sample row pointer
 
   // the following variables are pointers allocating some private space that
@@ -98,8 +98,8 @@ Blob_Image::Blob_Image (sjdata & data_source)
 
   // Setup the decompressor info and read the header...
   dinfo.err                = satview_jpeg::jpeg_std_error((satview_jpeg::jpeg_error_mgr *)&jerr);
-  jerr.pub_.error_exit     = fl_jpeg_error_handler;
-  jerr.pub_.output_message = fl_jpeg_output_handler;
+  jerr.pub_.error_exit     = sj_jpeg_error_handler;
+  jerr.pub_.output_message = sj_jpeg_output_handler;
 
   // Setup error loop variables
   max_finish_decompress_err = (char*)malloc(1);   // allocate space on the frame for error counters
