@@ -36,14 +36,9 @@ class DisplayControl {open
       label {Satview Control} open
       xywh {154 184 345 400} type Double resizable visible
     } {
-      Fl_Group {} {open
+      Fl_Group {} {open selected
         xywh {5 115 335 85} box THIN_UP_BOX color 147
       } {
-        Fl_Button DitchDB {
-          label {Clear Data}
-          callback DitchDB_cb
-          xywh {20 155 65 40} color 88 selection_color 208 align 128
-        }
         Fl_Button ReloadDB {
           label {Reload Data}
           callback ReloadDB_cb
@@ -52,7 +47,7 @@ class DisplayControl {open
         Fl_Button ConnectDB {
           label Connect
           callback ConnectDB_cb
-          xywh {105 165 70 30} box THIN_UP_BOX
+          xywh {30 150 70 40} box THIN_UP_BOX
         }
         Fl_Input ServerName {
           label Server
@@ -220,7 +215,7 @@ class DisplayControl {open
         Fl_Button WindWeek {
           label {1 week}
           user_data {new Store<int>(7*24*60*60)}
-          callback WindForeTo_cb selected
+          callback WindForeTo_cb
           xywh {270 290 60 25}
         }
       }

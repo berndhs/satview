@@ -58,6 +58,14 @@ namespace satview {
     /** @todo do something, in case they want to start on a 
      * different server
      */
+    if (pIndexRes) {
+      delete pIndexRes;
+      pIndexRes = 0;
+    }
+    if (mWebResult) {
+      delete mWebResult;
+      mWebResult = 0;
+    }
   }
 
   void 
