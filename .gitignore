@@ -1,0 +1,6 @@
+*.o
+*.gz
+*~
+dcomp/
+doc_html/
+doc_latex/
