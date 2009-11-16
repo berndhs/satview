@@ -121,6 +121,7 @@ main (int argc, char*argv[])
       SatPicList::Instance()->SetControl (&Control);
       SatPicList::Instance()->Start();
       Control.DoWindFwd(0,true);
+      Control.DoStepFwd();
       Control.show();
       App.processEvents();
       App.exec();
