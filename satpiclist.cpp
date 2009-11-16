@@ -46,7 +46,7 @@ namespace satview {
       }
       SatPicBuf * pBuf = it->second;
  
-      pDC->Filename->value(pBuf->PicName().c_str());
+      pDC->SetPicname(pBuf->PicName().c_str());
       time_t t = pBuf->Ident();
       string as_secs = berndsutil::toString(t);
       struct tm theTime;
@@ -60,9 +60,13 @@ namespace satview {
       const int datelen = 256;
       char plain[datelen+sizeof(void*)];
       int len = strftime (plain, datelen,"%c", &theTime);
-      pDC->ChangeDate->value(plain,len);
-      pDC->Seconds->value((as_secs + string (" - ")
-			   + berndsutil::toString(pBuf->Serial())).c_str());
+      plain[len] = 0;
+      pDC->SetDate(plain);
+      string identstring = (as_secs + string (" - ")
+			    + berndsutil::toString(pBuf->Serial()));
+      pDC->SetIdentTag(identstring);
+      cout << plain << endl;
+      cout << identstring << endl;
     }
   }
 

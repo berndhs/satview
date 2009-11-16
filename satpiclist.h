@@ -15,9 +15,9 @@
 //
 
 
-#include "satview.h"
 #include <map>
 
+#include "controlpanel.h"
 #include "satpicbuf.h"
 #include "fault.h"
 #include "dbconnect.h"
@@ -61,7 +61,7 @@ class SatPicList {
 
   unsigned long int   NumImages();
 
-  void SetControl (DisplayControl *dcon) { pDC = dcon; }
+  void SetControl (ControlPanel *dcon) { pDC = dcon; }
 
   void        Rewind();
   void        ToEnd();
@@ -97,7 +97,7 @@ class SatPicList {
 
   PicMap_Type::iterator  mIt;
 
-  DisplayControl* pDC;
+  ControlPanel* pDC;
   bool ConnectDB (string server, string db, string user, string pass);
   void DisconnectDB ();
   void LoadDummy();

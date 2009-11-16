@@ -12,11 +12,11 @@
 
 //
 
-#include "satview.h"
 #include "callbacks.h"
 #include "satpicbuf.h"
 #include "berndsutil.h"
 #include "dbconnect.h"
+#include <unistd.h>
 
 
 #include "blob-image.h"
@@ -120,7 +120,7 @@ namespace satview {
   SatPicBuf::Get_Image()
   {
     if (mHaveRGB && (mDisplayBuf != 0)) {
-      Wait(0.2);
+      usleep(0.1 * 1000 * 1000);
       return mDisplayBuf;
     }
     if (!mHaveBlob) {

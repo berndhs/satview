@@ -49,7 +49,12 @@ class Blob_Image : public QImage {
 
   Blob_Image(sjdata & data_source);
 
+  private:
+
   uchar * array;
+  uint    wide, hi, deep;
+  int     alloc_array;
+  bool    imageok;
 };
 
 } // namespace

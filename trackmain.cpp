@@ -1,6 +1,5 @@
-#include "viewmain.h"
+#include "trackmain.h"
 #include "satpiclist.h"
-#include "satview.h"
 #include "version.h"
 #include "satview-defaults.h"
 
@@ -22,7 +21,6 @@
 using namespace std;
 using namespace satview;
 
-ControlPanel Control;
 
 string DefaultFile(SATVIEW_DEFAULT_PICNAME);
 string server0(SATVIEW_DEFAULT_S0);
@@ -82,8 +80,8 @@ main (int argc, char*argv[])
 {
   int ret;
 ;
-  server = server1;
-  method = DBConnection::Con_WebSock;
+  server = server0;
+  method = DBConnection::Con_MySqlCPP;
   string db("weather");
   string user("weather");
   string pass("quetzalcoatl");
@@ -96,17 +94,22 @@ main (int argc, char*argv[])
 
   std::cout << myname << satview::Version() << std::endl;
 
-  try {
+  QApplication App(argc, argv);
 
-      Control.Filename->maximum_size(256);
-      Control.ChangeDate->maximum_size(256);
-      Control.ChangeDate->value("                                     ");
-      Control.Seconds->maximum_size(256);
-      Control.Seconds->value("0");
-      Control.Filename->value(DefaultFile.c_str());
-      Control.ServerName->value(server.c_str());
-      Control.DirectCheck->value(method == DBConnection::Con_MySqlCPP);
-      Control.WebCheck->value(method == DBConnection::Con_WebSock);
+  ControlPanel Control (&App);
+
+  try {
+    string conmeth;
+    if (method == DBConnection::Con_MySqlCPP) {
+      conmeth = "dir";
+    } else if (method == DBConnection::Con_WebSock) {
+      conmeth = "web";
+    } else {
+      conmeth = "none";
+    }
+      Control.SetPicname(DefaultFile);
+      Control.SetServer(server);
+      Control.SetConMeth(conmeth);
 
       SatPicList::Instance()->SetDBParams(method,
                                          server,
@@ -115,12 +118,13 @@ main (int argc, char*argv[])
 					 pass,
 					 DefaultFile);
       SatPicList::Instance()->LoadFromDB();
-      SatPicList::Instance()->SetControl (&DC);
+      SatPicList::Instance()->SetControl (&Control);
       SatPicList::Instance()->Start();
-      WindAll_cb(0,0);
+      Control.DoWindFwd(0,true);
       Control.show();
-      ImageWin->show();
-      ret = Fl::run();
+      //ImageWin->show();
+      Control.ShowStatus();
+      App.exec();
       return 42;
   } catch (berndsutil::Fault &F) {
    

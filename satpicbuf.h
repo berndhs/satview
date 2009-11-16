@@ -16,7 +16,6 @@
 #ifndef SATPICBUF_H
 #define SATPICBUF_H
 #include "satview-config.h"
-#include "satview.h"
 #include "sjdatasrc.h"
 
 #include <string>

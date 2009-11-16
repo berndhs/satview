@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Satview Control</string>
+   <string>CloudTrack Control</string>
   </property>
   <widget class="QPushButton" name="newNameButton">
    <property name="geometry">

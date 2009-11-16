@@ -13,6 +13,11 @@
 //
 
 #include "ui_control.h"
+#include "imagewin.h"
+#include <QApplication>
+#include <string>
+
+using namespace std;
 
 namespace satview {
 
@@ -28,6 +33,7 @@ Q_OBJECT
   public:
 
     ControlPanel (QApplication *pA);
+    ~ControlPanel();
 
     void DoRunBack (int secs, bool allway=false);
     void DoRunFwd  (int secs, bool allway=false);
@@ -38,10 +44,14 @@ Q_OBJECT
 
     void NotImplemented ();
     void quit ();
+    void show();
 
     void ConnectDB ();
     void ReloadDB ();
     void DoSwitchPicname();
+
+    void DoStepFwd ();
+    void DoStepBack ();
 
     void DoRunBack ()      { DoRunBack (0,true); }
     void DoRunBackWeek ()  { DoRunBack (7*24*3600); }
@@ -64,9 +74,36 @@ Q_OBJECT
     void DoWindFwdHours () { DoWindFwd (6*3600);   }
    
 
+    string Server();
+    string SetServer (string sv);
+    string Picname();
+    string SetPicname (string pn);
+    string ConMeth();
+    string SetConMeth (string cm);
+    string IdentTag();
+    string SetIdentTag (string id);
+    string Date();
+    string SetDate (string dt);
+
+    void ShowStatus ();
+
+    void Wait (double secs);
+
   private:
 
+    void StartImage ();
+    void ShowPic (SatPicBuf *pBuf);
+
+    unsigned long int EndTime (long int diff);
+
     QApplication  * pApp;
+
+    ImageWin      * pDisplay;
+
+    string                 mPicname;
+    string                 mServer;
+    string                 mConMeth;
+    string                 mDate;
 
   };
 

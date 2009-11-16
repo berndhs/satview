@@ -22,10 +22,12 @@ TARGET = cloudtrack
 QMAKE = qmake-qt4
 PROJFILE = cloudtrack.pro
 
-all: Make.qt $(TARGET)
+all: 
+	@echo "making qt stuff"; make Make.qt
+	@echo "making target"; make realtarget
 
-$(TARGET): Make.qt Makefile
-	make -f Make.qt $(TARGET)
+realtarget:
+	@echo "using Make.qt to make target"; make -f Make.qt all
 
 clean:
 	make -f Make.qt clean
@@ -33,7 +35,8 @@ clean:
 Make.qt: $(PROJFILE)
 	$(QMAKE) -o Make.qt $(PROJFILE)
 
-qt:	Make.qt
+qt:	
+	make Make.qt
 
 docu:
 	doxygen

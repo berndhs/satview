@@ -25,6 +25,8 @@
 #include <setjmp.h>
 #include <iostream>
 
+using namespace std;
+
 namespace satview {
 
 using namespace satview_jpeg;
@@ -51,7 +53,7 @@ extern "C"
 //
 
 #ifdef HAVE_LIBJPEG
-struct fl_jpeg_error_mgr {
+struct sj_jpeg_error_mgr {
   jpeg_error_mgr	pub_;		// Destination manager...
   jmp_buf		errhand_;	// Error handler
 };
@@ -81,7 +83,14 @@ extern "C" {
 //
 
 Blob_Image::Blob_Image (sjdata & data_source)  
-  : QImage(array,0,0) {
+  : QImage() {
+
+  char * data = (data_source.indata);
+  imageok = loadFromData ((uchar*)data,
+                          data_source.inlen);
+  cout << " in blob image " << endl;
+  cout << " decompress was " << (imageok? " good " : " bad ") << endl;
+#if 0
 #ifdef HAVE_LIBJPEG
   satview_jpeg::jpeg_decompress_struct	dinfo;	// Decompressor info
   sj_jpeg_error_mgr		jerr;	// Error handler info
@@ -118,9 +127,9 @@ Blob_Image::Blob_Image (sjdata & data_source)
       satview_jpeg::jpeg_destroy_decompress(&dinfo);
     }
 
-    w(0);
-    h(0);
-    d(0);
+    wide = 0;
+    hi   = 0;
+    deep = 0;
 
     if (array) {
       delete[] (uchar *)array;
@@ -144,9 +153,10 @@ Blob_Image::Blob_Image (sjdata & data_source)
   dinfo.output_components    = 3;
   satview_jpeg::jpeg_calc_output_dimensions(&dinfo);
 
-  w(dinfo.output_width); 
-  h(dinfo.output_height);
-  d(dinfo.output_components);  array = new uchar[w() * h() * d()];
+  wide = dinfo.output_width; 
+  hi =   dinfo.output_height;
+  deep = dinfo.output_components;  
+  array = new uchar[wide * hi * deep];
   alloc_array = 1;
 
   satview_jpeg::jpeg_start_decompress(&dinfo);
@@ -166,6 +176,7 @@ Blob_Image::Blob_Image (sjdata & data_source)
   free(max_finish_decompress_err);
 
 #endif // HAVE_LIBJPEG
+#endif
 }
 
 } // namespace
