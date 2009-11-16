@@ -120,7 +120,7 @@ namespace satview {
   SatPicBuf::Get_Image()
   {
     if (mHaveRGB && (mDisplayBuf != 0)) {
-      usleep(0.1 * 1000 * 1000);
+      usleep(0.05 * 1000 * 1000);
       return mDisplayBuf;
     }
     if (!mHaveBlob) {
