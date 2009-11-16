@@ -157,7 +157,6 @@ ControlPanel::ShowPic (SatPicBuf * pBuf)
 void
 ControlPanel::NotImplemented ()
 {
-  cout << "not implemented" << endl;
   QMessageBox msgBox;
   QTimer::singleShot(15000, &msgBox, SLOT(accept()));
   msgBox.setText("not implemented at this time");
@@ -291,7 +290,15 @@ ControlPanel::ReloadDB ()
   SatPicList::Instance()->SetFilename(mPicname);
   SatPicList::Instance()->SetMethod(mMeth);
   SatPicList::Instance()->Ditch();
-  SatPicList::Instance()->LoadFromDB();
+  bool loadedok = SatPicList::Instance()->LoadFromDB();
+  if (!loadedok) {
+     QMessageBox msgBox;
+     QTimer::singleShot(15000, &msgBox, SLOT(accept()));
+     string badmsg = "Cannot Load from Server '" + mServer
+       + "' using Method '" + mConMeth + "'";
+     msgBox.setText(badmsg.c_str());
+     msgBox.exec();
+  }
   DoWindFwd(0,true);
   DoStepFwd();
   update();
@@ -401,7 +408,7 @@ ControlPanel::ConMeth ()
 void
 ControlPanel::ToggledConn (bool is_checked)
 {
-  cout << " toggled comething " << endl;
+  cout << " toggled something " << endl;
   DBConnection::Method newMeth(DBConnection::Con_WebSock);
   if (directConnButton->isChecked()) {
     newMeth = DBConnection::Con_MySqlCPP;
