@@ -32,6 +32,9 @@ realtarget:
 clean:
 	make -f Make.qt clean
 
+dist:
+	make -f Make.qt dist
+
 Make.qt: $(PROJFILE)
 	$(QMAKE) -o Make.qt $(PROJFILE)
 

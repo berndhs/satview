@@ -55,7 +55,6 @@ ControlPanel::ControlPanel (QApplication *pA)
     connect (windFwdWeekButton, SIGNAL(clicked()), this, SLOT(DoWindFwdWeek()));
     connect (windFwdDayButton, SIGNAL(clicked()), this, SLOT(DoWindFwdDay()));
     connect (windFwdHoursButton, SIGNAL(clicked()), this, SLOT(DoWindFwdHours()));
-    connect (clearAllButton, SIGNAL(clicked()), this, SLOT(NotImplemented()));
     connect (connectServerButton, SIGNAL(clicked()), this, SLOT(ReloadDB()));
     connect (reloadServerButton, SIGNAL(clicked()), this, SLOT(ReloadDB()));
     connect (directConnButton, SIGNAL(toggled(bool)), 

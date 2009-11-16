@@ -13,7 +13,9 @@
 CONFIG += qt debug
 TEMPLATE = app
 TARGET = cloudtrack
+VERSION = 0.2.0
 DPENDPATH += .
+DISFILES += Doxyfile
 INCLUDEPATH += /usr/local/include dcmop/
 LIBPATH += /usr/local/lib
 LIBS += -lmysqlcppconn -lccgnu2
@@ -24,7 +26,6 @@ SOURCES += satpiclist.cpp satpicbuf.cpp \
 	imagewin.cpp \
 	trackmain.cpp \
 	controlpanel.cpp 
-#  sjdatasrc.cpp \
 
 
 HEADERS += satpicbuf.h satpiclist.h dbconnect.h  \

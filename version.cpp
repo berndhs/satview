@@ -14,7 +14,7 @@
 
 namespace satview {
 
-  std::string CloudTrackVersion("0.1");
+  std::string CloudTrackVersion("0.2");
   
   std::string Version ()
   { 
