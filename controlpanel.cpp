@@ -16,6 +16,7 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <QString>
+#include <QByteArray>
 #include <unistd.h>
 #include "satpiclist.h"
 #include "satpicbuf.h"
@@ -55,10 +56,12 @@ ControlPanel::ControlPanel (QApplication *pA)
     connect (windFwdDayButton, SIGNAL(clicked()), this, SLOT(DoWindFwdDay()));
     connect (windFwdHoursButton, SIGNAL(clicked()), this, SLOT(DoWindFwdHours()));
     connect (clearAllButton, SIGNAL(clicked()), this, SLOT(NotImplemented()));
-    connect (connectServerButton, SIGNAL(clicked()), this, SLOT(NotImplemented()));
-    connect (reloadServerButton, SIGNAL(clicked()), this, SLOT(NotImplemented()));
-    connect (directConnButton, SIGNAL(clicked()), this, SLOT(NotImplemented()));
-    connect (webConnButton, SIGNAL(clicked()), this, SLOT(NotImplemented()));
+    connect (connectServerButton, SIGNAL(clicked()), this, SLOT(ReloadDB()));
+    connect (reloadServerButton, SIGNAL(clicked()), this, SLOT(ReloadDB()));
+    connect (directConnButton, SIGNAL(toggled(bool)), 
+                  this, SLOT(ToggledConn(bool)));
+    connect (webConnButton, SIGNAL(toggled(bool)), 
+                  this, SLOT(ToggledConn(bool)));
 
 }
 
@@ -73,6 +76,7 @@ ControlPanel::quit()
   if (pDisplay) {
     pDisplay->quit();
   }
+  SatPicList::Instance()->Ditch();
   if (pApp) {
     pApp->quit();
   }
@@ -271,16 +275,42 @@ ControlPanel::ConnectDB ()
   NotImplemented();
 }
 
+string
+ControlPanel::GetBoxString (QPlainTextEdit *pBox)
+{
+  QString newval = pBox->toPlainText();
+  QByteArray bytes = newval.toLatin1();
+  return string(bytes.data());
+}
+
 void
 ControlPanel::ReloadDB ()
 {
-  NotImplemented();
+  mServer = GetBoxString(serverBox);
+  mPicname = GetBoxString(picnameBox);
+  SatPicList::Instance()->SetServer(mServer);
+  SatPicList::Instance()->SetFilename(mPicname);
+  SatPicList::Instance()->SetMethod(mMeth);
+  SatPicList::Instance()->Ditch();
+  SatPicList::Instance()->LoadFromDB();
+  DoWindFwd(0,true);
+  DoStepFwd();
+  update();
 }
 
 void
 ControlPanel::DoSwitchPicname ()
 {
-  NotImplemented();
+  mPicname = "?";
+  QString newval = picnameBox->toPlainText();
+  QByteArray bytes = newval.toLatin1();
+  mPicname = string(bytes.data());
+  SatPicList::Instance()->SetFilename(mPicname);
+  SatPicList::Instance()->Ditch();
+  SatPicList::Instance()->LoadFromDB();
+  DoWindFwd(0,true);
+  DoStepFwd();
+  update();
 }
 
 string
@@ -356,6 +386,10 @@ ControlPanel::SetConMeth (string cm)
   webConnButton->setDown(is_web);
   directConnButton->setDown(is_dir);
   mConMeth = cm;
+  mMeth = DBConnection::Con_WebSock;    // safer
+  if (is_dir) {
+    mMeth = DBConnection::Con_MySqlCPP;
+  }
   return mConMeth;
 }
 
@@ -363,6 +397,29 @@ string
 ControlPanel::ConMeth ()
 {
   return mConMeth;
+}
+
+void
+ControlPanel::ToggledConn (bool is_checked)
+{
+  cout << " toggled comething " << endl;
+  DBConnection::Method newMeth(DBConnection::Con_WebSock);
+  if (directConnButton->isChecked()) {
+    newMeth = DBConnection::Con_MySqlCPP;
+    webConnButton->setChecked(false);
+  } else if (webConnButton->isChecked()) {
+    newMeth = DBConnection::Con_WebSock;
+    directConnButton->setChecked(false);
+  }
+  mMeth = newMeth;
+  if (mMeth == DBConnection::Con_WebSock) {
+    mConMeth = "web";
+  }
+  if (mMeth == DBConnection::Con_MySqlCPP) {
+    mConMeth = "dir";
+  }
+  cout << " I think it's " << mConMeth << " now " << endl;
+  update();
 }
 
 }

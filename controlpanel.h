@@ -14,6 +14,7 @@
 
 #include "ui_control.h"
 #include "imagewin.h"
+#include "dbconnect.h"
 #include <QApplication>
 #include <string>
 
@@ -38,7 +39,22 @@ Q_OBJECT
     void DoRunBack (int secs, bool allway=false);
     void DoRunFwd  (int secs, bool allway=false);
     void DoWindBack (int secs, bool allway=false);
-    void DoWindFwd (int secs, bool allway=false);
+    void DoWindFwd (int secs, bool allway=false);   
+
+    string Server();
+    string SetServer (string sv);
+    string Picname();
+    string SetPicname (string pn);
+    string ConMeth();
+    string SetConMeth (string cm);
+    string IdentTag();
+    string SetIdentTag (string id);
+    string Date();
+    string SetDate (string dt);
+
+    void ShowStatus ();
+
+    void Wait (double secs);
 
   public slots:
 
@@ -72,27 +88,15 @@ Q_OBJECT
     void DoWindFwdWeek ()  { DoWindFwd (7*24*3600); }
     void DoWindFwdDay ()   { DoWindFwd (24*3600);   }
     void DoWindFwdHours () { DoWindFwd (6*3600);   }
-   
 
-    string Server();
-    string SetServer (string sv);
-    string Picname();
-    string SetPicname (string pn);
-    string ConMeth();
-    string SetConMeth (string cm);
-    string IdentTag();
-    string SetIdentTag (string id);
-    string Date();
-    string SetDate (string dt);
+    void ToggledConn(bool is_checked);
 
-    void ShowStatus ();
-
-    void Wait (double secs);
 
   private:
 
     void StartImage ();
     void ShowPic (SatPicBuf *pBuf);
+    string GetBoxString (QPlainTextEdit * pBox);
 
     unsigned long int EndTime (long int diff);
 
@@ -105,6 +109,7 @@ Q_OBJECT
     string                 mConMeth;
     string                 mDate;
     string                 mIdFancy;
+    DBConnection::Method   mMeth;
 
   };
 

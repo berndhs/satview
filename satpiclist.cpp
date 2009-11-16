@@ -184,6 +184,7 @@ namespace satview {
 	std::cout << " no images " << std::endl;
 	LoadDummy();
     }
+    Rewind();
     return haveDB;
   }
 
