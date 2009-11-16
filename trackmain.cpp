@@ -122,8 +122,7 @@ main (int argc, char*argv[])
       SatPicList::Instance()->Start();
       Control.DoWindFwd(0,true);
       Control.show();
-      //ImageWin->show();
-      Control.ShowStatus();
+      App.processEvents();
       App.exec();
       return 42;
   } catch (berndsutil::Fault &F) {

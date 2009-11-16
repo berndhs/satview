@@ -59,7 +59,7 @@ namespace satview {
 #endif
       const int datelen = 256;
       char plain[datelen+sizeof(void*)];
-      int len = strftime (plain, datelen,"%c", &theTime);
+      int len = strftime (plain, datelen,"%Y-%m-%d %T", &theTime);
       plain[len] = 0;
       pDC->SetDate(plain);
       string identstring = (as_secs + string (" - ")

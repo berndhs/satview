@@ -104,6 +104,7 @@ Q_OBJECT
     string                 mServer;
     string                 mConMeth;
     string                 mDate;
+    string                 mIdFancy;
 
   };
 

@@ -15,6 +15,7 @@
 #include <iostream>
 #include <QMessageBox>
 #include <QTimer>
+#include <QString>
 #include <unistd.h>
 #include "satpiclist.h"
 #include "satpicbuf.h"
@@ -31,6 +32,8 @@ ControlPanel::ControlPanel (QApplication *pA)
 
     pDisplay = new ImageWin(this);
 
+    idtagBox->setReadOnly(true);
+    dateBox->setReadOnly(true);
     connect (newNameButton, SIGNAL(clicked()), this, SLOT(DoSwitchPicname()));
     connect (quitButton, SIGNAL(clicked()), this, SLOT(quit()));
     connect (runBackButton, SIGNAL(clicked()), this, SLOT(DoRunBack()));
@@ -129,7 +132,7 @@ ControlPanel::ShowPic (SatPicBuf * pBuf)
 #endif
       const int datelen = 256;
       char plain[datelen+sizeof(void*)];
-      int len = strftime (plain, datelen,"%c", &theTime);
+      int len = strftime (plain, datelen,"%Y-%m-%d %T", &theTime);
       plain[len] = 0;
       SetDate (plain);
       SetPicname (pBuf->PicName().c_str());
@@ -241,6 +244,9 @@ ControlPanel::DoWindBack (int secs, bool allway)
   if (pBuf) {
     ShowPic(pBuf);
   }
+  if (allway) {
+    SatPicList::Instance()->Rewind();
+  }
 }
 
 void
@@ -253,6 +259,9 @@ ControlPanel::DoWindFwd (int secs, bool allway)
   }
   if (pBuf) {
     ShowPic(pBuf);
+  }
+  if (allway) {
+    SatPicList::Instance()->ToEnd();
   }
 }
 
@@ -283,6 +292,9 @@ ControlPanel::Server ()
 string
 ControlPanel::SetServer (string sv)
 {
+  QString newname(sv.c_str());
+  serverBox->clear();
+  serverBox->setPlainText(newname);
   mServer = sv;
   return mServer;
 }
@@ -296,6 +308,9 @@ ControlPanel::Picname ()
 string
 ControlPanel::SetPicname (string pn)
 {
+  QString newname(pn.c_str());
+  picnameBox->clear();
+  picnameBox->setPlainText(newname);
   mPicname = pn;
   return mPicname;
 }
@@ -303,13 +318,18 @@ ControlPanel::SetPicname (string pn)
 string
 ControlPanel::IdentTag ()
 {
-  return string("0");
+  return mIdFancy;
 }
 
 string
 ControlPanel::SetIdentTag (string id)
 {
-  return string("0");
+  /** should update the idtagBox field */
+  idtagBox->clear();
+  QString newtext (id.c_str());
+  idtagBox->setPlainText(newtext);
+  mIdFancy = id;
+  return mIdFancy;
 }
 
 string
@@ -321,6 +341,9 @@ ControlPanel::Date ()
 string
 ControlPanel::SetDate (string dt)
 {
+  QString newdate(dt.c_str());
+  dateBox->clear();
+  dateBox->setPlainText(newdate);
   mDate = dt;
   return mDate;
 }
@@ -328,6 +351,10 @@ ControlPanel::SetDate (string dt)
 string
 ControlPanel::SetConMeth (string cm)
 {
+  bool is_web = (cm == "web");
+  bool is_dir = (cm == "dir");
+  webConnButton->setDown(is_web);
+  directConnButton->setDown(is_dir);
   mConMeth = cm;
   return mConMeth;
 }
