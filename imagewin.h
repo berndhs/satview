@@ -14,13 +14,22 @@
 #include "ui_imagewin.h"
 #include "satpicbuf.h"
 #include <QImage>
-
+#include <QPoint>
+#include <QLine>
+#include <QMouseEvent>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QLabel>
+#include <deque>
 
 namespace satview {
 
   class ControlPanel;
 
-class ImageWin : public QWidget, public Ui_ImageBox {
+  typedef deque<QPoint> PointList;
+  typedef deque<QLine>  LineList;
+
+class ImageWin : public QLabel, public Ui_ImageBox {
 
 Q_OBJECT
 
@@ -31,15 +40,29 @@ Q_OBJECT
 
     void ShowImage (QImage *pImg);
 
+    void mousePressEvent (QMouseEvent *pME);
+    void paintEvent      (QPaintEvent *pPE);
+    void ClearTrack      ();
+
+
   public slots:
 
     void quit ();
+    void update ();
 
     void NotImplemented ();
 
   private:
 
-    ControlPanel  *pControl;
+    ControlPanel *pControl;
+    QPoint        clickedSpot;
+    PointList     oldPoints;
+    LineList      oldLines;
+    QPoint        lastSpot;
+    int           hasclicked;
+    QPainter     *painter;
+    int           maxOldPoints;
+    QTimer       *updateTimer;
 
 
 };

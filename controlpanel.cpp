@@ -62,6 +62,8 @@ ControlPanel::ControlPanel (QApplication *pA)
     connect (webConnButton, SIGNAL(toggled(bool)), 
                   this, SLOT(ToggledConn(bool)));
 
+    connect (clearTrackButton, SIGNAL(clicked()), this, SLOT(ClearTrack()));
+
 }
 
 ControlPanel::~ControlPanel()
@@ -152,6 +154,14 @@ ControlPanel::ShowPic (SatPicBuf * pBuf)
     }
   }
 
+}
+
+void
+ControlPanel::ClearTrack ()
+{
+  if (pDisplay) {
+    pDisplay->ClearTrack();
+  }
 }
 
 void

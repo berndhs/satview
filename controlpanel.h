@@ -69,6 +69,8 @@ Q_OBJECT
     void DoStepFwd ();
     void DoStepBack ();
 
+    void ClearTrack ();
+
     void DoRunBack ()      { DoRunBack (0,true); }
     void DoRunBackWeek ()  { DoRunBack (7*24*3600); }
     void DoRunBackDay ()   { DoRunBack (24*3600);   }
