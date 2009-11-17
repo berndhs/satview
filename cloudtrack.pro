@@ -25,7 +25,6 @@ SOURCES += satpiclist.cpp satpicbuf.cpp \
 	dbconnect.cpp version.cpp blob-image.cpp \
 	imagewin.cpp \
 	trackmain.cpp \
-	paintlabel.cpp \
 	controlpanel.cpp 
 
 
@@ -34,6 +33,5 @@ HEADERS += satpicbuf.h satpiclist.h dbconnect.h  \
 	controlpanel.h \
 	trackmain.h \
 	imagewin.h \
-	paintlabel.h \
 	berndsutil.h fault.h 
 
