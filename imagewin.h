@@ -13,6 +13,9 @@
 
 #include "ui_imagewin.h"
 #include "satpicbuf.h"
+#include "frametypes.h"
+#include "shapeframe.h"
+
 #include <QImage>
 #include <QPoint>
 #include <QLine>
@@ -26,8 +29,6 @@ namespace satview {
 
   class ControlPanel;
 
-  typedef deque<QPoint> PointList;
-  typedef deque<QLine>  LineList;
 
 class ImageWin : public QLabel, public Ui_ImageBox {
 
@@ -38,11 +39,12 @@ Q_OBJECT
     ImageWin (ControlPanel * pControl);
     ~ImageWin();
 
-    void ShowImage (QImage *pImg);
+    void SetImage (QImage *pImg, FrameTag tag);
 
     void mousePressEvent (QMouseEvent *pME);
     void paintEvent      (QPaintEvent *pPE);
     void ClearTrack      ();
+    void FinishPolygon();
 
 
   public slots:
@@ -50,11 +52,22 @@ Q_OBJECT
     void quit ();
     void update ();
 
+
     void NotImplemented ();
 
   private:
 
     ControlPanel *pControl;
+
+    QImage       *pCurImg;
+    FrameTag      curTag;
+
+    ShapeFrame    currentFrame;
+
+    ShapeList     shapes;
+
+    unsigned int  polyCount;
+
     QPoint        clickedSpot;
     PointList     oldPoints;
     LineList      oldLines;
@@ -62,6 +75,7 @@ Q_OBJECT
     int           hasclicked;
     QPainter     *painter;
     int           maxOldPoints;
+
     QTimer       *updateTimer;
 
 

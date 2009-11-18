@@ -70,6 +70,7 @@ Q_OBJECT
     void DoStepBack ();
 
     void ClearTrack ();
+    void FinishPolygon ();
 
     void DoRunBack ()      { DoRunBack (0,true); }
     void DoRunBackWeek ()  { DoRunBack (7*24*3600); }

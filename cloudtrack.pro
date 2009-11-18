@@ -20,11 +20,14 @@ INCLUDEPATH += /usr/local/include dcmop/
 LIBPATH += /usr/local/lib
 LIBS += -lmysqlcppconn -lccgnu2
 
-FORMS += control.ui imagewin.ui
+FORMS += control.ui imagewin.ui getstring.ui
 SOURCES += satpiclist.cpp satpicbuf.cpp \
 	dbconnect.cpp version.cpp blob-image.cpp \
 	imagewin.cpp \
 	trackmain.cpp \
+	textbox.cpp \
+	shapeframe.cpp \
+	frametypes.cpp \
 	controlpanel.cpp 
 
 
@@ -33,5 +36,8 @@ HEADERS += satpicbuf.h satpiclist.h dbconnect.h  \
 	controlpanel.h \
 	trackmain.h \
 	imagewin.h \
+	frametypes.h \
+	shapeframe.h \
+	textbox.h \
 	berndsutil.h fault.h 
 

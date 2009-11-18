@@ -1,5 +1,6 @@
 #include "imagewin.h"
 #include "controlpanel.h"
+#include "textbox.h"
 #include <string>
 #include <iostream>
 #include <QMessageBox>
@@ -23,9 +24,10 @@ namespace satview {
 
   ImageWin::ImageWin (ControlPanel * pCon)
     :pControl(0),
+     polyCount(0),
      hasclicked(0),
      painter(0),
-     maxOldPoints(10)
+     maxOldPoints(100)
   {
     pControl = pCon;
     setupUi(this);
@@ -66,8 +68,11 @@ namespace satview {
   }
 
   void
-  ImageWin::ShowImage (QImage * pImg)
+  ImageWin::SetImage (QImage * pImg, FrameTag tag)
   {
+    pCurImg = pImg;
+    curTag  = tag;
+    currentFrame.SetTag(curTag);
     QLabel::setPixmap(QPixmap::fromImage(*pImg));
     QLabel::update();
     QLabel::show();
@@ -99,6 +104,41 @@ namespace satview {
     hasclicked = 0;
     oldPoints.clear();
     oldLines.clear();
+  }
+
+   
+  void
+  ImageWin::FinishPolygon ()
+  {
+    if (oldPoints.size() > 1) {
+      QLine newline(clickedSpot, oldPoints.back());
+      oldLines.push_front(newline);
+      polyCount++;
+      ShapeTag sTag(polyCount);
+      TextBox  getTagName(this);
+      QString msg("Tag for polygon ");
+      QString num(sTag.String().c_str());
+      msg.append(num);
+      getTagName.SetLabel(msg);
+      getTagName.SetDefault (QString(sTag.String().c_str()));
+      getTagName.exec();
+      QString thename = getTagName.GetText();
+      QByteArray bytes=thename.toLatin1();
+      
+      Polygon poly;
+      poly.SetTag(sTag);
+      poly.SetName(string(bytes.data()));
+      PointList::iterator pit = oldPoints.begin();
+      while (pit != oldPoints.end()) {
+        poly.AddPoint(*pit);
+        pit++;
+      }
+      poly.AddPoint(clickedSpot);
+      shapes.push_front(poly);
+      oldPoints.clear();
+      oldLines.clear();
+      // wait until paintevent to draw this thing
+    }
   }
 
   void
@@ -138,6 +178,12 @@ namespace satview {
         painter->restore();
         lit++;
       }
+    }
+    // draw stored shapes
+    ShapeList::iterator oldshapes = shapes.begin();
+    while (oldshapes != shapes.end()) {
+      oldshapes->Draw(this,painter);
+      oldshapes++;
     }
     painter->end();
   }

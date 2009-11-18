@@ -63,6 +63,9 @@ ControlPanel::ControlPanel (QApplication *pA)
                   this, SLOT(ToggledConn(bool)));
 
     connect (clearTrackButton, SIGNAL(clicked()), this, SLOT(ClearTrack()));
+    connect (finishPolygonButton, SIGNAL(clicked()),
+	     this, SLOT(FinishPolygon()));
+    connect (saveFrameButton, SIGNAL(clicked()), this, SLOT(NotImplemented()));
 
 }
 
@@ -118,7 +121,7 @@ ControlPanel::ShowPic (SatPicBuf * pBuf)
     if (pI) {
       
       if (pDisplay) {
-        pDisplay->ShowImage (pI);
+        pDisplay->SetImage (pI,FrameTag(pBuf->Ident()));
         pDisplay->update();
       }
      
@@ -161,6 +164,14 @@ ControlPanel::ClearTrack ()
 {
   if (pDisplay) {
     pDisplay->ClearTrack();
+  }
+}
+
+void
+ControlPanel::FinishPolygon()
+{
+  if (pDisplay) {
+    pDisplay->FinishPolygon();
   }
 }
 
@@ -418,7 +429,6 @@ ControlPanel::ConMeth ()
 void
 ControlPanel::ToggledConn (bool is_checked)
 {
-  cout << " toggled something " << endl;
   DBConnection::Method newMeth(DBConnection::Con_WebSock);
   if (directConnButton->isChecked()) {
     newMeth = DBConnection::Con_MySqlCPP;

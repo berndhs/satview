@@ -1336,7 +1336,7 @@ Name</string>
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>230</y>
+     <y>228</y>
      <width>341</width>
      <height>51</height>
     </rect>
@@ -1347,15 +1347,42 @@ Name</string>
    <widget class="QPushButton" name="clearTrackButton">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>2</x>
       <y>20</y>
       <width>61</width>
-      <height>31</height>
+      <height>28</height>
      </rect>
     </property>
     <property name="text">
-     <string>Clear 
-Track</string>
+     <string>Clear</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="finishPolygonButton">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>12</y>
+      <width>61</width>
+      <height>36</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Finish
+ Polygon</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="saveFrameButton">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>10</y>
+      <width>61</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Save 
+Frame</string>
     </property>
    </widget>
   </widget>
