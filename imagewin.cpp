@@ -5,7 +5,7 @@
 #include <iostream>
 #include <QMessageBox>
 #include <QTimer>
-
+#include <QMouseEvent>
 
 //
 //  Copyright (C) 2009 - Bernd H Stramm 
@@ -81,20 +81,31 @@ namespace satview {
   void
   ImageWin::mousePressEvent (QMouseEvent *pME)
   {
-    if (hasclicked > 0) {
-      oldPoints.push_front(clickedSpot);
-      if (oldPoints.size() > maxOldPoints) {
-        oldPoints.pop_back();
-      }
-    }
-    clickedSpot = pME->pos();
-    hasclicked ++;
-    if (oldPoints.size() > 0) {
-      QLine newSeg (oldPoints.front(), clickedSpot);
-      oldLines.push_front (newSeg);
-      if (oldLines.size() > maxOldPoints ) {
-        oldLines.pop_back();
-      }
+    Qt::MouseButton button = pME->button();
+    switch (button) {
+    case  Qt::LeftButton: 
+	if (hasclicked > 0) {
+	  oldPoints.push_front(clickedSpot);
+	  if (oldPoints.size() > maxOldPoints) {
+	    oldPoints.pop_back();
+	  }
+	}
+	clickedSpot = pME->pos();
+	hasclicked ++;
+	if (oldPoints.size() > 0) {
+	  QLine newSeg (oldPoints.front(), clickedSpot);
+	  oldLines.push_front (newSeg);
+	  if (oldLines.size() > maxOldPoints ) {
+	    oldLines.pop_back();
+	  }
+	}
+        break;
+    case Qt::RightButton:
+      FinishPolygon();
+      break;
+    default:
+      // ignore other buttons
+      break;
     }
   }
 
@@ -104,6 +115,13 @@ namespace satview {
     hasclicked = 0;
     oldPoints.clear();
     oldLines.clear();
+  }
+
+  void
+  ImageWin::ClearFrame ()
+  {
+    ClearTrack();
+    shapes.clear();
   }
 
    
@@ -135,8 +153,7 @@ namespace satview {
       }
       poly.AddPoint(clickedSpot);
       shapes.push_front(poly);
-      oldPoints.clear();
-      oldLines.clear();
+      ClearTrack();
       // wait until paintevent to draw this thing
     }
   }

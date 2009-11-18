@@ -35,6 +35,11 @@ ControlPanel::ControlPanel (QApplication *pA)
 
     idtagBox->setReadOnly(true);
     dateBox->setReadOnly(true);
+    mMethWebLabel = QString("Web");
+    mMethDirLabel = QString("Direct");
+    SetIFLabel();
+    staticDraw->setChecked(true);
+    staticDraw->setEnabled(false);
     connect (newNameButton, SIGNAL(clicked()), this, SLOT(DoSwitchPicname()));
     connect (quitButton, SIGNAL(clicked()), this, SLOT(quit()));
     connect (runBackButton, SIGNAL(clicked()), this, SLOT(DoRunBack()));
@@ -57,12 +62,11 @@ ControlPanel::ControlPanel (QApplication *pA)
     connect (windFwdHoursButton, SIGNAL(clicked()), this, SLOT(DoWindFwdHours()));
     connect (connectServerButton, SIGNAL(clicked()), this, SLOT(ReloadDB()));
     connect (reloadServerButton, SIGNAL(clicked()), this, SLOT(ReloadDB()));
-    connect (directConnButton, SIGNAL(toggled(bool)), 
-                  this, SLOT(ToggledConn(bool)));
-    connect (webConnButton, SIGNAL(toggled(bool)), 
-                  this, SLOT(ToggledConn(bool)));
+    connect (changeInterfaceButton, SIGNAL(clicked()),
+	     this, SLOT(ToggleConn()));
 
     connect (clearTrackButton, SIGNAL(clicked()), this, SLOT(ClearTrack()));
+    connect (clearFrameButton, SIGNAL(clicked()), this, SLOT(ClearFrame()));
     connect (finishPolygonButton, SIGNAL(clicked()),
 	     this, SLOT(FinishPolygon()));
     connect (saveFrameButton, SIGNAL(clicked()), this, SLOT(NotImplemented()));
@@ -84,6 +88,12 @@ ControlPanel::quit()
   if (pApp) {
     pApp->quit();
   }
+}
+
+void
+ControlPanel::update()
+{
+  this->QDialog::update();
 }
 
 void
@@ -164,6 +174,14 @@ ControlPanel::ClearTrack ()
 {
   if (pDisplay) {
     pDisplay->ClearTrack();
+  }
+}
+
+void
+ControlPanel::ClearFrame ()
+{
+  if (pDisplay) {
+    pDisplay->ClearFrame();
   }
 }
 
@@ -408,15 +426,13 @@ ControlPanel::SetDate (string dt)
 string
 ControlPanel::SetConMeth (string cm)
 {
-  bool is_web = (cm == "web");
   bool is_dir = (cm == "dir");
-  webConnButton->setDown(is_web);
-  directConnButton->setDown(is_dir);
   mConMeth = cm;
   mMeth = DBConnection::Con_WebSock;    // safer
   if (is_dir) {
     mMeth = DBConnection::Con_MySqlCPP;
   }
+  SetIFLabel();
   return mConMeth;
 }
 
@@ -427,24 +443,37 @@ ControlPanel::ConMeth ()
 }
 
 void
-ControlPanel::ToggledConn (bool is_checked)
+ControlPanel::SetIFLabel ()
 {
-  DBConnection::Method newMeth(DBConnection::Con_WebSock);
-  if (directConnButton->isChecked()) {
-    newMeth = DBConnection::Con_MySqlCPP;
-    webConnButton->setChecked(false);
-  } else if (webConnButton->isChecked()) {
-    newMeth = DBConnection::Con_WebSock;
-    directConnButton->setChecked(false);
+  QString newlabel;
+  switch (mMeth) {
+  case DBConnection::Con_WebSock:
+    newlabel = mMethWebLabel;
+    break;
+  case DBConnection::Con_MySqlCPP:
+    newlabel = mMethDirLabel;
+    break;
+  default:
+    newlabel = QString("???");
   }
-  mMeth = newMeth;
-  if (mMeth == DBConnection::Con_WebSock) {
-    mConMeth = "web";
+  interfaceLabel->setText(newlabel);
+}
+
+void
+ControlPanel::ToggleConn ()
+{
+  switch (mMeth) {
+  case DBConnection::Con_WebSock:
+    mMeth = DBConnection::Con_MySqlCPP;
+    break;
+  case DBConnection::Con_MySqlCPP:
+  default:
+    mMeth = DBConnection::Con_WebSock;
+    break;
   }
-  if (mMeth == DBConnection::Con_MySqlCPP) {
-    mConMeth = "dir";
-  }
-  cout << " I think it's " << mConMeth << " now " << endl;
+  SetIFLabel();
+  QByteArray bytes = interfaceLabel->text().toLatin1();
+  mConMeth = string(bytes.data());
   update();
 }
 

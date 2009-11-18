@@ -59,6 +59,7 @@ Q_OBJECT
   public slots:
 
     void NotImplemented ();
+    void update();
     void quit ();
     void show();
 
@@ -70,6 +71,7 @@ Q_OBJECT
     void DoStepBack ();
 
     void ClearTrack ();
+    void ClearFrame ();
     void FinishPolygon ();
 
     void DoRunBack ()      { DoRunBack (0,true); }
@@ -92,7 +94,7 @@ Q_OBJECT
     void DoWindFwdDay ()   { DoWindFwd (24*3600);   }
     void DoWindFwdHours () { DoWindFwd (6*3600);   }
 
-    void ToggledConn(bool is_checked);
+    void ToggleConn();
 
 
   private:
@@ -100,6 +102,7 @@ Q_OBJECT
     void StartImage ();
     void ShowPic (SatPicBuf *pBuf);
     string GetBoxString (QPlainTextEdit * pBox);
+    void SetIFLabel();
 
     unsigned long int EndTime (long int diff);
 
@@ -110,6 +113,8 @@ Q_OBJECT
     string                 mPicname;
     string                 mServer;
     string                 mConMeth;
+    QString                mMethWebLabel;
+    QString                mMethDirLabel;
     string                 mDate;
     string                 mIdFancy;
     DBConnection::Method   mMeth;

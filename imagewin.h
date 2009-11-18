@@ -44,6 +44,7 @@ Q_OBJECT
     void mousePressEvent (QMouseEvent *pME);
     void paintEvent      (QPaintEvent *pPE);
     void ClearTrack      ();
+    void ClearFrame      ();
     void FinishPolygon();
 
 
@@ -74,7 +75,7 @@ Q_OBJECT
     QPoint        lastSpot;
     int           hasclicked;
     QPainter     *painter;
-    int           maxOldPoints;
+    unsigned int  maxOldPoints;
 
     QTimer       *updateTimer;
 
