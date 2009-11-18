@@ -1,6 +1,7 @@
 *.o
 *.gz
 *~
+moc_*.cpp
 dcomp/
 doc_html/
 doc_latex/
