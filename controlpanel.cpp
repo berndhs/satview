@@ -37,11 +37,28 @@ ControlPanel::ControlPanel (QApplication *pA)
     dateBox->setReadOnly(true);
     mMethWebLabel = QString("Web");
     mMethDirLabel = QString("Direct");
+    mStateStoppedText = "stopped";
+    mStateRunningText = "running";
     SetIFLabel();
     staticDraw->setChecked(true);
     staticDraw->setEnabled(false);
+
+    mRunState.timelimit = 0;
+    mRunState.allway = false;
+    mRunState.show   = true;
+    mRunState.backwards = false;
+    mRunState.stopped = true;
+    runStatusLabel->setText (mStateStoppedText);
+    showTimeDelay = 100;
+    connect (&showTimer, SIGNAL(timeout()), this, SLOT(DoShowMove()));
+    showTimer.start(showTimeDelay);
+
     connect (newNameButton, SIGNAL(clicked()), this, SLOT(DoSwitchPicname()));
     connect (quitButton, SIGNAL(clicked()), this, SLOT(quit()));
+    
+    connect (stopButton, SIGNAL(clicked()), this, SLOT(DoStopMoving()));
+    stopButton->setEnabled(false);
+
     connect (runBackButton, SIGNAL(clicked()), this, SLOT(DoRunBack()));
     connect (backWeekButton, SIGNAL(clicked()), this, SLOT(DoRunBackWeek()));
     connect (backDayButton, SIGNAL(clicked()), this, SLOT(DoRunBackDay()));
@@ -60,6 +77,7 @@ ControlPanel::ControlPanel (QApplication *pA)
     connect (windFwdWeekButton, SIGNAL(clicked()), this, SLOT(DoWindFwdWeek()));
     connect (windFwdDayButton, SIGNAL(clicked()), this, SLOT(DoWindFwdDay()));
     connect (windFwdHoursButton, SIGNAL(clicked()), this, SLOT(DoWindFwdHours()));
+
     connect (connectServerButton, SIGNAL(clicked()), this, SLOT(ReloadDB()));
     connect (reloadServerButton, SIGNAL(clicked()), this, SLOT(ReloadDB()));
     connect (changeInterfaceButton, SIGNAL(clicked()),
@@ -81,6 +99,7 @@ ControlPanel::~ControlPanel()
 void
 ControlPanel::quit()
 {
+  showTimer.stop();
   if (pDisplay) {
     pDisplay->quit();
   }
@@ -227,6 +246,8 @@ ControlPanel::EndTime(long int diff)
 void
 ControlPanel::DoStepFwd ()
 { 
+  mRunState.stopped = true;
+  stopButton->setEnabled(false);
   SatPicList::Instance()->Skip(1);
   SatPicBuf *pBuf = SatPicList::Instance()->Current();
   if (pBuf) {
@@ -237,6 +258,8 @@ ControlPanel::DoStepFwd ()
 void
 ControlPanel::DoStepBack ()
 { 
+  mRunState.stopped = true;
+  stopButton->setEnabled(false);
   SatPicList::Instance()->Skip(-1);
   SatPicBuf *pBuf = SatPicList::Instance()->Current();
   if (pBuf) {
@@ -245,64 +268,145 @@ ControlPanel::DoStepBack ()
 }
 
 
+void
+ControlPanel::DoWindBack (int secs, bool allway)
+{
+  unsigned long int to = EndTime ( - secs);
+  SatPicBuf *pBuf = SatPicList::Instance()->PostDecr();
+  mRunState.timelimit = to;
+  mRunState.allway = allway;
+  mRunState.show = false;
+  mRunState.stopped = false;
+  mRunState.backwards = true;
+  mRunState.pBuf = pBuf;
+  stopButton->setEnabled(true);
+}
+
 
 void
 ControlPanel::DoRunBack (int secs, bool allway)
 {
   unsigned long int to = EndTime ( - secs);
   SatPicBuf *pBuf = SatPicList::Instance()->PostDecr();
-  while (pBuf && (allway || (pBuf->Ident() >= to))) {
-    ShowPic(pBuf);
-    pBuf = SatPicList::Instance()->PostDecr();
-  }
-  if (!pBuf) { // fell off end
-    DoWindBack (0, true);
-  }
-}
-
-void
-ControlPanel::DoRunFwd (int secs, bool allway)
-{
-  unsigned long int to = EndTime (secs);
-  SatPicBuf *pBuf = SatPicList::Instance()->PostIncr();
-  while (pBuf && (allway || (pBuf->Ident() <= to))) {
-    ShowPic(pBuf);
-    pBuf = SatPicList::Instance()->PostIncr();
-  }
-  if (!pBuf) { // fell off end
-    DoWindFwd (0, true);
-  }
-}
-
-void
-ControlPanel::DoWindBack (int secs, bool allway)
-{
-  unsigned long int to = EndTime ( - secs);
-  SatPicBuf *pBuf = SatPicList::Instance()->PostDecr();
-  while (pBuf && (allway || (pBuf->Ident() >= to))) {
-    pBuf = SatPicList::Instance()->PostDecr();
-  }
   if (pBuf) {
     ShowPic(pBuf);
   }
-  if (allway) {
-    SatPicList::Instance()->Rewind();
-  }
+  mRunState.timelimit = to;
+  mRunState.allway = allway;
+  mRunState.show = true;
+  mRunState.stopped = false;
+  mRunState.backwards = true;
+  mRunState.pBuf = pBuf;
+  stopButton->setEnabled(true);
 }
 
 void
 ControlPanel::DoWindFwd (int secs, bool allway)
 {
-  unsigned long int to = EndTime ( - secs);
+  unsigned long int to = EndTime (+ secs);
   SatPicBuf *pBuf = SatPicList::Instance()->PostIncr();
-  while (pBuf && (allway || (pBuf->Ident() <= to))) {
-    pBuf = SatPicList::Instance()->PostIncr();
-  }
+  mRunState.timelimit = to;
+  mRunState.allway = allway;
+  mRunState.show = false;
+  mRunState.stopped = false;
+  mRunState.backwards = false;
+  mRunState.pBuf = pBuf;
+  stopButton->setEnabled(true);
+}
+
+
+void
+ControlPanel::DoRunFwd (int secs, bool allway)
+{
+  unsigned long int to = EndTime (+ secs);
+  SatPicBuf *pBuf = SatPicList::Instance()->PostIncr();
   if (pBuf) {
     ShowPic(pBuf);
   }
-  if (allway) {
-    SatPicList::Instance()->ToEnd();
+  mRunState.timelimit = to;
+  mRunState.allway = allway;
+  mRunState.show = true;
+  mRunState.stopped = false;
+  mRunState.backwards = false;
+  mRunState.pBuf = pBuf;
+  stopButton->setEnabled(true);
+}
+
+void
+ControlPanel::FwdSome ()
+{
+  unsigned long int to = mRunState.timelimit;
+  bool allway = mRunState.allway;
+  bool oldStopped = mRunState.stopped;
+  SatPicBuf * pBuf = mRunState.pBuf;
+  if  (pBuf && (allway || (pBuf->Ident() <= to))) {
+    pBuf = SatPicList::Instance()->PostIncr();
+    if (pBuf && mRunState.show) {
+      ShowPic(pBuf);
+    }
+    mRunState.stopped = (pBuf == 0) || !(allway || (pBuf->Ident() <= to));
+  } else { // fell off end
+    mRunState.stopped = true;
+    if (allway) {
+      SatPicList::Instance()->ToEnd();
+    }
+  }
+  if (mRunState.stopped != oldStopped) { /* if we stopped just now */
+    if (pBuf) {
+      ShowPic(pBuf);
+    }
+  }
+  stopButton->setEnabled(!mRunState.stopped);
+}
+
+void
+ControlPanel::BackSome ()
+{
+  unsigned long int to = mRunState.timelimit;
+  bool allway = mRunState.allway;
+  bool oldStopped = mRunState.stopped;
+  SatPicBuf * pBuf = mRunState.pBuf;
+  if  (pBuf && (allway || (pBuf->Ident() >= to))) {
+    pBuf = SatPicList::Instance()->PostDecr();
+    if (pBuf && mRunState.show) {
+      ShowPic(pBuf);
+    }
+    mRunState.stopped = (pBuf == 0) || !(allway || (pBuf->Ident() >= to));
+  } else { // fell off end
+    mRunState.stopped = true;
+    if (allway) {
+      SatPicList::Instance()->Rewind();
+    }
+  }
+  if (mRunState.stopped != oldStopped) { /* if we stopped just now */
+    if (pBuf) {
+      ShowPic(pBuf);
+    }
+  }
+  stopButton->setEnabled(!mRunState.stopped);
+}
+
+void
+ControlPanel::DoStopMoving ()
+{
+  mRunState.stopped = true;
+  stopButton->setEnabled(true);
+}
+
+void
+ControlPanel::DoShowMove ()
+{
+  runStatusLabel->setText (mRunState.stopped ?
+                             mStateStoppedText
+			   : mStateRunningText);
+  if (!mRunState.stopped) {
+    showTimer.stop();     /** don't want to get called twice */
+    if (mRunState.backwards) {
+      BackSome();
+    } else {
+      FwdSome();
+    }
+    showTimer.start(showTimeDelay);
   }
 }
 

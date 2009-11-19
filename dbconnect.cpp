@@ -3,7 +3,9 @@
 
 #include <string.h>
 #include <stdio.h>
+#if SATVIEW_USE_MYSQL
 #include <cppconn/prepared_statement.h>
+#endif
 
 //
 //  Copyright (C) 2009 - Bernd H Stramm 
@@ -58,10 +60,12 @@ namespace satview {
     /** @todo do something, in case they want to start on a 
      * different server
      */
+#if SATVIEW_USE_MYSQL
     if (pIndexRes) {
       delete pIndexRes;
       pIndexRes = 0;
     }
+#endif
     if (mWebResult) {
       delete mWebResult;
       mWebResult = 0;

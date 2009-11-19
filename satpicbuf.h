@@ -20,7 +20,6 @@
 
 #include <string>
 
-#include <FL/Fl_RGB_Image.h>
 #include "blob-image.h"
 
 #include "dbconnect.h"

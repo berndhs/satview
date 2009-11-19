@@ -15,13 +15,16 @@
 /** @brief Can have USE_MYSQL and any USE_xyz_SOCK at the same time,
  * but not USE_this_SOCK and USE_that_SOCK. Only one kind of SOCK.
  */
-#define SATVIEW_USE_WINSOCK 0
-/** @brief Can have USE_MYSQL and any USE_xyz_SOCK at the same time,
- * but not USE_this_SOCK and USE_that_SOCK. Only one kind of SOCK.
- */
-#define SATVIEW_USE_GNUSOCK 1
 
+#ifdef _MSC_VER
+#define SATVIEW_USE_WINSOCK 1
+#define SATVIEW_USE_GNUSOCK 0
+#define SATVIEW_USE_MYSQL 0
+#else
+#define SATVIEW_USE_WINSOCK 0
+#define SATVIEW_USE_GNUSOCK 1
 #define SATVIEW_USE_MYSQL 1
+#endif
 
 #define SATVIEW_USE_TEMPFILE 0
 

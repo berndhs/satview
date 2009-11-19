@@ -16,6 +16,7 @@
 #include "imagewin.h"
 #include "dbconnect.h"
 #include <QApplication>
+#include <QTimer>
 #include <string>
 
 using namespace std;
@@ -69,6 +70,9 @@ Q_OBJECT
 
     void DoStepFwd ();
     void DoStepBack ();
+    void DoShowMove ();
+
+    void DoStopMoving ();
 
     void ClearTrack ();
     void ClearFrame ();
@@ -99,10 +103,22 @@ Q_OBJECT
 
   private:
 
+    typedef struct {
+      unsigned long int  timelimit;
+      bool               allway;
+      bool               show;
+      bool               backwards;
+      bool               stopped;
+      SatPicBuf         *pBuf;
+    } RunState;
+
     void StartImage ();
     void ShowPic (SatPicBuf *pBuf);
     string GetBoxString (QPlainTextEdit * pBox);
-    void SetIFLabel();
+    void SetIFLabel ();
+
+    void FwdSome   ();
+    void BackSome  ();
 
     unsigned long int EndTime (long int diff);
 
@@ -110,11 +126,17 @@ Q_OBJECT
 
     ImageWin      * pDisplay;
 
+    QTimer        showTimer;
+    int           showTimeDelay;
+
+    RunState               mRunState;
     string                 mPicname;
     string                 mServer;
     string                 mConMeth;
     QString                mMethWebLabel;
     QString                mMethDirLabel;
+    QString                mStateRunningText;
+    QString                mStateStoppedText;
     string                 mDate;
     string                 mIdFancy;
     DBConnection::Method   mMeth;

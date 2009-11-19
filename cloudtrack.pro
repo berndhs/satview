@@ -18,7 +18,8 @@ DPENDPATH += .
 DISFILES += Doxyfile
 INCLUDEPATH += /usr/local/include dcmop/
 LIBPATH += /usr/local/lib
-LIBS += -lmysqlcppconn -lccgnu2
+unix:LIBS += -lmysqlcppconn -lccgnu2
+win32:LIBS += -lws2_32
 
 FORMS += control.ui imagewin.ui getstring.ui
 SOURCES += satpiclist.cpp satpicbuf.cpp \
@@ -33,6 +34,7 @@ SOURCES += satpiclist.cpp satpicbuf.cpp \
 
 HEADERS += satpicbuf.h satpiclist.h dbconnect.h  \
 	version.h satview-config.h blob-image.h sjdatasrc.h \
+	satview-defaults.h \
 	controlpanel.h \
 	trackmain.h \
 	imagewin.h \

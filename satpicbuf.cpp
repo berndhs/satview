@@ -12,7 +12,6 @@
 
 //
 
-#include "callbacks.h"
 #include "satpicbuf.h"
 #include "berndsutil.h"
 #include "dbconnect.h"
