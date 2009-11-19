@@ -17,7 +17,6 @@
 #include <QTimer>
 #include <QString>
 #include <QByteArray>
-#include <unistd.h>
 #include "satpiclist.h"
 #include "satpicbuf.h"
 
@@ -50,6 +49,7 @@ ControlPanel::ControlPanel (QApplication *pA)
     mRunState.stopped = true;
     runStatusLabel->setText (mStateStoppedText);
     showTimeDelay = 100;
+    noshowTimeDelay = 1;
     connect (&showTimer, SIGNAL(timeout()), this, SLOT(DoShowMove()));
     showTimer.start(showTimeDelay);
 
@@ -124,12 +124,6 @@ ControlPanel::show()
   QDialog::show();
 }
 
-void
-ControlPanel::Wait(double secs)
-{
-  usleep(secs * 1000 * 1000);
-}
-
 void 
 ControlPanel::ShowStatus ()
 {
@@ -169,7 +163,11 @@ ControlPanel::ShowPic (SatPicBuf * pBuf)
 #endif
       const int datelen = 256;
       char plain[datelen+sizeof(void*)];
+#ifdef _MSC_VER
+      int len = strftime (plain, datelen, "%c", &theTime);
+#else
       int len = strftime (plain, datelen,"%Y-%m-%d %T", &theTime);
+#endif
       plain[len] = 0;
       SetDate (plain);
       SetPicname (pBuf->PicName().c_str());
@@ -280,6 +278,7 @@ ControlPanel::DoWindBack (int secs, bool allway)
   mRunState.backwards = true;
   mRunState.pBuf = pBuf;
   stopButton->setEnabled(true);
+  showTimer.setInterval(noshowTimeDelay);
 }
 
 
@@ -298,6 +297,7 @@ ControlPanel::DoRunBack (int secs, bool allway)
   mRunState.backwards = true;
   mRunState.pBuf = pBuf;
   stopButton->setEnabled(true);
+  showTimer.setInterval(showTimeDelay);
 }
 
 void
@@ -312,6 +312,7 @@ ControlPanel::DoWindFwd (int secs, bool allway)
   mRunState.backwards = false;
   mRunState.pBuf = pBuf;
   stopButton->setEnabled(true);
+  showTimer.setInterval(noshowTimeDelay);
 }
 
 
@@ -330,6 +331,7 @@ ControlPanel::DoRunFwd (int secs, bool allway)
   mRunState.backwards = false;
   mRunState.pBuf = pBuf;
   stopButton->setEnabled(true);
+  showTimer.setInterval(showTimeDelay);
 }
 
 void
@@ -355,6 +357,7 @@ ControlPanel::FwdSome ()
     if (pBuf) {
       ShowPic(pBuf);
     }
+    showTimer.setInterval(showTimeDelay);
   }
   stopButton->setEnabled(!mRunState.stopped);
 }
@@ -382,6 +385,7 @@ ControlPanel::BackSome ()
     if (pBuf) {
       ShowPic(pBuf);
     }
+    showTimer.setInterval(showTimeDelay);
   }
   stopButton->setEnabled(!mRunState.stopped);
 }

@@ -15,7 +15,9 @@
 #include "satpicbuf.h"
 #include "berndsutil.h"
 #include "dbconnect.h"
+#ifdef _MSC_VER
 #include <unistd.h>
+#endif
 
 
 #include "blob-image.h"

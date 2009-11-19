@@ -55,7 +55,6 @@ Q_OBJECT
 
     void ShowStatus ();
 
-    void Wait (double secs);
 
   public slots:
 
@@ -116,6 +115,7 @@ Q_OBJECT
     void ShowPic (SatPicBuf *pBuf);
     string GetBoxString (QPlainTextEdit * pBox);
     void SetIFLabel ();
+   
 
     void FwdSome   ();
     void BackSome  ();
@@ -128,6 +128,7 @@ Q_OBJECT
 
     QTimer        showTimer;
     int           showTimeDelay;
+    int           noshowTimeDelay;
 
     RunState               mRunState;
     string                 mPicname;

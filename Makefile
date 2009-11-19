@@ -23,23 +23,30 @@ QMAKE = qmake-qt4
 PROJFILE = cloudtrack.pro
 
 all: 
-	@echo "making qt stuff"; make Make.qt
+	@echo "making qt stuff"; make Make.cloud
 	@echo "making target"; make realtarget
+	@echo "making copydb"; make copydb
 
 realtarget:
-	@echo "using Make.qt to make target"; make -f Make.qt all
+	@echo "using Make.cloud to make target"; make -f Make.cloud all
+
+copydb:
+	make -f Make.copydb
 
 clean:
-	make -f Make.qt clean
+	make -f Make.cloud clean
 
 dist:
-	make -f Make.qt dist
+	make -f Make.cloud dist
 
-Make.qt: $(PROJFILE)
-	$(QMAKE) -o Make.qt $(PROJFILE)
+Make.cloud: $(PROJFILE)
+	$(QMAKE) -o Make.cloud $(PROJFILE)
+
+Make.copydb: copydb.pro
+	$(QMAKE) copydb.pro
 
 qt:	
-	make Make.qt
+	make Make.cloud
 
 docu:
 	doxygen
