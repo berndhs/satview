@@ -22,6 +22,47 @@ TARGET = cloudtrack
 QMAKE = qmake-qt4
 PROJFILE = cloudtrack.pro
 
+ALLSRC = \
+blob-image.cpp \
+controlpanel.cpp \
+copydb.cpp \
+dbconnect.cpp \
+frametypes.cpp \
+imagewin.cpp \
+satpicbuf.cpp \
+satpiclist.cpp \
+shapeframe.cpp \
+sjdatasrc.cpp \
+textbox.cpp \
+trackmain.cpp \
+version.cpp 
+
+ALLHDR = \
+berndsutil.h \
+blob-image.h \
+controlpanel.h \
+dbconnect.h \
+fault.h \
+frametypes.h \
+imagewin.h \
+satpicbuf.h \
+satpiclist.h \
+satview-config.h \
+satview-defaults.h \
+shapeframe.h \
+sjdatasrc.h \
+textbox.h \
+trackmain.h \
+version.h
+
+ALLUI = control.ui imagewin.ui getstring.ui
+
+ALLMAKE = Makefile cloudtrack.pro copydb.pro
+
+ALLDOC = Doxyfile userman.txt userman.html
+
+ALLARCHIVE = $(ALLSRC) $(ALLHDR) $(ALLUI) $(ALLMAKE) $(ALLDOC)
+
 all: 
 	@echo "making qt stuff"; make Make.cloud
 	@echo "making target"; make realtarget
@@ -32,6 +73,9 @@ realtarget:
 
 copydb:
 	make -f Make.copydb
+
+tar:
+	tar zcvf cloudtrack.tar.gz $(ALLARCHIVE)
 
 clean:
 	make -f Make.cloud clean
