@@ -10,17 +10,28 @@
 # // but WITHOUT ANY WARRANTY; without even the implied warranty 
 # // of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 # //
-CONFIG += qt debug
+CONFIG += qt debug_and_release
+CONFIG(debug, debug|release) {
+  TARGET = cloudtrackd
+}
+CONFIG(release, debug|release) {
+  QMAKE_CFLAGS_RELEASE -= -g
+  QMAKE_CXXFLAGS_RELEASE -= -g
+  TARGET = cloudtrack
+}
+
 TEMPLATE = app
-TARGET = cloudtrack
-unix:MAKEFILE = Make.cloud
+
+unix {
+   INCLUDEPATH += /usr/local/include
+   LIBPATH += /usr/local/lib
+   LIBS += -lmysqlcppconn -lccgnu2
+   DISTFILES += userman.txt userman.html
+}
+win32 {
+   LIBS += -lws2_32
+}
 VERSION = 0.2.0
-DPENDPATH += .
-DISFILES += Doxyfile
-INCLUDEPATH += /usr/local/include
-LIBPATH += /usr/local/lib
-unix:LIBS += -lmysqlcppconn -lccgnu2
-win32:LIBS += -lws2_32
 
 FORMS += control.ui imagewin.ui getstring.ui
 SOURCES += satpiclist.cpp satpicbuf.cpp \

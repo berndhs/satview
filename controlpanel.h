@@ -126,6 +126,8 @@ Q_OBJECT
 
     ImageWin      * pDisplay;
 
+    QTimer        updateTimer;
+    int           updateDelay;
     QTimer        showTimer;
     int           showTimeDelay;
     int           noshowTimeDelay;

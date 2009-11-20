@@ -25,6 +25,7 @@ using namespace std;
 namespace satview  {
 
 ControlPanel::ControlPanel (QApplication *pA)
+  :mMeth(DBConnection::Con_None)
 {
     pApp = pA;
 
@@ -36,12 +37,13 @@ ControlPanel::ControlPanel (QApplication *pA)
     dateBox->setReadOnly(true);
     mMethWebLabel = QString("Web");
     mMethDirLabel = QString("Direct");
-    mStateStoppedText = "stopped";
+    mStateStoppedText = "done";
     mStateRunningText = "running";
     SetIFLabel();
     staticDraw->setChecked(true);
     staticDraw->setEnabled(false);
 
+    /** @brief the runstate is context for the animation and winding features*/
     mRunState.timelimit = 0;
     mRunState.allway = false;
     mRunState.show   = true;
@@ -53,6 +55,11 @@ ControlPanel::ControlPanel (QApplication *pA)
     currentDelay = noshowTimeDelay;
     connect (&showTimer, SIGNAL(timeout()), this, SLOT(DoShowMove()));
     showTimer.start(currentDelay);
+
+    /** @brief make sure we check for clicked buttons every now and then */
+    updateDelay = 300;
+    connect (&updateTimer, SIGNAL(timeout()), this, SLOT(update()));
+    updateTimer.start(updateDelay);
 
     connect (newNameButton, SIGNAL(clicked()), this, SLOT(DoSwitchPicname()));
     connect (quitButton, SIGNAL(clicked()), this, SLOT(quit()));
@@ -99,6 +106,7 @@ void
 ControlPanel::quit()
 {
   showTimer.stop();
+  updateTimer.stop();
   if (pDisplay) {
     pDisplay->quit();
   }
@@ -137,7 +145,6 @@ void
 ControlPanel::ShowPic (SatPicBuf * pBuf)
 {
   static SatPicBuf * pOldBuf(0);
-
   if (pBuf) {
     QImage *pI = pBuf->Get_Image();
     if (pI) {
@@ -349,7 +356,7 @@ ControlPanel::FwdSome ()
     if (pBuf && mRunState.show) {
       ShowPic(pBuf);
     }
-    mRunState.stopped = (pBuf == 0) || !(allway || (pBuf->Ident() <= to));
+    mRunState.stopped |= (pBuf == 0) || !(allway || (pBuf->Ident() <= to));
   } else { // fell off end
     mRunState.stopped = true;
     if (allway) {
@@ -378,7 +385,7 @@ ControlPanel::BackSome ()
     if (pBuf && mRunState.show) {
       ShowPic(pBuf);
     }
-    mRunState.stopped = (pBuf == 0) || !(allway || (pBuf->Ident() >= to));
+    mRunState.stopped |= (pBuf == 0) || !(allway || (pBuf->Ident() >= to));
   } else { // fell off end
     mRunState.stopped = true;
     if (allway || pBuf == 0) {
@@ -566,7 +573,7 @@ ControlPanel::SetIFLabel ()
     newlabel = mMethDirLabel;
     break;
   default:
-    newlabel = QString("???");
+    newlabel = QString("None");
   }
   interfaceLabel->setText(newlabel);
 }
