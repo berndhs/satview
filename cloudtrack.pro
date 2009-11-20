@@ -13,7 +13,7 @@
 CONFIG += qt debug
 TEMPLATE = app
 TARGET = cloudtrack
-MAKEFILE = Make.cloud
+unix:MAKEFILE = Make.cloud
 VERSION = 0.2.0
 DPENDPATH += .
 DISFILES += Doxyfile

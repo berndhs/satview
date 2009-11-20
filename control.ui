@@ -618,32 +618,19 @@ Image</string>
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>320</y>
+     <y>330</y>
      <width>85</width>
-     <height>151</height>
+     <height>111</height>
     </rect>
    </property>
    <property name="title">
     <string>Wind Back</string>
    </property>
-   <widget class="QPushButton" name="windBackButton">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>20</y>
-      <width>81</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>All</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="windBackWeekButton">
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>50</y>
+      <y>20</y>
       <width>83</width>
       <height>28</height>
      </rect>
@@ -656,7 +643,7 @@ Image</string>
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>80</y>
+      <y>50</y>
       <width>83</width>
       <height>28</height>
      </rect>
@@ -669,7 +656,7 @@ Image</string>
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>110</y>
+      <y>80</y>
       <width>83</width>
       <height>28</height>
      </rect>
@@ -683,32 +670,19 @@ Image</string>
    <property name="geometry">
     <rect>
      <x>270</x>
-     <y>320</y>
+     <y>330</y>
      <width>85</width>
-     <height>151</height>
+     <height>111</height>
     </rect>
    </property>
    <property name="title">
     <string>Wind Fwd</string>
    </property>
-   <widget class="QPushButton" name="windFwdButton">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>20</y>
-      <width>81</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>All</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="windFwdWeekButton">
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>50</y>
+      <y>20</y>
       <width>83</width>
       <height>28</height>
      </rect>
@@ -721,7 +695,7 @@ Image</string>
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>80</y>
+      <y>50</y>
       <width>83</width>
       <height>28</height>
      </rect>
@@ -734,7 +708,7 @@ Image</string>
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>110</y>
+      <y>80</y>
       <width>83</width>
       <height>28</height>
      </rect>
@@ -1258,7 +1232,7 @@ Name</string>
       <x>20</x>
       <y>50</y>
       <width>68</width>
-      <height>40</height>
+      <height>38</height>
      </rect>
     </property>
     <property name="text">
@@ -1285,7 +1259,7 @@ Name</string>
       <x>260</x>
       <y>50</y>
       <width>71</width>
-      <height>41</height>
+      <height>38</height>
      </rect>
     </property>
     <property name="text">
@@ -1823,11 +1797,12 @@ Frame</string>
      <x>10</x>
      <y>290</y>
      <width>61</width>
-     <height>18</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="font">
     <font>
+     <pointsize>11</pointsize>
      <weight>50</weight>
      <bold>false</bold>
     </font>

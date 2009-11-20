@@ -19,6 +19,7 @@
 #
  
 TARGET = cloudtrack
+INSTALLDIR = $(HOME)/bin
 QMAKE = qmake-qt4
 PROJFILE = cloudtrack.pro
 
@@ -82,6 +83,9 @@ clean:
 
 dist:
 	make -f Make.cloud dist
+
+install:
+	install -p cloudtrack copydb $(INSTALLDIR)
 
 Make.cloud: $(PROJFILE)
 	$(QMAKE) -o Make.cloud $(PROJFILE)

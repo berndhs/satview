@@ -21,6 +21,8 @@ INCLUDEPATH += /usr/local/include
 LIBPATH += /usr/local/lib
 unix:LIBS += -lmysqlcppconn -lccgnu2
 win32:LIBS += -lws2_32
+unix:copydb.path = $(HOME)/bin/
+unix:INSTALLS += copydb
 
 FORMS += 
 SOURCES += dbconnect.cpp copydb.cpp

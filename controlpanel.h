@@ -129,6 +129,7 @@ Q_OBJECT
     QTimer        showTimer;
     int           showTimeDelay;
     int           noshowTimeDelay;
+    int           currentDelay;
 
     RunState               mRunState;
     string                 mPicname;

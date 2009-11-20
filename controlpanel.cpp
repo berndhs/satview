@@ -50,8 +50,9 @@ ControlPanel::ControlPanel (QApplication *pA)
     runStatusLabel->setText (mStateStoppedText);
     showTimeDelay = 100;
     noshowTimeDelay = 1;
+    currentDelay = noshowTimeDelay;
     connect (&showTimer, SIGNAL(timeout()), this, SLOT(DoShowMove()));
-    showTimer.start(showTimeDelay);
+    showTimer.start(currentDelay);
 
     connect (newNameButton, SIGNAL(clicked()), this, SLOT(DoSwitchPicname()));
     connect (quitButton, SIGNAL(clicked()), this, SLOT(quit()));
@@ -69,11 +70,9 @@ ControlPanel::ControlPanel (QApplication *pA)
     connect (forwardDayButton, SIGNAL(clicked()), this, SLOT(DoRunFwdDay()));
     connect (forwardHoursButton, SIGNAL(clicked()), this, SLOT(DoRunFwdHours()));
     connect (forwardStepButton, SIGNAL(clicked()), this, SLOT(DoStepFwd()));
-    connect (windBackButton, SIGNAL(clicked()), this, SLOT(DoWindBack()));
     connect (windBackWeekButton, SIGNAL(clicked()), this, SLOT(DoWindBackWeek()));
     connect (windBackDayButton, SIGNAL(clicked()), this, SLOT(DoWindBackDay()));
     connect (windBackHoursButton, SIGNAL(clicked()), this, SLOT(DoWindBackHours()));
-    connect (windFwdButton, SIGNAL(clicked()), this, SLOT(DoWindFwd()));
     connect (windFwdWeekButton, SIGNAL(clicked()), this, SLOT(DoWindFwdWeek()));
     connect (windFwdDayButton, SIGNAL(clicked()), this, SLOT(DoWindFwdDay()));
     connect (windFwdHoursButton, SIGNAL(clicked()), this, SLOT(DoWindFwdHours()));
@@ -278,6 +277,7 @@ ControlPanel::DoWindBack (int secs, bool allway)
   mRunState.backwards = true;
   mRunState.pBuf = pBuf;
   stopButton->setEnabled(true);
+  currentDelay = noshowTimeDelay;
   showTimer.setInterval(noshowTimeDelay);
 }
 
@@ -297,6 +297,7 @@ ControlPanel::DoRunBack (int secs, bool allway)
   mRunState.backwards = true;
   mRunState.pBuf = pBuf;
   stopButton->setEnabled(true);
+  currentDelay = showTimeDelay;
   showTimer.setInterval(showTimeDelay);
 }
 
@@ -312,6 +313,7 @@ ControlPanel::DoWindFwd (int secs, bool allway)
   mRunState.backwards = false;
   mRunState.pBuf = pBuf;
   stopButton->setEnabled(true);
+  currentDelay = noshowTimeDelay;
   showTimer.setInterval(noshowTimeDelay);
 }
 
@@ -331,6 +333,7 @@ ControlPanel::DoRunFwd (int secs, bool allway)
   mRunState.backwards = false;
   mRunState.pBuf = pBuf;
   stopButton->setEnabled(true);
+  currentDelay = showTimeDelay;
   showTimer.setInterval(showTimeDelay);
 }
 
@@ -357,6 +360,7 @@ ControlPanel::FwdSome ()
     if (pBuf) {
       ShowPic(pBuf);
     }
+    currentDelay = showTimeDelay;
     showTimer.setInterval(showTimeDelay);
   }
   stopButton->setEnabled(!mRunState.stopped);
@@ -377,7 +381,7 @@ ControlPanel::BackSome ()
     mRunState.stopped = (pBuf == 0) || !(allway || (pBuf->Ident() >= to));
   } else { // fell off end
     mRunState.stopped = true;
-    if (allway) {
+    if (allway || pBuf == 0) {
       SatPicList::Instance()->Rewind();
     }
   }
@@ -410,7 +414,7 @@ ControlPanel::DoShowMove ()
     } else {
       FwdSome();
     }
-    showTimer.start(showTimeDelay);
+    showTimer.start(currentDelay);
   }
 }
 

@@ -80,8 +80,8 @@ main (int argc, char*argv[])
 {
   int ret;
 ;
-  server = server0;
-  method = DBConnection::Con_MySqlCPP;
+  server = server1;
+  method = DBConnection::Con_WebSock;
   string db("weather");
   string user("weather");
   string pass("quetzalcoatl");

@@ -15,9 +15,6 @@
 #include "satpicbuf.h"
 #include "berndsutil.h"
 #include "dbconnect.h"
-#ifdef _MSC_VER
-#include <unistd.h>
-#endif
 
 
 #include "blob-image.h"
@@ -121,7 +118,6 @@ namespace satview {
   SatPicBuf::Get_Image()
   {
     if (mHaveRGB && (mDisplayBuf != 0)) {
-      usleep(0.05 * 1000 * 1000);
       return mDisplayBuf;
     }
     if (!mHaveBlob) {
