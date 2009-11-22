@@ -12,13 +12,18 @@
 # //
 CONFIG += qt debug_and_release
 CONFIG(debug, debug|release) {
+  QMAKE_CXXFLAGS += -pedantic -Wextra
   TARGET = cloudtrackd
 }
-CONFIG(release, debug|release) {
+unix:CONFIG(release, debug|release) {
   QMAKE_CFLAGS_RELEASE -= -g
   QMAKE_CXXFLAGS_RELEASE -= -g
-  TARGET = cloudtrack
+  TARGET = cloudtrackr
 }
+win32:CONFIG(release, debug|release) {
+  TARGET = cloudtrackr
+}
+
 
 TEMPLATE = app
 
