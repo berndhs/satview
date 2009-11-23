@@ -12,7 +12,6 @@
 
 
 #include "blob-image.h"
-/*  #include <config.h>    not sure why this was included, or what this is */
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>

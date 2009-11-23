@@ -95,7 +95,7 @@ class DBConnection {
   bool    ReadIndexRec  (IndexRecord &r);  // read the index entries
   size_t  ReadImageData (IndexRecord &r, string & data);    // fill in image data
   bool  InsertRec (const IndexRecord &r, const string &data);
-  bool  InsertRec (const IndexRecord &r, const char* data, const size_t len);
+  bool  InsertRec (const IndexRecord &r, const char* data);
 
  private:
 

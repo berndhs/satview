@@ -426,7 +426,11 @@ namespace satview {
     memset (hexnum, 0, 4);
     for (i=0;i<len; i++) {
       byte = chars[i];
+#ifdef _MSC_VER
+      sprintf_s(hexnum,4,"%02x", byte);
+#else
       sprintf (hexnum,"%02x", byte);
+#endif
       result.append(hexnum, 2);
     }
   }
@@ -436,11 +440,14 @@ namespace satview {
   {
     unsigned char byte;
     int numchars = hex.length() ;
-    char hexnum[2];
+    char *hexbuf= new char[numchars+4];
+    char *hexnum;
+    memcpy (hexbuf,hex.c_str(),numchars);
     unsigned char nibble, nibble_val;
     result.clear();
+    int b = 0;
     for (int i=0; i<numchars; i+=2) {
-      hex.copy (hexnum,2,i);
+      hexnum = hexbuf + i;
       byte = 0;
       for (int j=0;j<2;j++) {
 	nibble = hexnum[j];
@@ -456,8 +463,11 @@ namespace satview {
 
         byte = (byte << 4) | (nibble_val & 0x0f);     
       }
-      result.append(1,byte);
+      hexbuf[b] = byte;
+      b++;
     }
+    result.append(hexbuf,b);
+    delete[] hexbuf;
   }
 
   void
@@ -631,8 +641,7 @@ namespace satview {
 
   bool
   DBConnection::InsertRec (const IndexRecord &r, 
-                        const char* data, 
-                        const size_t len)
+                        const char* data)
   {
     switch (mMeth) {
     case Con_WebSock:

@@ -51,19 +51,13 @@ namespace satview {
       string as_secs = berndsutil::toString(t);
       struct tm theTime;
 #ifdef _MSC_VER
-	  struct tm *pTM;
-	  pTM = localtime(&t);
-	  memcpy (&theTime,pTM,sizeof(theTime));
+      localtime_s(&theTime,&t);
 #else
       localtime_r (&t, &theTime);
 #endif
       const int datelen = 256;
       char plain[datelen+sizeof(void*)];
-#ifdef _MSC_VER
-      int len = strftime (plain, datelen, "%c", &theTime);
-#else
-      int len = strftime (plain, datelen,"%Y-%m-%d %T", &theTime);
-#endif
+      int len = strftime (plain, datelen,"%Y-%m-%d %H:%M:%S", &theTime);
       plain[len] = 0;
       pDC->SetDate(plain);
       string identstring = (as_secs + string (" - ")

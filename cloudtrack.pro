@@ -11,8 +11,12 @@
 # // of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 # //
 CONFIG += qt debug_and_release
-CONFIG(debug, debug|release) {
+unix:CONFIG(debug, debug|release) {
   QMAKE_CXXFLAGS += -pedantic -Wextra
+  TARGET = cloudtrackd
+}
+win32:CONFIG(debug, debug|releast) {
+  LIBS += -lws2_32
   TARGET = cloudtrackd
 }
 unix:CONFIG(release, debug|release) {
@@ -21,6 +25,7 @@ unix:CONFIG(release, debug|release) {
   TARGET = cloudtrackr
 }
 win32:CONFIG(release, debug|release) {
+  LIBS += -lws2_32
   TARGET = cloudtrackr
 }
 
@@ -34,7 +39,6 @@ unix {
    DISTFILES += userman.txt userman.html
 }
 win32 {
-   LIBS += -lws2_32
 }
 VERSION = 0.2.0
 

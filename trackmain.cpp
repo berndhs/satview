@@ -78,8 +78,6 @@ void
 int
 main (int argc, char*argv[])
 {
-  int ret;
-;
   server = server1;
   method = DBConnection::Con_WebSock;
   string db("weather");
