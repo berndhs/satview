@@ -31,9 +31,8 @@ string server2(SATVIEW_DEFAULT_S2);
 string server;
 DBConnection::Method method;
 
-string myname = "cloudtrack";
 
-void
+bool
   checkargs (int argc, char*argv[])
 {
 
@@ -62,8 +61,11 @@ void
     if (ar == "dir") {
       method = DBConnection::Con_MySqlCPP;
     }
-    
+    if (ar == "-v" || ar == "--version") {
+      return true;
+    }
   }
+  return false;
 }
 /** @brief This program loads a bunch of weather satellite pictures
  * from a database, and displays them one by one. It has options for 
@@ -83,14 +85,18 @@ main (int argc, char*argv[])
   string db("weather");
   string user("weather");
   string pass("quetzalcoatl");
+  bool versionOnly(false);
 
-  checkargs(argc,argv);
+  versionOnly = checkargs(argc,argv);
 
   /** @brief some elementary command line, 2 choices of image names.
    * More later when we have time.
    */
 
-  std::cout << myname << satview::Version() << std::endl;
+  std::cout << satview::Version() << std::endl;
+  if (versionOnly) {
+    return(0);
+  }
 
   QApplication App(argc, argv);
 
@@ -123,7 +129,7 @@ main (int argc, char*argv[])
       Control.show();
       App.processEvents();
       App.exec();
-      return 42;
+      return 0;
   } catch (berndsutil::Fault &F) {
    
     cout << F.String() << endl;

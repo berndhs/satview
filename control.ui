@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>359</width>
-    <height>479</height>
+    <width>355</width>
+    <height>480</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -792,7 +792,7 @@ Name</string>
   <widget class="QGroupBox" name="serverGroup">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>6</x>
      <y>120</y>
      <width>341</width>
      <height>91</height>
@@ -1284,7 +1284,7 @@ Name</string>
   <widget class="QGroupBox" name="DrawBox">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>6</x>
      <y>210</y>
      <width>341</width>
      <height>71</height>
@@ -1815,6 +1815,48 @@ Frame</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="versionButton">
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>450</y>
+     <width>41</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>6</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>Show Version</string>
+   </property>
+   <property name="text">
+    <string>Version</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="authorButton">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>450</y>
+     <width>51</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>8</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>Link to Author's Website</string>
+   </property>
+   <property name="text">
+    <string>Author</string>
    </property>
   </widget>
  </widget>

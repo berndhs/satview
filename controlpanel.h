@@ -58,6 +58,9 @@ Q_OBJECT
 
   public slots:
 
+    void ShowVersion();
+    void LinkToBernd();
+
     void NotImplemented ();
     void update();
     void quit ();

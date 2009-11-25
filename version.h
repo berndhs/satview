@@ -16,7 +16,10 @@
 
 namespace satview {
 
+  std::string MyName();
   std::string Version() ;
+  
+  void ShowVersionWindow();
 
 }
 

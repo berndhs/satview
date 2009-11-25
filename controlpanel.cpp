@@ -17,8 +17,11 @@
 #include <QTimer>
 #include <QString>
 #include <QByteArray>
+#include <QDesktopServices>
+#include <QUrl>
 #include "satpiclist.h"
 #include "satpicbuf.h"
+#include "version.h"
 
 using namespace std;
 
@@ -60,6 +63,11 @@ ControlPanel::ControlPanel (QApplication *pA)
     updateDelay = 300;
     connect (&updateTimer, SIGNAL(timeout()), this, SLOT(update()));
     updateTimer.start(updateDelay);
+
+    /** and we have a whole bunch of buttons to connect */
+
+    connect (versionButton, SIGNAL(clicked()), this, SLOT(ShowVersion()));
+    connect (authorButton, SIGNAL(clicked()), this, SLOT(LinkToBernd()));
 
     connect (newNameButton, SIGNAL(clicked()), this, SLOT(DoSwitchPicname()));
     connect (quitButton, SIGNAL(clicked()), this, SLOT(quit()));
@@ -129,6 +137,19 @@ ControlPanel::show()
     pDisplay->show();
   }
   QDialog::show();
+}
+
+void
+ControlPanel::LinkToBernd()
+{
+  QDesktopServices::openUrl
+    (QUrl(QString("http://www.bernd-stramm.com/freestuff.php")));
+}
+
+void
+ControlPanel::ShowVersion()
+{
+  ShowVersionWindow();
 }
 
 void 
