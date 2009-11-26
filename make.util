@@ -1,0 +1,79 @@
+# Makefile for the satview program
+
+# //
+# //  Copyright (C) 2009 - Bernd H Stramm
+# //
+#
+# // This program is distributed under the terms of 
+# // the GNU General Public License version 3 
+# //
+# // This software is distributed in the hope that it will be useful, 
+# // but WITHOUT ANY WARRANTY; without even the implied warranty 
+# // of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+# //
+
+
+
+#
+#
+#
+ 
+INSTALLDIR = $(HOME)/bin
+
+ALLSRC = \
+blob-image.cpp \
+controlpanel.cpp \
+copydb.cpp \
+dbconnect.cpp \
+frametypes.cpp \
+imagewin.cpp \
+satpicbuf.cpp \
+satpiclist.cpp \
+shapeframe.cpp \
+sjdatasrc.cpp \
+textbox.cpp \
+trackmain.cpp \
+version.cpp 
+
+ALLHDR = \
+berndsutil.h \
+blob-image.h \
+controlpanel.h \
+dbconnect.h \
+fault.h \
+frametypes.h \
+imagewin.h \
+satpicbuf.h \
+satpiclist.h \
+satview-config.h \
+satview-defaults.h \
+shapeframe.h \
+sjdatasrc.h \
+textbox.h \
+trackmain.h \
+version.h
+
+ALLUI = control.ui imagewin.ui getstring.ui
+
+ALLMAKE = Makefile cloudtrack.pro copydb.pro
+
+ALLDOC = Doxyfile userman.txt userman.html INSTALL COPYING
+
+ALLARCHIVE = $(ALLSRC) $(ALLHDR) $(ALLUI) $(ALLMAKE) $(ALLDOC)
+
+TARTARGET = cloudtrack.tar.gz
+
+tar:
+	tar zcvf $(TARTARGET) $(ALLARCHIVE)
+	@ls -l $(TARTARGET)
+
+
+install:
+	install -p cloudtrackr copydb $(INSTALLDIR)
+
+docu:
+	doxygen
+
+userman:
+	asciidoc -n userman.txt
+	

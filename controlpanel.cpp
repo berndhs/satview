@@ -371,6 +371,7 @@ ControlPanel::FwdSome ()
     if (pBuf && mRunState.show) {
       ShowPic(pBuf);
     }
+    mRunState.pBuf = pBuf;
     mRunState.stopped |= (pBuf == 0) || !(allway || (pBuf->Ident() <= to));
   } else { // fell off end
     mRunState.stopped = true;
@@ -400,6 +401,7 @@ ControlPanel::BackSome ()
     if (pBuf && mRunState.show) {
       ShowPic(pBuf);
     }
+    mRunState.pBuf = pBuf;
     mRunState.stopped |= (pBuf == 0) || !(allway || (pBuf->Ident() >= to));
   } else { // fell off end
     mRunState.stopped = true;

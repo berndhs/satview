@@ -1,0 +1,25 @@
+
+TARGET = cloudtrack
+TIMESTAMP=date -u +"%Y%m%d-%H%M%S-u"
+
+SRC = *.cpp
+HDR = *.h
+IMG = *.png
+DOC = LICENSE.txt INSTALL
+TOOLS = *.ui *.pro *.qrc ship/*.iss qcopy/*.pro make.snap
+ARCHFILES = $(SRC) $(HDR) $(IMG) $(DOC) $(TOOLS)
+
+snap:
+	T=$(TARGET).`$(TIMESTAMP)`.tar.gz ; \
+	tar zcvf $$T $(ARCHFILES) ; \
+	ls -l $$T
+
+arch:
+	T=$(TARGET).tar.gz ; \
+	tar zcvf $$T $(ARCHFILES) ; \
+	ls -l $$T
+
+
+snapsrc:
+	tar zcvf src.tar.gz $(SRC) $(HDR)
+
