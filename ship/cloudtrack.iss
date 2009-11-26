@@ -34,7 +34,7 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
 
 [Files]
-Source: D:\bernd\sample_codes\satview-qt\ship\cloudtrack.exe; DestDir: {app}; Flags: ignoreversion
+Source: cloudtrackr.exe; DestDir: {app}; Flags: ignoreversion
 Source: D:\bernd\sample_codes\satview-qt\ship\copydb.exe; DestDir: {app}; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 Source: D:\bernd\sample_codes\satview-qt\ship\vcredist_x86.exe; DestDir: {app}
