@@ -28,8 +28,11 @@ Windows
 -------
 
 I used Qt Creator, with the Microsoft Visual C++ 2008 Express tool chain.
-Open the project files "cloudtrack.pro" and "copydb.pro" and build from there.
+Open the project files "cloudtrack.pro" and "qcopy/copydb.pro" and build 
+from there.
+
 Creator will put the executable in the debug/ and release/ subdirectories
+and in the qcopy/debug and qcopy/release subdirectories.
 
 
 Prerequisits:
