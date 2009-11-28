@@ -110,9 +110,6 @@ ControlPanel::ControlPanel (QApplication *pA)
     connect (saveFrameButton, SIGNAL(clicked()), this, SLOT(NotImplemented()));
 
     SatPicList::Instance()->DBConnect()->SetImageConsumer(this);
-    if (DBWaiting()) {
-      qDebug() << " db is waiting ";
-    }
 }
 
 ControlPanel::~ControlPanel()
@@ -241,11 +238,9 @@ ControlPanel::ShowPic (SatPicBuf * pBuf)
 {
   if (pBuf) {
     if (mPicState.waiting) {   // one at a time!
-      qDebug() << " showpic denied, waiting";
       return;
     }
     if (DBWaiting()) {
-      qDebug() << " showpic denied DB wait";
       return;
     }
     mPicState.pBuf = pBuf;
@@ -253,14 +248,12 @@ ControlPanel::ShowPic (SatPicBuf * pBuf)
     mPicState.waiting = true;
     mPicState.pImg = 0;
     QImage *pI = pBuf->Get_Image();
-    qDebug() << " showpic image " << pI;
     if (pI) {
       mPicState.waiting = false;
       mPicState.pImg = pI;
       ReallyShowPic();
     } else {
       ShowIndexRec(pBuf);
-      qDebug() << " showpic issued waiting " ;
     }
   }
 
@@ -322,6 +315,19 @@ ControlPanel::EndTime(long int diff)
 }
 
 void
+ControlPanel::IndexWaitWakeup()
+{
+  mRunState.stopped = true;
+  stopButton->setEnabled(false);
+  SatPicList::Instance()->ToEnd();
+  SatPicBuf *pBuf = SatPicList::Instance()->Current();
+  if (pBuf) {
+    ShowPic(pBuf);
+    stopButton->setEnabled(DBWaiting());
+  }
+}
+
+void
 ControlPanel::DoStepFwd ()
 { 
   mRunState.stopped = true;
@@ -330,20 +336,20 @@ ControlPanel::DoStepFwd ()
   SatPicBuf *pBuf = SatPicList::Instance()->Current();
   if (pBuf) {
     ShowPic(pBuf);
+    stopButton->setEnabled(DBWaiting());
   }
 }
 
 void
 ControlPanel::DoStepBack ()
 { 
-  qDebug() << " step back";
   mRunState.stopped = true;
   stopButton->setEnabled(false);
   SatPicList::Instance()->Skip(-1);
   SatPicBuf *pBuf = SatPicList::Instance()->Current();
-  qDebug() << " step back buf " << pBuf;
   if (pBuf) {
     ShowPic(pBuf);
+    stopButton->setEnabled(DBWaiting());
   }
 }
 
@@ -450,7 +456,7 @@ ControlPanel::FwdSome ()
     currentDelay = showTimeDelay;
     showTimer.setInterval(showTimeDelay);
   }
-  stopButton->setEnabled(!mRunState.stopped);
+  stopButton->setEnabled (!mRunState.stopped || DBWaiting());
 }
 
 void
@@ -482,7 +488,7 @@ ControlPanel::BackSome ()
     }
     showTimer.setInterval(showTimeDelay);
   }
-  stopButton->setEnabled(!mRunState.stopped);
+  stopButton->setEnabled (!mRunState.stopped || DBWaiting());
 }
 
 void

@@ -102,6 +102,7 @@ Q_OBJECT
     void DoWindFwdHours () { DoWindFwd (6*3600);   }
 
     void ToggleConn();
+    void IndexWaitWakeup();
 
     void PicArrive (QImage *pImg);
 

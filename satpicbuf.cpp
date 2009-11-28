@@ -131,18 +131,15 @@ namespace satview {
   SatPicBuf::Get_Image()
   {
     if (mHaveRGB && (mDisplayBuf != 0)) {
-      qDebug() << " get_image has RGB " << mDisplayBuf;
       return mDisplayBuf;
     }
     if (!mHaveBlob) {
       if (! mHaveIndex) {
-	qDebug() << " get_image - no index";
         return 0;
       }
       mHaveBlob = LoadBlob ();
     }
     if (!mHaveBlob) {
-      qDebug () << " get_image - no blob";
       return 0;      // LoadBlob must have failed
     }
 
