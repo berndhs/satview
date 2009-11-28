@@ -100,12 +100,21 @@ namespace satview {
     IndexRecord rec;
     rec.ident = mIdent;
     rec.picname = mPicname;
+    pDBCon->SetBlobConsumer(this);
     mImageLen = pDBCon->ReadImageData (rec, simage);
     if (mImageLen > 0) {
       mBlob = new char[mImageLen + sizeof(void*)];
       memcpy (mBlob, simage.c_str(), mImageLen);
     }
     return mImageLen > 0;
+  }
+
+  void
+  SatPicBuf::ReceiveBlob (char * data, size_t len)
+  {
+    mImageLen = len;
+    memcpy (mBlob, data, len);
+    mHaveBlob = true;
   }
 
   /** @brief Get_Image - get an RGB image if we have one,

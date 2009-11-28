@@ -11,7 +11,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty 
 // of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 //
-
+#include <QDebug>
 #include <iostream>
 #include <QMessageBox>
 #include <QTimer>
@@ -42,6 +42,7 @@ ControlPanel::ControlPanel (QApplication *pA)
     mMethDirLabel = QString("Direct");
     mStateStoppedText = "done";
     mStateRunningText = "running";
+    mStateLoadingText = "loading";
     SetIFLabel();
     staticDraw->setChecked(true);
     staticDraw->setEnabled(false);
@@ -52,6 +53,11 @@ ControlPanel::ControlPanel (QApplication *pA)
     mRunState.show   = true;
     mRunState.backwards = false;
     mRunState.stopped = true;
+    mPicState.waiting = false;
+    mPicState.failed  = false;
+    mPicState.pBuf    = 0;
+    mPicState.pImg    = 0;
+
     runStatusLabel->setText (mStateStoppedText);
     showTimeDelay = 100;
     noshowTimeDelay = 1;
@@ -103,6 +109,10 @@ ControlPanel::ControlPanel (QApplication *pA)
 	     this, SLOT(FinishPolygon()));
     connect (saveFrameButton, SIGNAL(clicked()), this, SLOT(NotImplemented()));
 
+    SatPicList::Instance()->DBConnect()->SetImageConsumer(this);
+    if (DBWaiting()) {
+      qDebug() << " db is waiting ";
+    }
 }
 
 ControlPanel::~ControlPanel()
@@ -127,6 +137,9 @@ ControlPanel::quit()
 void
 ControlPanel::update()
 {
+  if (DBWaiting()) {
+    qDebug() << " DB waiting " ;
+  }
   this->QDialog::update();
 }
 
@@ -137,6 +150,12 @@ ControlPanel::show()
     pDisplay->show();
   }
   QDialog::show();
+}
+
+bool
+ControlPanel::DBWaiting()
+{
+  return SatPicList::Instance()->DBConnect()->Waiting();
 }
 
 void
@@ -162,46 +181,75 @@ ControlPanel::ShowStatus ()
   msg.exec();
 }
 
+
+void
+ControlPanel::PicArrive (QImage * pImg)
+{
+  mPicState.pImg = pImg;
+  ReallyShowPic();
+}
+
+void
+ControlPanel::ReallyShowPic ()
+{
+  static SatPicBuf * pOldBuf(0);
+
+  SatPicBuf *pBuf = mPicState.pBuf;
+  QImage    *pI   = mPicState.pImg;
+  if (pDisplay) {
+    pDisplay->SetImage (pI,FrameTag(pBuf->Ident()));
+    pDisplay->update();
+  }
+     
+  time_t t = pBuf->Ident();
+  SetIdentTag((berndsutil::toString(t)
+                     + string(" - ")
+                     + berndsutil::toString(pBuf->Serial())).c_str() 
+                    );
+  struct tm theTime;
+#ifdef _MSC_VER
+  localtime_s(&theTime,&t);
+#else
+  localtime_r (&t, &theTime);
+#endif
+  const int datelen = 256;
+  char plain[datelen+sizeof(void*)];
+  int len = strftime (plain, datelen, "%Y-%m-%d %H:%M:%S", &theTime);
+  plain[len] = 0;
+  SetDate (plain);
+  SetPicname (pBuf->PicName().c_str());
+  update();
+  if (pApp) {
+    pApp->processEvents();
+  }
+  if (pOldBuf) {
+    if (pOldBuf != pBuf) {
+      pOldBuf->Forget_Image();
+      pOldBuf = pBuf;
+
+    }
+  }  
+  mPicState.waiting = false;   
+}
+
 void
 ControlPanel::ShowPic (SatPicBuf * pBuf)
 {
-  static SatPicBuf * pOldBuf(0);
   if (pBuf) {
+    if (mPicState.waiting) {   // one at a time!
+      return;
+    }
+    mPicState.pBuf = pBuf;
+    mPicState.failed = false;
+    mPicState.waiting = true;
+    mPicState.pImg = 0;
     QImage *pI = pBuf->Get_Image();
     if (pI) {
-      
-      if (pDisplay) {
-        pDisplay->SetImage (pI,FrameTag(pBuf->Ident()));
-        pDisplay->update();
-      }
-     
-      time_t t = pBuf->Ident();
-      SetIdentTag((berndsutil::toString(t)
-                         + string(" - ")
-                         + berndsutil::toString(pBuf->Serial())).c_str() 
-                        );
-      struct tm theTime;
-#ifdef _MSC_VER
-      localtime_s(&theTime,&t);
-#else
-      localtime_r (&t, &theTime);
-#endif
-      const int datelen = 256;
-      char plain[datelen+sizeof(void*)];
-      int len = strftime (plain, datelen, "%Y-%m-%d %H:%M:%S", &theTime);
-      plain[len] = 0;
-      SetDate (plain);
-      SetPicname (pBuf->PicName().c_str());
-      update();
-      if (pApp) {
-        pApp->processEvents();
-      }
-      if (pOldBuf) {
-        if (pOldBuf != pBuf) {
-          pOldBuf->Forget_Image();
-          pOldBuf = pBuf;
-	}
-      }     
+      mPicState.waiting = false;
+      mPicState.pImg = pI;
+      ReallyShowPic();
+    } else {
+      qDebug() << " waiting " ;
     }
   }
 
@@ -428,9 +476,13 @@ ControlPanel::DoStopMoving ()
 void
 ControlPanel::DoShowMove ()
 {
-  runStatusLabel->setText (mRunState.stopped ?
+  if (DBWaiting()) {
+    runStatusLabel->setText(mStateLoadingText);
+  } else {
+    runStatusLabel->setText (mRunState.stopped ?
                              mStateStoppedText
 			   : mStateRunningText);
+  }
   if (!mRunState.stopped) {
     showTimer.stop();     /** don't want to get called twice */
     if (mRunState.backwards) {

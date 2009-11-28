@@ -23,6 +23,12 @@
 #include <cppconn/statement.h>
 #endif
 
+#if SATVIEW_USE_QNET
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkRequest>
+#include <QtNetwork/QNetworkReply>
+#endif
+
 #if SATVIEW_USE_GNUSOCK
 #include <cc++/socket.h>
 #include <cc++/address.h>
@@ -45,6 +51,10 @@
 namespace satview {
 
   using namespace std;
+
+  class ControlPanel;
+  class SatPicBuf;
+  class SatPicList;
 
 class IndexRecord {
 
@@ -69,12 +79,22 @@ class IndexRecord {
  * GNU common sockets or WinSock2.
  */
 
-class DBConnection {
+class DBConnection 
+
+#if SATVIEW_USE_QNET
+  : public QObject
+#endif
+                    {
+
+#if SATVIEW_USE_QNET
+   Q_OBJECT
+#endif
+
  public:
   DBConnection();
   ~DBConnection();
 
-
+  bool Waiting ();   // some request not finished
 
   enum Method {
     Con_None,
@@ -88,6 +108,10 @@ class DBConnection {
 
   void SetServer (string server);
 
+  void SetImageConsumer (ControlPanel *pCp) { mImgReceiver = pCp; }
+  void SetBlobConsumer  (SatPicBuf    *pBuf) { mBlobReceiver = pBuf; }
+  void SetIndexConsumer (SatPicList   *pLst) { mIndexReceiver = pLst; }
+
   bool ConnectDB (string server, string db, string user, string pass);
   void Disconnect ();
 
@@ -96,6 +120,15 @@ class DBConnection {
   size_t  ReadImageData (IndexRecord &r, string & data);    // fill in image data
   bool  InsertRec (const IndexRecord &r, const string &data);
   bool  InsertRec (const IndexRecord &r, const char* data);
+
+#if SATVIEW_USE_QNET
+
+  public slots:
+
+    void GetIndexReply (QNetworkReply *reply);
+    void GetImageReply (QNetworkReply *reply);
+
+#endif
 
  private:
 
@@ -111,6 +144,11 @@ class DBConnection {
   bool Start_MYSQL_Index ();
   bool Start_Web_Index();
 
+#if SATVIEW_USE_QNET
+
+  void DeliverBlob (char * data, qint64 len);
+#endif
+
   bool Attempt_Web_Connect();
   void Web_Close();
 
@@ -124,6 +162,7 @@ class DBConnection {
  
   void  hex_to_chars (string & result, const string &hex);
   void  hex_to_chars (string & result, const char * buf, int numchars);
+  void  hex_to_chars (char * result, const char * buf, int numchars);
   void  chars_to_hex (string & result, const string &chars);
 
 #if SATVIEW_USE_MYSQL
@@ -136,6 +175,16 @@ class DBConnection {
   int    mWebIndex;
   bool   mHaveWebData;
   int    mWebBytes;
+
+  ControlPanel           *mImgReceiver;
+  SatPicBuf              *mBlobReceiver;
+  SatPicList             *mIndexReceiver;
+#if SATVIEW_USE_QNET
+  QNetworkAccessManager  *mQMgr;
+  QNetworkReply          *mExpectReply;
+  bool                    mWaitForIndex;
+  bool                    mWaitForImage;
+#endif
 
 #if SATVIEW_USE_GNUSOCK
   ost::SimpleTCPStream * pWebStream;
@@ -154,6 +203,7 @@ class DBConnection {
   static const int mWebBufMax = 8*1024*1024;
 
   char mWebBuf[mWebBufMax];
+  char mImgWebBuf[mWebBufMax];
 
 
 };

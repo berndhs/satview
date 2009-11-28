@@ -35,7 +35,7 @@ TEMPLATE = app
 unix {
    INCLUDEPATH += /usr/local/include
    LIBPATH += /usr/local/lib
-   LIBS += -lmysqlcppconn -lccgnu2
+   LIBS += -lmysqlcppconn -lccgnu2 -lQtNetwork
    DISTFILES += userman.txt userman.html
 }
 win32 {

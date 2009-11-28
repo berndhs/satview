@@ -54,8 +54,11 @@ class SatPicList {
   void SetMethod (const DBConnection::Method m);
   DBConnection::Method Method();
 
+  DBConnection * DBConnect() { return &DBCon; }
   bool LoadFromDB();
   bool ConnectDB();
+
+  void LoadFromIndex();
 
   void Ditch();
 

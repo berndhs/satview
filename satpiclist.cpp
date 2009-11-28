@@ -25,7 +25,7 @@ namespace satview {
     :
      pDC(0)
   {
-   
+    DBCon.SetIndexConsumer(this);
   }
 
   SatPicList::~SatPicList()
@@ -155,6 +155,21 @@ namespace satview {
      mBufMap.insert(pair<unsigned long int, SatPicBuf*>(0,pBuf));
   }
 
+  void
+  SatPicList::LoadFromIndex ()
+  {
+    IndexRecord rec;
+    SatPicBuf * pBuf;
+    while (DBCon.ReadIndexRec( rec)) {
+       if (rec.picname == mPicfilename) {
+         pBuf = new SatPicBuf (rec.ident, rec.picname,
+                             rec.storetime, rec.remark);
+         mBufMap.insert(pair<unsigned long int, SatPicBuf*>
+                   (rec.ident, pBuf));
+       }
+     } 
+  }
+
   bool
   SatPicList::LoadFromDB()
   {
@@ -163,18 +178,8 @@ namespace satview {
       SatPicBuf::SetDBCon(&DBCon);
       haveDB = DBCon.LoadIndex(mPicfilename);
       
-      if (haveDB) {
-	IndexRecord rec;
-        SatPicBuf * pBuf;
-        while (DBCon.ReadIndexRec( rec)) {
-
-          if (rec.picname == mPicfilename) {
-            pBuf = new SatPicBuf (rec.ident, rec.picname,
-                                rec.storetime, rec.remark);
-            mBufMap.insert(pair<unsigned long int, SatPicBuf*>
-			 (rec.ident, pBuf));
-	  }
-        }       
+      if (haveDB) {      
+        LoadFromIndex();
         haveDB = mBufMap.size() > 0;
       }
     }
