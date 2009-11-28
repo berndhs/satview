@@ -138,7 +138,6 @@ void
 ControlPanel::update()
 {
   if (DBWaiting()) {
-    qDebug() << " DB waiting " ;
   }
   this->QDialog::update();
 }
@@ -190,16 +189,8 @@ ControlPanel::PicArrive (QImage * pImg)
 }
 
 void
-ControlPanel::ReallyShowPic ()
+ControlPanel::ShowIndexRec (SatPicBuf *pBuf)
 {
-  static SatPicBuf * pOldBuf(0);
-
-  SatPicBuf *pBuf = mPicState.pBuf;
-  QImage    *pI   = mPicState.pImg;
-  if (pDisplay) {
-    pDisplay->SetImage (pI,FrameTag(pBuf->Ident()));
-    pDisplay->update();
-  }
      
   time_t t = pBuf->Ident();
   SetIdentTag((berndsutil::toString(t)
@@ -218,7 +209,20 @@ ControlPanel::ReallyShowPic ()
   plain[len] = 0;
   SetDate (plain);
   SetPicname (pBuf->PicName().c_str());
-  update();
+}
+
+void
+ControlPanel::ReallyShowPic ()
+{
+  static SatPicBuf * pOldBuf(0);
+
+  SatPicBuf *pBuf = mPicState.pBuf;
+  QImage    *pI   = mPicState.pImg;
+  if (pDisplay) {
+    pDisplay->SetImage (pI,FrameTag(pBuf->Ident()));
+    pDisplay->update();
+  }
+  ShowIndexRec (pBuf);
   if (pApp) {
     pApp->processEvents();
   }
@@ -237,6 +241,11 @@ ControlPanel::ShowPic (SatPicBuf * pBuf)
 {
   if (pBuf) {
     if (mPicState.waiting) {   // one at a time!
+      qDebug() << " showpic denied, waiting";
+      return;
+    }
+    if (DBWaiting()) {
+      qDebug() << " showpic denied DB wait";
       return;
     }
     mPicState.pBuf = pBuf;
@@ -244,12 +253,14 @@ ControlPanel::ShowPic (SatPicBuf * pBuf)
     mPicState.waiting = true;
     mPicState.pImg = 0;
     QImage *pI = pBuf->Get_Image();
+    qDebug() << " showpic image " << pI;
     if (pI) {
       mPicState.waiting = false;
       mPicState.pImg = pI;
       ReallyShowPic();
     } else {
-      qDebug() << " waiting " ;
+      ShowIndexRec(pBuf);
+      qDebug() << " showpic issued waiting " ;
     }
   }
 
@@ -325,10 +336,12 @@ ControlPanel::DoStepFwd ()
 void
 ControlPanel::DoStepBack ()
 { 
+  qDebug() << " step back";
   mRunState.stopped = true;
   stopButton->setEnabled(false);
   SatPicList::Instance()->Skip(-1);
   SatPicBuf *pBuf = SatPicList::Instance()->Current();
+  qDebug() << " step back buf " << pBuf;
   if (pBuf) {
     ShowPic(pBuf);
   }
@@ -410,6 +423,9 @@ ControlPanel::DoRunFwd (int secs, bool allway)
 void
 ControlPanel::FwdSome ()
 {
+  if (DBWaiting()) {
+    return;   // maybe later
+  }
   unsigned long int to = mRunState.timelimit;
   bool allway = mRunState.allway;
   bool oldStopped = mRunState.stopped;
@@ -440,6 +456,9 @@ ControlPanel::FwdSome ()
 void
 ControlPanel::BackSome ()
 {
+  if (DBWaiting()) {
+    return;
+  }
   unsigned long int to = mRunState.timelimit;
   bool allway = mRunState.allway;
   bool oldStopped = mRunState.stopped;

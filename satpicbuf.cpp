@@ -22,6 +22,7 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <QDebug>
 
 
 namespace satview {
@@ -112,9 +113,12 @@ namespace satview {
   void
   SatPicBuf::ReceiveBlob (char * data, size_t len)
   {
-    mImageLen = len;
-    memcpy (mBlob, data, len);
-    mHaveBlob = true;
+    if (len > 0) {
+      mImageLen = len;
+      mBlob = new char[len + sizeof(void*)];
+      memcpy (mBlob, data, len);
+      mHaveBlob = true;
+    }
   }
 
   /** @brief Get_Image - get an RGB image if we have one,
@@ -127,15 +131,18 @@ namespace satview {
   SatPicBuf::Get_Image()
   {
     if (mHaveRGB && (mDisplayBuf != 0)) {
+      qDebug() << " get_image has RGB " << mDisplayBuf;
       return mDisplayBuf;
     }
     if (!mHaveBlob) {
       if (! mHaveIndex) {
+	qDebug() << " get_image - no index";
         return 0;
       }
       mHaveBlob = LoadBlob ();
     }
     if (!mHaveBlob) {
+      qDebug () << " get_image - no blob";
       return 0;      // LoadBlob must have failed
     }
 

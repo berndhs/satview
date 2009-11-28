@@ -126,6 +126,7 @@ Q_OBJECT
 
     void StartImage ();
     void ShowPic (SatPicBuf *pBuf);
+    void ShowIndexRec (SatPicBuf *pBuf);
     void ReallyShowPic();
 
     bool DBWaiting ();

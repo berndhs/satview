@@ -15,6 +15,7 @@
 #include "satpiclist.h"
 #include <time.h>
 #include <iostream>
+#include <QDebug>
 
 
 namespace satview {
@@ -160,6 +161,7 @@ namespace satview {
   {
     IndexRecord rec;
     SatPicBuf * pBuf;
+    qDebug() << " load stage 2";
     while (DBCon.ReadIndexRec( rec)) {
        if (rec.picname == mPicfilename) {
          pBuf = new SatPicBuf (rec.ident, rec.picname,
@@ -168,6 +170,7 @@ namespace satview {
                    (rec.ident, pBuf));
        }
      } 
+    qDebug() << " map has " << mBufMap.size() << " entries";
   }
 
   bool

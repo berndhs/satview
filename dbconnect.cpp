@@ -286,10 +286,14 @@ namespace satview {
       return false;
     }
 #if SATVIEW_USE_QNET
+    if (Waiting()) {
+      return false;
+    }
     QString url ("http://");
     url.append(mServer.c_str());
     url.append("/test/satserv.php?fn=index");
     QNetworkRequest req;
+    qDebug() << " index request " << url;
     req.setUrl(QUrl(url));
     req.setRawHeader("User-Agent","Maxwell Smart");
     if (mQMgr) {
@@ -386,6 +390,7 @@ namespace satview {
   size_t
   DBConnection::ReadImageData (IndexRecord &r, string & data)
   {
+    qDebug() << " read img data for " << r.ident;
     switch (mMeth) {
     case Con_WebSock:
       return ReadImageData_Web(r,data);
@@ -581,6 +586,7 @@ namespace satview {
   { // should be in the mWebBuf somewhere, starting at mWebIndex
 #if SATVIEW_USE_QNET
     if (mWaitForIndex) {
+      qDebug() << " read index rec - denied, waiting";
       return false;
     }
 #endif
@@ -622,7 +628,11 @@ namespace satview {
     chars_to_hex (key2, r.picname);
 
 #if SATVIEW_USE_QNET
-    string longUrl = mServer 
+    if (Waiting()) {
+      qDebug() << " read img denied waiting";
+      return 0;
+    }
+    string longUrl = "http://" + mServer 
                      + "/test/satserv.php?fn=item&k1="
                      + key1
                      + "&k2="
@@ -634,6 +644,7 @@ namespace satview {
       if (mWaitForImage) {
         return false;
       }
+      qDebug() << " img read issue " << longUrl.c_str();
       mExpectReply = mQMgr->get(req);
       mWaitForImage = true;
       connect (mQMgr, SIGNAL(finished(QNetworkReply*)),
@@ -806,7 +817,16 @@ namespace satview {
   DBConnection::Waiting()
   {
 #if SATVIEW_USE_QNET
-    return mWaitForIndex || mWaitForImage;
+    bool waiting = mWaitForIndex || mWaitForImage;
+    /*
+    if (waiting) {
+      qDebug() << " db waiting";
+    } else {
+      qDebug() << " db all clear";
+    }
+    */
+
+    return waiting;
 #else
     return false;
 #endif
@@ -864,9 +884,11 @@ namespace satview {
     QImage * pImg = img;
     if (mBlobReceiver) {
       mBlobReceiver->ReceiveBlob(data,len);
+      qDebug() << " delivered blob";
     }
     if (mImgReceiver) {
       mImgReceiver->PicArrive(pImg);
+      qDebug() << " delivered img";
     }
   }
 
@@ -876,8 +898,9 @@ namespace satview {
     // two parts: get the data, and parse them
 
     // Part 1: retrieve data
-
     if (mWaitForImage && reply) {
+      mWaitForImage = false;
+      qDebug() << " img reply err " << reply->error();
       if (reply->error() == QNetworkReply::NoError) {
         QByteArray bytes = reply->readAll();
         qint64  nbytes = bytes.size();
@@ -891,6 +914,10 @@ namespace satview {
 	  memset (mImgWebBuf+nbytes,0, mWebBufMax - nbytes);
 	}
         reply->deleteLater();
+	qDebug() << " img has " << nbytes << " butes";
+        if (nbytes < 500) {
+          qDebug() << mImgWebBuf;
+	}
 
     // Part 2: deal with the raw data
        if (nbytes > 0) {
