@@ -15,6 +15,7 @@
 #include "satpiclist.h"
 #include <time.h>
 #include <iostream>
+#include <QDebug>
 
 
 namespace satview {
@@ -168,6 +169,9 @@ namespace satview {
                    (rec.ident, pBuf));
        }
      } 
+    if (pDC) {
+      pDC->IndexWaitWakeup();
+    }
   }
 
   bool

@@ -286,6 +286,9 @@ namespace satview {
       return false;
     }
 #if SATVIEW_USE_QNET
+    if (Waiting()) {
+      return false;
+    }
     QString url ("http://");
     url.append(mServer.c_str());
     url.append("/test/satserv.php?fn=index");
@@ -622,7 +625,10 @@ namespace satview {
     chars_to_hex (key2, r.picname);
 
 #if SATVIEW_USE_QNET
-    string longUrl = mServer 
+    if (Waiting()) {
+      return 0;
+    }
+    string longUrl = "http://" + mServer 
                      + "/test/satserv.php?fn=item&k1="
                      + key1
                      + "&k2="
@@ -638,7 +644,6 @@ namespace satview {
       mWaitForImage = true;
       connect (mQMgr, SIGNAL(finished(QNetworkReply*)),
                this, SLOT(GetImageReply(QNetworkReply*)));
-      qDebug() << " set up wait for index";
       return 0;
     }
     return 0;
@@ -806,7 +811,9 @@ namespace satview {
   DBConnection::Waiting()
   {
 #if SATVIEW_USE_QNET
-    return mWaitForIndex || mWaitForImage;
+    bool waiting = mWaitForIndex || mWaitForImage;
+
+    return waiting;
 #else
     return false;
 #endif
@@ -817,9 +824,7 @@ namespace satview {
   void
   DBConnection::GetIndexReply (QNetworkReply *reply)
   {
-    qDebug() << " got index " ;
     if (mWaitForIndex && reply) {
-      qDebug() << " reply err " << reply->error();
       if (reply->error() == QNetworkReply::NoError) {
         QByteArray bytes = reply->readAll();
         qint64  nbytes = bytes.size();
@@ -832,7 +837,6 @@ namespace satview {
         if (nbytes < mWebBufMax) {
 	  memset (mWebBuf+nbytes,0, mWebBufMax - nbytes);
 	}
-	qDebug() << " index had " << nbytes << " bytes";
         reply->deleteLater();
         mWebResult = new istringstream(string(mWebBuf)); // copied TWICE, yuck
         /** to have the istringstream ready for reading index entries,	  
@@ -874,10 +878,9 @@ namespace satview {
   DBConnection::GetImageReply (QNetworkReply *reply)
   {
     // two parts: get the data, and parse them
-
     // Part 1: retrieve data
-
     if (mWaitForImage && reply) {
+      mWaitForImage = false;
       if (reply->error() == QNetworkReply::NoError) {
         QByteArray bytes = reply->readAll();
         qint64  nbytes = bytes.size();

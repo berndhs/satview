@@ -110,9 +110,6 @@ ControlPanel::ControlPanel (QApplication *pA)
     connect (saveFrameButton, SIGNAL(clicked()), this, SLOT(NotImplemented()));
 
     SatPicList::Instance()->DBConnect()->SetImageConsumer(this);
-    if (DBWaiting()) {
-      qDebug() << " db is waiting ";
-    }
 }
 
 ControlPanel::~ControlPanel()
@@ -138,7 +135,6 @@ void
 ControlPanel::update()
 {
   if (DBWaiting()) {
-    qDebug() << " DB waiting " ;
   }
   this->QDialog::update();
 }
@@ -190,16 +186,8 @@ ControlPanel::PicArrive (QImage * pImg)
 }
 
 void
-ControlPanel::ReallyShowPic ()
+ControlPanel::ShowIndexRec (SatPicBuf *pBuf)
 {
-  static SatPicBuf * pOldBuf(0);
-
-  SatPicBuf *pBuf = mPicState.pBuf;
-  QImage    *pI   = mPicState.pImg;
-  if (pDisplay) {
-    pDisplay->SetImage (pI,FrameTag(pBuf->Ident()));
-    pDisplay->update();
-  }
      
   time_t t = pBuf->Ident();
   SetIdentTag((berndsutil::toString(t)
@@ -218,7 +206,20 @@ ControlPanel::ReallyShowPic ()
   plain[len] = 0;
   SetDate (plain);
   SetPicname (pBuf->PicName().c_str());
-  update();
+}
+
+void
+ControlPanel::ReallyShowPic ()
+{
+  static SatPicBuf * pOldBuf(0);
+
+  SatPicBuf *pBuf = mPicState.pBuf;
+  QImage    *pI   = mPicState.pImg;
+  if (pDisplay) {
+    pDisplay->SetImage (pI,FrameTag(pBuf->Ident()));
+    pDisplay->update();
+  }
+  ShowIndexRec (pBuf);
   if (pApp) {
     pApp->processEvents();
   }
@@ -239,6 +240,9 @@ ControlPanel::ShowPic (SatPicBuf * pBuf)
     if (mPicState.waiting) {   // one at a time!
       return;
     }
+    if (DBWaiting()) {
+      return;
+    }
     mPicState.pBuf = pBuf;
     mPicState.failed = false;
     mPicState.waiting = true;
@@ -249,7 +253,7 @@ ControlPanel::ShowPic (SatPicBuf * pBuf)
       mPicState.pImg = pI;
       ReallyShowPic();
     } else {
-      qDebug() << " waiting " ;
+      ShowIndexRec(pBuf);
     }
   }
 
@@ -311,6 +315,19 @@ ControlPanel::EndTime(long int diff)
 }
 
 void
+ControlPanel::IndexWaitWakeup()
+{
+  mRunState.stopped = true;
+  stopButton->setEnabled(false);
+  SatPicList::Instance()->ToEnd();
+  SatPicBuf *pBuf = SatPicList::Instance()->Current();
+  if (pBuf) {
+    ShowPic(pBuf);
+    stopButton->setEnabled(DBWaiting());
+  }
+}
+
+void
 ControlPanel::DoStepFwd ()
 { 
   mRunState.stopped = true;
@@ -319,6 +336,7 @@ ControlPanel::DoStepFwd ()
   SatPicBuf *pBuf = SatPicList::Instance()->Current();
   if (pBuf) {
     ShowPic(pBuf);
+    stopButton->setEnabled(DBWaiting());
   }
 }
 
@@ -331,6 +349,7 @@ ControlPanel::DoStepBack ()
   SatPicBuf *pBuf = SatPicList::Instance()->Current();
   if (pBuf) {
     ShowPic(pBuf);
+    stopButton->setEnabled(DBWaiting());
   }
 }
 
@@ -410,6 +429,9 @@ ControlPanel::DoRunFwd (int secs, bool allway)
 void
 ControlPanel::FwdSome ()
 {
+  if (DBWaiting()) {
+    return;   // maybe later
+  }
   unsigned long int to = mRunState.timelimit;
   bool allway = mRunState.allway;
   bool oldStopped = mRunState.stopped;
@@ -434,12 +456,15 @@ ControlPanel::FwdSome ()
     currentDelay = showTimeDelay;
     showTimer.setInterval(showTimeDelay);
   }
-  stopButton->setEnabled(!mRunState.stopped);
+  stopButton->setEnabled (!mRunState.stopped || DBWaiting());
 }
 
 void
 ControlPanel::BackSome ()
 {
+  if (DBWaiting()) {
+    return;
+  }
   unsigned long int to = mRunState.timelimit;
   bool allway = mRunState.allway;
   bool oldStopped = mRunState.stopped;
@@ -463,7 +488,7 @@ ControlPanel::BackSome ()
     }
     showTimer.setInterval(showTimeDelay);
   }
-  stopButton->setEnabled(!mRunState.stopped);
+  stopButton->setEnabled (!mRunState.stopped || DBWaiting());
 }
 
 void
