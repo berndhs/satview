@@ -50,6 +50,7 @@ SOURCES += satpiclist.cpp satpicbuf.cpp \
 	textbox.cpp \
 	shapeframe.cpp \
 	frametypes.cpp \
+        checkpt.cpp \
 	controlpanel.cpp 
 
 
@@ -62,5 +63,6 @@ HEADERS += satpicbuf.h satpiclist.h dbconnect.h  \
 	frametypes.h \
 	shapeframe.h \
 	textbox.h \
+        checkpt.h \
 	berndsutil.h fault.h 
 

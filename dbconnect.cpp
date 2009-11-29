@@ -860,17 +860,12 @@ namespace satview {
   void
   DBConnection::DeliverBlob (char * data, qint64 len)
   {
-    sjdata blob_box;
-    blob_box.indata = data;
-    blob_box.inlen = len;
-    blob_box.cur_pos = 0;
-    Blob_Image *img = new Blob_Image(blob_box);
-    QImage * pImg = img;
     if (mBlobReceiver) {
       mBlobReceiver->ReceiveBlob(data,len);
-    }
-    if (mImgReceiver) {
-      mImgReceiver->PicArrive(pImg);
+      QImage *img = mBlobReceiver->Get_Image();
+      if (img && mImgReceiver) {
+        mImgReceiver->PicArrive(img);
+      }
     }
   }
 

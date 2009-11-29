@@ -2,7 +2,7 @@
 #include "satpiclist.h"
 #include "version.h"
 #include "satview-defaults.h"
-
+#include "checkpt.h"
 //
 //  Copyright (C) 2009 - Bernd H Stramm 
 //
@@ -87,6 +87,10 @@ main (int argc, char*argv[])
   string pass("quetzalcoatl");
   bool versionOnly(false);
 
+
+  QApplication App(argc, argv);
+  CheckPt::msg("have App");
+
   versionOnly = checkargs(argc,argv);
 
   /** @brief some elementary command line, 2 choices of image names.
@@ -96,11 +100,7 @@ main (int argc, char*argv[])
   std::cout << satview::Version() << std::endl;
   if (versionOnly) {
     return(0);
-  }
-
-  QApplication App(argc, argv);
-
-  ControlPanel Control (&App);
+  }  ControlPanel Control (&App);
 
   try {
     string conmeth;
@@ -129,6 +129,7 @@ main (int argc, char*argv[])
       Control.show();
       App.processEvents();
       App.exec();
+      CheckPt::msg("finished normally");
       return 0;
   } catch (berndsutil::Fault &F) {
    
