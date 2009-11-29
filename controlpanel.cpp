@@ -22,6 +22,7 @@
 #include "satpiclist.h"
 #include "satpicbuf.h"
 #include "version.h"
+#include <time.h>
 
 using namespace std;
 

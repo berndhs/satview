@@ -16,7 +16,7 @@ unix:CONFIG(debug, debug|release) {
   TARGET = cloudtrackd
 }
 win32:CONFIG(debug, debug|releast) {
-  LIBS += -lws2_32
+  LIBS += -lQtNetworkd
   TARGET = cloudtrackd
 }
 unix:CONFIG(release, debug|release) {
@@ -25,7 +25,7 @@ unix:CONFIG(release, debug|release) {
   TARGET = cloudtrackr
 }
 win32:CONFIG(release, debug|release) {
-  LIBS += -lws2_32
+  LIBS += -lQtNetwork
   TARGET = cloudtrackr
 }
 

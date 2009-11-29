@@ -11,7 +11,6 @@
 #include <QtNetwork/QNetworkRequest>
 #include <QDebug>
 #endif
-
 #include "satpicbuf.h"
 #include "satpiclist.h"
 #include "controlpanel.h"
@@ -289,12 +288,15 @@ namespace satview {
     if (Waiting()) {
       return false;
     }
-    QString url ("http://");
-    url.append(mServer.c_str());
-    url.append("/test/satserv.php?fn=index");
+    QUrl url;
+    url.setScheme("http");
+    url.setHost(mServer.c_str());
+    url.setPath("/test/satserv.php");
+    url.setEncodedQuery("fn=index");
+
     QNetworkRequest req;
-    req.setUrl(QUrl(url));
     req.setRawHeader("User-Agent","Maxwell Smart");
+    req.setUrl(url);
     if (mQMgr) {
       if (mWaitForIndex || mWaitForImage) {  // one at a time !
         return false;

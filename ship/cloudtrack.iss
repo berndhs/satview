@@ -5,7 +5,7 @@
 #define MyAppVerName "version 0.3"
 #define MyAppPublisher "Bernd Stramm"
 #define MyAppURL "http://www.bernd-stramm.com/"
-#define MyAppExeName "cloudtrack.exe"
+#define MyAppExeName "cloudtrackr.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -50,4 +50,3 @@ Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}; Filen
 [Run]
 Filename: {app}\vcredist_x86.exe
 Filename: {app}\{#MyAppExeName}; Description: {cm:LaunchProgram,{#MyAppName}}; Flags: nowait postinstall skipifsilent
-

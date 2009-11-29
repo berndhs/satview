@@ -2,7 +2,6 @@
 #include "satpiclist.h"
 #include "version.h"
 #include "satview-defaults.h"
-#include "checkpt.h"
 //
 //  Copyright (C) 2009 - Bernd H Stramm 
 //
@@ -80,7 +79,7 @@ bool
 int
 main (int argc, char*argv[])
 {
-  server = server1;
+  server = server2;
   method = DBConnection::Con_WebSock;
   string db("weather");
   string user("weather");
@@ -89,7 +88,6 @@ main (int argc, char*argv[])
 
 
   QApplication App(argc, argv);
-  CheckPt::msg("have App");
 
   versionOnly = checkargs(argc,argv);
 
@@ -100,7 +98,8 @@ main (int argc, char*argv[])
   std::cout << satview::Version() << std::endl;
   if (versionOnly) {
     return(0);
-  }  ControlPanel Control (&App);
+  }
+  ControlPanel Control (&App);
 
   try {
     string conmeth;
@@ -114,13 +113,12 @@ main (int argc, char*argv[])
       Control.SetPicname(DefaultFile);
       Control.SetServer(server);
       Control.SetConMeth(conmeth);
-
       SatPicList::Instance()->SetDBParams(method,
                                          server,
 					 db,
 					 user,
 					 pass,
-					 DefaultFile);
+                                         DefaultFile);
       SatPicList::Instance()->LoadFromDB();
       SatPicList::Instance()->SetControl (&Control);
       SatPicList::Instance()->Start();
@@ -129,7 +127,6 @@ main (int argc, char*argv[])
       Control.show();
       App.processEvents();
       App.exec();
-      CheckPt::msg("finished normally");
       return 0;
   } catch (berndsutil::Fault &F) {
    

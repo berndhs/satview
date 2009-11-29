@@ -17,8 +17,8 @@
  */
 
 #ifdef _MSC_VER
-#define SATVIEW_USE_QNET 0
-#define SATVIEW_USE_WINSOCK 1
+#define SATVIEW_USE_QNET 1
+#define SATVIEW_USE_WINSOCK 0
 #define SATVIEW_USE_GNUSOCK 0
 #define SATVIEW_USE_MYSQL 0
 #else
