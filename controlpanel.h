@@ -15,6 +15,7 @@
 #include "ui_control.h"
 #include "imagewin.h"
 #include "dbconnect.h"
+#include "satpiclist.h"
 #include <QApplication>
 #include <QTimer>
 #include <string>
@@ -101,6 +102,9 @@ Q_OBJECT
     void DoWindFwdHours () { DoWindFwd (6*3600);   }
 
     void ToggleConn();
+    void IndexWaitWakeup();
+
+    void PicArrive (QImage *pImg);
 
 
   private:
@@ -114,8 +118,20 @@ Q_OBJECT
       SatPicBuf         *pBuf;
     } RunState;
 
+    typedef struct {
+      SatPicBuf         *pBuf;
+      QImage            *pImg;
+      bool               waiting;
+      bool               failed;
+    } ShowPicState;
+
     void StartImage ();
     void ShowPic (SatPicBuf *pBuf);
+    void ShowIndexRec (SatPicBuf *pBuf);
+    void ReallyShowPic();
+
+    bool DBWaiting ();
+
     string GetBoxString (QPlainTextEdit * pBox);
     void SetIFLabel ();
    
@@ -137,6 +153,7 @@ Q_OBJECT
     int           currentDelay;
 
     RunState               mRunState;
+    ShowPicState           mPicState;
     string                 mPicname;
     string                 mServer;
     string                 mConMeth;
@@ -144,6 +161,7 @@ Q_OBJECT
     QString                mMethDirLabel;
     QString                mStateRunningText;
     QString                mStateStoppedText;
+    QString                mStateLoadingText;
     string                 mDate;
     string                 mIdFancy;
     DBConnection::Method   mMeth;

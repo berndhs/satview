@@ -6,6 +6,15 @@
 #if SATVIEW_USE_MYSQL
 #include <cppconn/prepared_statement.h>
 #endif
+#if SATVIEW_USE_QNET
+#include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QNetworkRequest>
+#include <QDebug>
+#endif
+
+#include "satpicbuf.h"
+#include "satpiclist.h"
+#include "controlpanel.h"
 
 //
 //  Copyright (C) 2009 - Bernd H Stramm 
@@ -22,7 +31,6 @@
 
 namespace satview {
 
-  //const int DBConnection::mWebBufMax(4*1024*1024);
 
   DBConnection::DBConnection ()
     :mMeth(Con_None),
@@ -31,6 +39,15 @@ namespace satview {
      mWebBytes(0)
  
   {
+    mIndexReceiver = 0;
+    mBlobReceiver = 0;
+    mImgReceiver = 0;
+#if SATVIEW_USE_QNET
+    mWaitForIndex = false;
+    mWaitForImage = false;
+    mQMgr = new QNetworkAccessManager (this);
+
+#endif
 #if SATVIEW_USE_MYSQL
     pDBCon = 0;
     pDBDriver = 0;
@@ -180,6 +197,9 @@ namespace satview {
   bool
   DBConnection::Attempt_Web_Connect ()
   {
+#if SATVIEW_USE_QNET
+    return true;   // and pray that it works later
+#endif
 #if SATVIEW_USE_GNUSOCK
      try {
 
@@ -265,6 +285,28 @@ namespace satview {
     if (!Attempt_Web_Connect()) {
       return false;
     }
+#if SATVIEW_USE_QNET
+    if (Waiting()) {
+      return false;
+    }
+    QString url ("http://");
+    url.append(mServer.c_str());
+    url.append("/test/satserv.php?fn=index");
+    QNetworkRequest req;
+    req.setUrl(QUrl(url));
+    req.setRawHeader("User-Agent","Maxwell Smart");
+    if (mQMgr) {
+      if (mWaitForIndex || mWaitForImage) {  // one at a time !
+        return false;
+      }
+      mExpectReply = mQMgr->get(req);
+      mWaitForIndex = true;
+      connect (mQMgr, SIGNAL(finished(QNetworkReply*)),
+               this, SLOT(GetIndexReply(QNetworkReply*)));
+      return true;
+    } 
+    return false;    
+#endif
     string client_msg;
     string proto (" HTTP/1.0 ");
     client_msg = "GET /test/satserv.php?fn=index " 
@@ -305,10 +347,10 @@ namespace satview {
 	   } while (chunk_read > 0 && buf_remain > 0);
 #endif
        if (numbytes > 0) {
-	     mWebBytes = numbytes;
+	 mWebBytes = numbytes;
          mWebIndex = 0;
          mHaveWebData = true;
-	     memset (mWebBuf+numbytes,0,mWebBufMax - numbytes);
+	 memset (mWebBuf+numbytes,0,mWebBufMax - numbytes);
          if (mWebResult) {
 	   delete mWebResult;
          }
@@ -503,9 +545,48 @@ namespace satview {
 
   }
 
+  void
+  DBConnection::hex_to_chars (char * result, 
+                              const char * inbuf, 
+                              int numchars)
+  {
+    unsigned char byte;
+    char hexnum[4];
+    memset (hexnum, 0, 4);
+    unsigned char nibble, nibble_val;
+    int b(0);
+    for (int i=0; i<numchars; i+=2) {
+      hexnum[0] = inbuf[i];
+      hexnum[1] = inbuf[i+1];
+      byte = 0;
+      for (int j=0;j<2;j++) {
+	nibble = hexnum[j];
+        if (nibble >= '0' && nibble <= '9') {
+	  nibble_val = nibble - '0';
+        } else if (nibble >= 'A' && nibble <= 'F') {
+          nibble_val = 10 + nibble - 'A';
+        } else if (nibble >= 'a' && nibble <= 'f') {
+          nibble_val = 10 + nibble - 'a';
+        } else {
+          nibble_val = 0;
+        }
+
+        byte = (byte << 4) | (nibble_val & 0x0f);     
+      }
+      result[b] = byte;
+      b++;
+    }
+
+  }
+
   bool
   DBConnection::ReadIndexRec_Web (IndexRecord &r)
   { // should be in the mWebBuf somewhere, starting at mWebIndex
+#if SATVIEW_USE_QNET
+    if (mWaitForIndex) {
+      return false;
+    }
+#endif
     string keyword;
     (*mWebResult) >> keyword;
     if (keyword != "record") {
@@ -542,6 +623,31 @@ namespace satview {
     string key1, key2;
     chars_to_hex (key1, berndsutil::toString(r.ident));
     chars_to_hex (key2, r.picname);
+
+#if SATVIEW_USE_QNET
+    if (Waiting()) {
+      return 0;
+    }
+    string longUrl = "http://" + mServer 
+                     + "/test/satserv.php?fn=item&k1="
+                     + key1
+                     + "&k2="
+                     + key2;
+    QNetworkRequest req;
+    req.setUrl(QUrl(longUrl.c_str()));
+    req.setRawHeader("User-Agent","Maxwell Smart");
+    if (mQMgr) {
+      if (mWaitForImage) {
+        return false;
+      }
+      mExpectReply = mQMgr->get(req);
+      mWaitForImage = true;
+      connect (mQMgr, SIGNAL(finished(QNetworkReply*)),
+               this, SLOT(GetImageReply(QNetworkReply*)));
+      return 0;
+    }
+    return 0;
+#endif
     client_msg = "GET /test/satserv.php?fn=item"
       + string ("&k1=") + key1
       + string ("&k2=") + key2
@@ -571,17 +677,17 @@ namespace satview {
 #endif
     if (numbytes > 0) {
       
-      memset (mWebBuf, 0, mWebBufMax);
+      memset (mImgWebBuf, 0, mWebBufMax);
 	  numbytes = 0;
 #if SATVIEW_USE_GNUSOCK
-      numbytes = pWebStream->read (mWebBuf, mWebBufMax);
+      numbytes = pWebStream->read (mImgWebBuf, mWebBufMax);
 #endif
 #if SATVIEW_USE_WINSOCK
       int chunk_read = 0;
 	  int chunk_start = 0;
 	  int buf_remain = mWebBufMax;
 	  do {
-	    chunk_read = recv (mWinSock, mWebBuf+chunk_start, buf_remain, 0);
+	    chunk_read = recv (mWinSock, mImgWebBuf+chunk_start, buf_remain, 0);
 	    chunk_start += chunk_read;
 	    buf_remain -= chunk_read;
 	    numbytes += chunk_read;
@@ -589,7 +695,7 @@ namespace satview {
 #endif
        if (numbytes > 0) {
          // eat the header
-         string wb(mWebBuf);
+         string wb(mImgWebBuf);
          istringstream * istr = new istringstream(wb); // copied TWICE, yuck
          /** to have the istringstream ready for reading index entries,
 	  * eat up everything until we have seen SATVIEW-INDEX
@@ -614,7 +720,7 @@ namespace satview {
            } while (x != 'x');
 
 	  /** len is the image length in bytes, have 2 hex digits per byte */
-	  hex_to_chars(simage, mWebBuf+istr->tellg(), len*2); 
+	  hex_to_chars(simage, mImgWebBuf+istr->tellg(), len*2); 
           delete istr;
          }
        }
@@ -700,5 +806,132 @@ namespace satview {
 #endif
     return false;    
   }
+
+  bool
+  DBConnection::Waiting()
+  {
+#if SATVIEW_USE_QNET
+    bool waiting = mWaitForIndex || mWaitForImage;
+
+    return waiting;
+#else
+    return false;
+#endif
+  }
+
+#if SATVIEW_USE_QNET
+
+  void
+  DBConnection::GetIndexReply (QNetworkReply *reply)
+  {
+    if (mWaitForIndex && reply) {
+      if (reply->error() == QNetworkReply::NoError) {
+        QByteArray bytes = reply->readAll();
+        qint64  nbytes = bytes.size();
+        nbytes = ((nbytes < mWebBufMax) ? nbytes : mWebBufMax) ;
+        memcpy (mWebBuf,bytes.data(),nbytes);
+        mWaitForIndex = false;
+        mWebBytes = nbytes;
+        mWebIndex = 0;         // index into mWebBuf
+        mHaveWebData = true;
+        if (nbytes < mWebBufMax) {
+	  memset (mWebBuf+nbytes,0, mWebBufMax - nbytes);
+	}
+        reply->deleteLater();
+        mWebResult = new istringstream(string(mWebBuf)); // copied TWICE, yuck
+        /** to have the istringstream ready for reading index entries,	  
+         * eat up everything until we have seen SATVIEW-INDEX
+	  */
+        string word;
+	while (!mWebResult->eof()) {
+          (*mWebResult) >> word;
+          if (word == "SATVIEW-INDEX") {
+	    break;
+	  }
+	}
+        if (mIndexReceiver) {
+          mIndexReceiver->LoadFromIndex();
+	}
+      }
+    }
+  }
+
+
+  void
+  DBConnection::DeliverBlob (char * data, qint64 len)
+  {
+    sjdata blob_box;
+    blob_box.indata = data;
+    blob_box.inlen = len;
+    blob_box.cur_pos = 0;
+    Blob_Image *img = new Blob_Image(blob_box);
+    QImage * pImg = img;
+    if (mBlobReceiver) {
+      mBlobReceiver->ReceiveBlob(data,len);
+    }
+    if (mImgReceiver) {
+      mImgReceiver->PicArrive(pImg);
+    }
+  }
+
+  void
+  DBConnection::GetImageReply (QNetworkReply *reply)
+  {
+    // two parts: get the data, and parse them
+    // Part 1: retrieve data
+    if (mWaitForImage && reply) {
+      mWaitForImage = false;
+      if (reply->error() == QNetworkReply::NoError) {
+        QByteArray bytes = reply->readAll();
+        qint64  nbytes = bytes.size();
+        nbytes = ((nbytes < mWebBufMax) ? nbytes : mWebBufMax) ;
+        memcpy (mImgWebBuf,bytes.data(),nbytes);
+        mWaitForImage = false;
+        mWebBytes = nbytes;
+        mWebIndex = 0;         // index into mImgWebBuf
+        mHaveWebData = true;
+        if (nbytes < mWebBufMax) {
+	  memset (mImgWebBuf+nbytes,0, mWebBufMax - nbytes);
+	}
+        reply->deleteLater();
+
+    // Part 2: deal with the raw data
+       if (nbytes > 0) {
+         // eat the header
+         string wb(mImgWebBuf);
+         istringstream * istr = new istringstream(wb); // copied TWICE, yuck
+         string word;
+	 while (!istr->eof()) {
+           (*istr) >> word;
+           if (word == "SATVIEW-ITEM") {
+	     break;
+	   }
+	 }
+         (*istr) >> word;
+         int len;
+         char x;
+         if (word == "LEN") {
+           (*istr) >> word;
+           len = berndsutil::fromString<int>(word);     
+           // eat characters until we saw an 'x'
+           x = 'a';
+           do {
+             istr->get(x);
+           } while (x != 'x');
+
+	  /** len is the image length in bytes, have 2 hex digits per byte */
+	   char * blobbytes = new char[len+1];
+	   hex_to_chars(blobbytes, mImgWebBuf+istr->tellg(), len*2);
+          DeliverBlob (blobbytes, len); 
+          delete istr;
+          delete blobbytes;
+         }
+       }
+      }
+    }
+  }
+
+
+#endif
 
 } // namespace

@@ -46,6 +46,7 @@ class SatPicBuf {
   QImage * Get_Image();  // don't call delete, call Forget_Image instead
 
   void           Forget_Image();  
+  void    ReceiveBlob (char * data, size_t len);
   
 
   unsigned long int Ident()   { return mIdent; }
