@@ -16,7 +16,7 @@ unix:CONFIG(debug, debug|release) {
   TARGET = cloudtrackd
 }
 win32:CONFIG(debug, debug|releast) {
-  LIBS += -lQtNetworkd
+  LIBS += -lQtNetworkd -lQtSqld
   TARGET = cloudtrackd
 }
 unix:CONFIG(release, debug|release) {
@@ -25,7 +25,7 @@ unix:CONFIG(release, debug|release) {
   TARGET = cloudtrackr
 }
 win32:CONFIG(release, debug|release) {
-  LIBS += -lQtNetwork
+  LIBS += -lQtNetwork -lQtSql
   TARGET = cloudtrackr
 }
 
@@ -35,8 +35,8 @@ TEMPLATE = app
 unix {
    INCLUDEPATH += /usr/local/include
    LIBPATH += /usr/local/lib
-   LIBS += -lmysqlcppconn -lccgnu2 -lQtNetwork
    DISTFILES += userman.txt userman.html
+   LIBS += -lQtNetwork -lQtSql
 }
 win32 {
 }

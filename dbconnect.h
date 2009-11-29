@@ -29,6 +29,14 @@
 #include <QtNetwork/QNetworkReply>
 #endif
 
+#if SATVIEW_USE_QSQL
+#include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlQuery>
+#include <QtSql/QSqlError>
+#include <QtSql/QSqlRecord>
+#include <QVariant>
+#endif
+
 #if SATVIEW_USE_GNUSOCK
 #include <cc++/socket.h>
 #include <cc++/address.h>
@@ -81,12 +89,12 @@ class IndexRecord {
 
 class DBConnection 
 
-#if SATVIEW_USE_QNET
+#if SATVIEW_USE_QNET || SATVIEW_USE_QSQL
   : public QObject
 #endif
                     {
 
-#if SATVIEW_USE_QNET
+#if SATVIEW_USE_QNET || SATVIEW_USE_QSQL
    Q_OBJECT
 #endif
 
@@ -169,6 +177,11 @@ class DBConnection
   sql::Connection* pDBCon;
   sql::Driver    * pDBDriver;
   sql::ResultSet * pIndexRes;
+#endif
+
+#if SATVIEW_USE_QSQL
+  QSqlDatabase   * pQDB;
+  QSqlQuery      * pIndexQuery;
 #endif
 
   istringstream * mWebResult;

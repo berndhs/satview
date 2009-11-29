@@ -12,20 +12,37 @@
 // of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
-/** @brief Can have USE_MYSQL and any USE_xyz_SOCK at the same time,
- * but not USE_this_SOCK and USE_that_SOCK. Only one kind of SOCK.
+/** @brief This file contains the preprocessor flags for including parts
+ *  of the code. Note that some are mutually exclusive, although that is
+ * not enforced here. 
+ * For example, we can only use one of the (..QNET ..._WINSOCK ..._GNUSOCK)
+ * and one of (.._MYSQL ..._QSQL) flags.
+ * If all of the (..SQL) flags are set to 0, then no direct sql interface is
+ * present. Similarly for the ...SOCK and ...QNET flags.
  */
 
 #ifdef _MSC_VER
+
+/* network interfaces */
 #define SATVIEW_USE_QNET 1
 #define SATVIEW_USE_WINSOCK 0
 #define SATVIEW_USE_GNUSOCK 0
+
+/* SQL interfaces */
 #define SATVIEW_USE_MYSQL 0
+#define SATVIEW_USE_QSQL 1
+
 #else
+
+/* network interfaces */
 #define SATVIEW_USE_QNET 1
 #define SATVIEW_USE_WINSOCK 0
 #define SATVIEW_USE_GNUSOCK 0
-#define SATVIEW_USE_MYSQL 1
+
+/* SQL interfaces */
+#define SATVIEW_USE_MYSQL 0
+#define SATVIEW_USE_QSQL 1
+
 #endif
 
 #define SATVIEW_USE_TEMPFILE 0

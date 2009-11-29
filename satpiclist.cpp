@@ -15,8 +15,6 @@
 #include "satpiclist.h"
 #include <time.h>
 #include <iostream>
-#include <QDebug>
-
 
 namespace satview {
 
@@ -323,7 +321,7 @@ namespace satview {
   SatPicList*
   SatPicList::Instance()
   {
-    if (!pTheOnly) {      
+    if (pTheOnly == 0) {
        pTheOnly = new SatPicList;
     }
     return pTheOnly;

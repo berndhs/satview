@@ -14,6 +14,7 @@
 #include "satpicbuf.h"
 #include "satpiclist.h"
 #include "controlpanel.h"
+#include <stdlib.h>
 
 //
 //  Copyright (C) 2009 - Bernd H Stramm 
@@ -61,6 +62,15 @@ namespace satview {
 	mWinAddr = 0;
 	mWinSock = INVALID_SOCKET;
 #endif
+#if SATVIEW_USE_QSQL
+    pQDB = new QSqlDatabase;
+    QString mymsg;
+    mymsg.setNum(reinterpret_cast<long int>(pQDB));
+    if (pQDB) {
+       *pQDB = QSqlDatabase::addDatabase("QMYSQL");
+    }
+    pIndexQuery = 0;
+#endif
 	mWebResult = 0;
   }
 
@@ -68,6 +78,16 @@ namespace satview {
   {
     /** @todo clean up sockets or DB connections
      */
+#if SATVIEW_USE_QSQL
+    if (pQDB) {
+      pQDB->close();
+      delete pQDB;
+    }
+    if (pIndexQuery) {
+      delete pIndexQuery;
+      pIndexQuery = 0;
+    }
+#endif
   }
 
   void
@@ -95,6 +115,13 @@ namespace satview {
 #if SATVIEW_USE_MYSQL
     if (pIndexRes) {
       delete pIndexRes;
+      pIndexRes = 0;
+    }
+#endif
+#if SATVIEW_USE_QSQL
+    if (pIndexQuery) {
+      delete pIndexQuery;
+      pIndexQuery = 0;
     }
 #endif
     if (mWebResult) {
@@ -112,7 +139,6 @@ namespace satview {
     mUser = user;
     mPass = pass;
     mDBname = db;
-
     if (mMeth == Con_MySqlCPP) {
       return ConnectDB_MYSQL(server,db,user,pass);
     }
@@ -142,9 +168,21 @@ namespace satview {
     if (pDBCon) {
       pDBCon->setSchema(db);
       return true;
+    } 
+#endif
+#if SATVIEW_USE_QSQL
+    if (pQDB) {
+       pQDB->setDatabaseName(db.c_str());
+       pQDB->setHostName(server.c_str());
+       pQDB->setUserName(user.c_str());
+       pQDB->setPassword(pass.c_str());
+       bool ok = pQDB->open();
+       return ok;
+    } else {
+       return false;
     }
 #endif
-    // if we get here, something failed
+    // if we get here, something failed, perhaps all SQL flags zero
     mServer="";
     mUser="";
     mPass="";
@@ -188,9 +226,24 @@ namespace satview {
       return false;
     }
     return true;
-#else
-    return false;
 #endif
+#if SATVIEW_USE_QSQL
+    if (pIndexQuery) {
+       pIndexQuery->clear();
+    } else {
+       pIndexQuery = new QSqlQuery(*pQDB);
+       if (pIndexQuery == 0) {
+          return false;
+       }
+    }
+    QString queryString
+        ("SELECT ident, storetime, remark, picname FROM `satpics` WHERE `picname` ='");
+    queryString.append(mPicname.c_str());
+    queryString.append("'");
+    bool ok = pIndexQuery->exec(queryString);
+    return ok;
+#endif
+    return false;
   }
 
   bool
@@ -417,6 +470,27 @@ namespace satview {
       return true;
     }
 #endif
+#if SATVIEW_USE_QSQL
+   if (pIndexQuery) {
+      bool ok = pIndexQuery->next();
+      if (!ok) {
+         return false;
+      }
+      QSqlRecord rec = pIndexQuery->record();
+      QVariant v;
+      v = pIndexQuery->value(rec.indexOf("storetime"));
+      r.storetime = string(v.toByteArray().data());
+      v = pIndexQuery->value(rec.indexOf("ident"));
+      r.ident = v.toLongLong();
+      v = pIndexQuery->value(rec.indexOf("remark"));
+      r.remark = string(v.toByteArray().data());
+      v = pIndexQuery->value(rec.indexOf("picname"));
+      r.picname = string(v.toByteArray().data());
+      return true;
+   } else {
+     return false;
+   }
+#endif
     return false;
   }
 
@@ -454,6 +528,30 @@ namespace satview {
       std::cout << e.what() << __LINE__ <<  std::endl;
       simage = "";    
     }
+#endif
+#if SATVIEW_USE_QSQL
+   if (pQDB == 0) {
+     return 0;
+   }
+   QSqlQuery ImgQuery(*pQDB);
+   QString q_str ("SELECT ident, image FROM `satpics` WHERE ident=");
+   QString num;
+   num.setNum(r.ident);
+   q_str.append(num);
+   q_str.append (" AND picname ='");
+   q_str.append (mPicname.c_str() );
+   q_str.append ("' ORDER BY ident DESC");
+   bool ok = ImgQuery.exec(q_str);
+   if (!ok) {
+     return 0;
+   }
+   ImgQuery.next();
+   QVariant v;
+   v = ImgQuery.value(1);
+   simage.clear();
+   int len = v.toByteArray().size();
+   simage = string(v.toByteArray().data(), len);
+   return len;
 #endif
     return 0;
   }  
