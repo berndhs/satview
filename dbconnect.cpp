@@ -64,8 +64,6 @@ namespace satview {
 #endif
 #if SATVIEW_USE_QSQL
     pQDB = new QSqlDatabase;
-    QString mymsg;
-    mymsg.setNum(reinterpret_cast<long int>(pQDB));
     if (pQDB) {
        *pQDB = QSqlDatabase::addDatabase("QMYSQL");
     }
@@ -82,6 +80,7 @@ namespace satview {
     if (pQDB) {
       pQDB->close();
       delete pQDB;
+      pQDB = 0;
     }
     if (pIndexQuery) {
       delete pIndexQuery;
@@ -100,6 +99,15 @@ namespace satview {
     if (pIndexRes) {
       delete pIndexRes;
       pIndexRes = 0;
+    }
+#endif
+#if SATVIEW_USE_QSQL
+    if (pIndexQuery) {
+      delete pIndexQuery;
+      pIndexQuery = 0;
+    }
+    if (pQDB) {
+      pQDB->close();
     }
 #endif
     if (mWebResult) {
