@@ -29,6 +29,7 @@ win32:CONFIG(release, debug|release) {
   TARGET = cloudtrackr
 }
 
+RESOURCES += cloudtrack.qrc
 
 TEMPLATE = app
 
