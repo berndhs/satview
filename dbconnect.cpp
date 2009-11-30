@@ -147,10 +147,10 @@ namespace satview {
     mUser = user;
     mPass = pass;
     mDBname = db;
-    if (mMeth == Con_MySqlCPP) {
+    if (mMeth == Con_MySql) {
       return ConnectDB_MYSQL(server,db,user,pass);
     }
-    if (mMeth == Con_WebSock) {
+    if (mMeth == Con_Web) {
       // connect socket now, or when loading index?
       // it could time out if we do it here
       return true; 
@@ -204,9 +204,9 @@ namespace satview {
   {
     mPicname = pic;
     switch (mMeth) {
-    case Con_MySqlCPP: 
+    case Con_MySql: 
       return Start_MYSQL_Index();
-    case Con_WebSock:
+    case Con_Web:
       return Start_Web_Index();
     default:
       break;
@@ -439,9 +439,9 @@ namespace satview {
   DBConnection::ReadIndexRec (IndexRecord &r)
   {
     switch (mMeth) {
-    case Con_WebSock:
+    case Con_Web:
       return ReadIndexRec_Web(r);
-    case Con_MySqlCPP:
+    case Con_MySql:
       return ReadIndexRec_MYSQL(r);
     default:
       break;
@@ -453,9 +453,9 @@ namespace satview {
   DBConnection::ReadImageData (IndexRecord &r, string & data)
   {
     switch (mMeth) {
-    case Con_WebSock:
+    case Con_Web:
       return ReadImageData_Web(r,data);
-    case Con_MySqlCPP:
+    case Con_MySql:
       return ReadImageData_MYSQL(r, data);
     default:
       break;
@@ -600,9 +600,9 @@ namespace satview {
       hexnum = hexbuf + i;
       byte = 0;
       for (int j=0;j<2;j++) {
-	nibble = hexnum[j];
+      	nibble = hexnum[j];
         if (nibble >= '0' && nibble <= '9') {
-	  nibble_val = nibble - '0';
+      	  nibble_val = nibble - '0';
         } else if (nibble >= 'A' && nibble <= 'F') {
           nibble_val = 10 + nibble - 'A';
         } else if (nibble >= 'a' && nibble <= 'f') {
@@ -635,9 +635,9 @@ namespace satview {
       hexnum[1] = inbuf[i+1];
       byte = 0;
       for (int j=0;j<2;j++) {
-	nibble = hexnum[j];
+      	nibble = hexnum[j];
         if (nibble >= '0' && nibble <= '9') {
-	  nibble_val = nibble - '0';
+      	  nibble_val = nibble - '0';
         } else if (nibble >= 'A' && nibble <= 'F') {
           nibble_val = 10 + nibble - 'A';
         } else if (nibble >= 'a' && nibble <= 'f') {
@@ -668,9 +668,9 @@ namespace satview {
       hexnum[1] = inbuf[i+1];
       byte = 0;
       for (int j=0;j<2;j++) {
-	nibble = hexnum[j];
+	      nibble = hexnum[j];
         if (nibble >= '0' && nibble <= '9') {
-	  nibble_val = nibble - '0';
+	        nibble_val = nibble - '0';
         } else if (nibble >= 'A' && nibble <= 'F') {
           nibble_val = 10 + nibble - 'A';
         } else if (nibble >= 'a' && nibble <= 'f') {
@@ -843,9 +843,9 @@ namespace satview {
   DBConnection::InsertRec (const IndexRecord &r, const string & data)
   {
     switch (mMeth) {
-    case Con_WebSock:
+    case Con_Web:
       return false;   // can't do it
-    case Con_MySqlCPP:
+    case Con_MySql:
       return InsertRec_MYSQL(r,data);
     default:
       break;
@@ -858,9 +858,9 @@ namespace satview {
                         const char* data)
   {
     switch (mMeth) {
-    case Con_WebSock:
+    case Con_Web:
       return false;   // can't do it
-    case Con_MySqlCPP:
+    case Con_MySql:
       return InsertRec_MYSQL(r, string(data));
     default:
       break;
@@ -911,6 +911,35 @@ namespace satview {
       delete pStmt;
     }
     return ok;
+#endif
+#if SATVIEW_USE_QSQL
+   if (pQDB == 0) {
+     return false;
+   }
+   if (pQDB) {
+     QSqlQuery InsertQuery(*pQDB);
+     QString q_str
+  	("INSERT INTO `satpics` ( ident, picname, storetime, remark, image ) VALUES (?,?,?,?,?) ");
+  	 InsertQuery.prepare(q_str);
+     QVariant v0, v1, v2, v3, v4;
+     v0.setValue(r.ident);
+     InsertQuery.bindValue (0,v0);
+     v1.setValue(QString(r.picname.c_str()));
+     InsertQuery.bindValue (1,v1);
+     v2.setValue (QString(r.storetime.c_str()));
+     InsertQuery.bindValue (2,v2);
+     v3.setValue (QString(r.remark.c_str()));
+     InsertQuery.bindValue (3,v3);
+     quint64 len = data.length();
+     QByteArray bytes (data.c_str(), len);
+     v4.setValue (bytes);
+     InsertQuery.bindValue(4,v4);
+     bool ok = InsertQuery.exec();
+     return ok;
+   } else {
+     return false;
+   }
+   
 #endif
     return false;    
   }

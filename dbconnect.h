@@ -13,7 +13,11 @@
 //
 
 //
+#if DO_COPYDB
+#include "copydb-config.h"
+#else
 #include "satview-config.h"
+#endif
 
 #include <string>
 #if SATVIEW_USE_MYSQL
@@ -21,6 +25,10 @@
 #include <cppconn/exception.h>
 #include <cppconn/resultset.h>
 #include <cppconn/statement.h>
+#endif
+
+#if SATVIEW_USE_QNET || SATVIEW_USE_QSQL
+#include <QObject>
 #endif
 
 #if SATVIEW_USE_QNET
@@ -106,8 +114,8 @@ class DBConnection
 
   enum Method {
     Con_None,
-    Con_WebSock,
-    Con_MySqlCPP,
+    Con_Web,
+    Con_MySql,
     Con_Bad
   };
 

@@ -1,4 +1,5 @@
-
+#include "copydb.h"
+#include "copydb-config.h"
 
 #include "dbconnect.h"
 #include "berndsutil.h"
@@ -109,14 +110,14 @@ main (int argc, char*argv[])
        << max_age << " secs)" 
        << endl;
   
-  DBin.SetMethod(DBConnection::Con_WebSock);
+  DBin.SetMethod(DBConnection::Con_Web);
   bool inok = DBin.ConnectDB(source_server,"weather",
                            "weather","quetzalcoatl");
   if (!inok) {
     cout << " can't open input DB " << endl;
     return (1);
   }
-  DBout.SetMethod(DBConnection::Con_MySqlCPP);
+  DBout.SetMethod(DBConnection::Con_MySql);
   bool outok = DBout.ConnectDB(dest_server,"weather",
 			     "weather","quetzalcoatl");
   if (!outok) {
