@@ -37,9 +37,10 @@ Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription
 Source: cloudtrackr.exe; DestDir: {app}; Flags: ignoreversion
 Source: D:\bernd\sample_codes\satview-qt\ship\copydb.exe; DestDir: {app}; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
-Source: D:\bernd\sample_codes\satview-qt\ship\vcredist_x86.exe; DestDir: {app}
-Source: C:\Qt\2009.04\qt\bin\QtCore4.dll; DestDir: {app}; Flags: ignoreversion
-Source: C:\Qt\2009.04\qt\bin\QtGui4.dll; DestDir: {app}; Flags: ignoreversion
+Source: vcredist_x86.exe; DestDir: {app}
+Source: C:\Qt\4.6.0\bin\QtCore4.dll; DestDir: {app}; Flags: ignoreversion
+Source: C:\Qt\4.6.0\bin\QtGui4.dll; DestDir: {app}; Flags: ignoreversion
+Source: C:\Qt\4.6.0\bin\QtNetwork4.dll; DestDir: {app}
 
 [Icons]
 Name: {group}\{#MyAppName}; Filename: {app}\{#MyAppExeName}
