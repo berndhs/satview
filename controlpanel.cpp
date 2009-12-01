@@ -11,7 +11,6 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty 
 // of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 //
-#include <QDebug>
 #include <iostream>
 #include <QMessageBox>
 #include <QTimer>
@@ -331,6 +330,9 @@ ControlPanel::IndexWaitWakeup()
 void
 ControlPanel::DoStepFwd ()
 { 
+  if (DBWaiting()) {
+    return;
+  }
   mRunState.stopped = true;
   stopButton->setEnabled(false);
   SatPicList::Instance()->Skip(1);
@@ -344,6 +346,9 @@ ControlPanel::DoStepFwd ()
 void
 ControlPanel::DoStepBack ()
 { 
+  if (DBWaiting()) {
+    return;
+  }
   mRunState.stopped = true;
   stopButton->setEnabled(false);
   SatPicList::Instance()->Skip(-1);
@@ -359,13 +364,15 @@ void
 ControlPanel::DoWindBack (int secs, bool allway)
 {
   unsigned long int to = EndTime ( - secs);
-  SatPicBuf *pBuf = SatPicList::Instance()->PostDecr();
   mRunState.timelimit = to;
   mRunState.allway = allway;
   mRunState.show = false;
   mRunState.stopped = false;
   mRunState.backwards = true;
-  mRunState.pBuf = pBuf;
+  if (!DBWaiting()) {
+    SatPicBuf *pBuf = SatPicList::Instance()->PostDecr();
+    mRunState.pBuf = pBuf;
+  }
   stopButton->setEnabled(true);
   currentDelay = noshowTimeDelay;
   showTimer.setInterval(noshowTimeDelay);
@@ -376,16 +383,18 @@ void
 ControlPanel::DoRunBack (int secs, bool allway)
 {
   unsigned long int to = EndTime ( - secs);
-  SatPicBuf *pBuf = SatPicList::Instance()->PostDecr();
-  if (pBuf) {
-    ShowPic(pBuf);
-  }
   mRunState.timelimit = to;
   mRunState.allway = allway;
   mRunState.show = true;
   mRunState.stopped = false;
   mRunState.backwards = true;
-  mRunState.pBuf = pBuf;
+  if (!DBWaiting()) {
+    SatPicBuf *pBuf = SatPicList::Instance()->PostDecr();
+    if (pBuf) {
+      ShowPic(pBuf);
+    }
+    mRunState.pBuf = pBuf;
+  }
   stopButton->setEnabled(true);
   currentDelay = showTimeDelay;
   showTimer.setInterval(showTimeDelay);
@@ -395,13 +404,15 @@ void
 ControlPanel::DoWindFwd (int secs, bool allway)
 {
   unsigned long int to = EndTime (+ secs);
-  SatPicBuf *pBuf = SatPicList::Instance()->PostIncr();
   mRunState.timelimit = to;
   mRunState.allway = allway;
   mRunState.show = false;
   mRunState.stopped = false;
   mRunState.backwards = false;
-  mRunState.pBuf = pBuf;
+  if (!DBWaiting()) {
+    SatPicBuf *pBuf = SatPicList::Instance()->PostIncr();
+    mRunState.pBuf = pBuf;
+  }
   stopButton->setEnabled(true);
   currentDelay = noshowTimeDelay;
   showTimer.setInterval(noshowTimeDelay);
@@ -412,16 +423,18 @@ void
 ControlPanel::DoRunFwd (int secs, bool allway)
 {
   unsigned long int to = EndTime (+ secs);
-  SatPicBuf *pBuf = SatPicList::Instance()->PostIncr();
-  if (pBuf) {
-    ShowPic(pBuf);
-  }
   mRunState.timelimit = to;
   mRunState.allway = allway;
   mRunState.show = true;
   mRunState.stopped = false;
   mRunState.backwards = false;
-  mRunState.pBuf = pBuf;
+  if (!DBWaiting()) {
+    SatPicBuf *pBuf = SatPicList::Instance()->PostIncr();
+    if (pBuf) {
+      ShowPic(pBuf);
+    }
+    mRunState.pBuf = pBuf;
+  }
   stopButton->setEnabled(true);
   currentDelay = showTimeDelay;
   showTimer.setInterval(showTimeDelay);
@@ -507,7 +520,7 @@ ControlPanel::DoShowMove ()
   } else {
     runStatusLabel->setText (mRunState.stopped ?
                              mStateStoppedText
-			   : mStateRunningText);
+                  			   : mStateRunningText);
   }
   if (!mRunState.stopped) {
     showTimer.stop();     /** don't want to get called twice */
@@ -544,7 +557,7 @@ ControlPanel::ReloadDB ()
   SatPicList::Instance()->SetMethod(mMeth);
   SatPicList::Instance()->Ditch();
   bool loadedok = SatPicList::Instance()->LoadFromDB();
-  if (!loadedok) {
+  if (!loadedok && !DBWaiting()) {
      QMessageBox msgBox;
      QTimer::singleShot(15000, &msgBox, SLOT(accept()));
      string badmsg = "Cannot Load from Server '" + mServer
@@ -552,8 +565,10 @@ ControlPanel::ReloadDB ()
      msgBox.setText(badmsg.c_str());
      msgBox.exec();
   }
-  DoWindFwd(0,true);
-  DoStepFwd();
+  if (!DBWaiting()) {
+    DoWindFwd(0,true);
+    DoStepFwd();
+  }
   update();
 }
 
@@ -642,9 +657,9 @@ ControlPanel::SetConMeth (string cm)
 {
   bool is_dir = (cm == "dir");
   mConMeth = cm;
-  mMeth = DBConnection::Con_WebSock;    // safer
+  mMeth = DBConnection::Con_Web;    // safer
   if (is_dir) {
-    mMeth = DBConnection::Con_MySqlCPP;
+    mMeth = DBConnection::Con_MySql;
   }
   SetIFLabel();
   return mConMeth;
@@ -661,10 +676,10 @@ ControlPanel::SetIFLabel ()
 {
   QString newlabel;
   switch (mMeth) {
-  case DBConnection::Con_WebSock:
+  case DBConnection::Con_Web:
     newlabel = mMethWebLabel;
     break;
-  case DBConnection::Con_MySqlCPP:
+  case DBConnection::Con_MySql:
     newlabel = mMethDirLabel;
     break;
   default:
@@ -677,12 +692,12 @@ void
 ControlPanel::ToggleConn ()
 {
   switch (mMeth) {
-  case DBConnection::Con_WebSock:
-    mMeth = DBConnection::Con_MySqlCPP;
+  case DBConnection::Con_Web:
+    mMeth = DBConnection::Con_MySql;
     break;
-  case DBConnection::Con_MySqlCPP:
+  case DBConnection::Con_MySql:
   default:
-    mMeth = DBConnection::Con_WebSock;
+    mMeth = DBConnection::Con_Web;
     break;
   }
   SetIFLabel();

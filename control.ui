@@ -1794,21 +1794,31 @@ Frame</string>
   <widget class="QLabel" name="runStatusLabel">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>6</x>
      <y>290</y>
-     <width>61</width>
+     <width>80</width>
      <height>22</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>11</pointsize>
+     <family>Sans Serif</family>
+     <pointsize>10</pointsize>
      <weight>50</weight>
      <bold>false</bold>
     </font>
    </property>
    <property name="autoFillBackground">
     <bool>true</bool>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Panel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Plain</enum>
+   </property>
+   <property name="lineWidth">
+    <number>1</number>
    </property>
    <property name="text">
     <string>Status</string>

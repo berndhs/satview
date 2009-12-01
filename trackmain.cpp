@@ -2,6 +2,7 @@
 #include "satpiclist.h"
 #include "version.h"
 #include "satview-defaults.h"
+#include "checkpt.h"
 //
 //  Copyright (C) 2009 - Bernd H Stramm 
 //
@@ -55,10 +56,10 @@ bool
       server = server2;
     }
     if (ar == "web") {
-      method = DBConnection::Con_WebSock;
+      method = DBConnection::Con_Web;
     }
     if (ar == "dir") {
-      method = DBConnection::Con_MySqlCPP;
+      method = DBConnection::Con_MySql;
     }
     if (ar == "-v" || ar == "--version") {
       return true;
@@ -80,7 +81,7 @@ int
 main (int argc, char*argv[])
 {
   server = server2;
-  method = DBConnection::Con_WebSock;
+  method = DBConnection::Con_Web;
   string db("weather");
   string user("weather");
   string pass("quetzalcoatl");
@@ -100,12 +101,13 @@ main (int argc, char*argv[])
     return(0);
   }
   ControlPanel Control (&App);
+ CheckPt::msg("Have App");
 
   try {
     string conmeth;
-    if (method == DBConnection::Con_MySqlCPP) {
+    if (method == DBConnection::Con_MySql) {
       conmeth = "dir";
-    } else if (method == DBConnection::Con_WebSock) {
+    } else if (method == DBConnection::Con_Web) {
       conmeth = "web";
     } else {
       conmeth = "none";

@@ -141,8 +141,8 @@ class DBConnection
 
   public slots:
 
-    void GetIndexReply (QNetworkReply *reply);
-    void GetImageReply (QNetworkReply *reply);
+    void GetIndexReply (QNetworkReply *reply = 0);
+    void GetImageReply (QNetworkReply *reply = 0);
 
 #endif
 
@@ -202,7 +202,8 @@ class DBConnection
   SatPicList             *mIndexReceiver;
 #if SATVIEW_USE_QNET
   QNetworkAccessManager  *mQMgr;
-  QNetworkReply          *mExpectReply;
+  QNetworkReply          *mExpectIndexReply;
+  QNetworkReply          *mExpectImgReply;
   bool                    mWaitForIndex;
   bool                    mWaitForImage;
 #endif

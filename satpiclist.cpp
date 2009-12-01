@@ -159,6 +159,9 @@ namespace satview {
   {
     IndexRecord rec;
     SatPicBuf * pBuf;
+    if (DBCon.Waiting()){
+      return;
+    }
     while (DBCon.ReadIndexRec( rec)) {
        if (rec.picname == mPicfilename) {
          pBuf = new SatPicBuf (rec.ident, rec.picname,
@@ -180,7 +183,7 @@ namespace satview {
       SatPicBuf::SetDBCon(&DBCon);
       haveDB = DBCon.LoadIndex(mPicfilename);
       
-      if (haveDB) {      
+      if (haveDB ) {      
         LoadFromIndex();
         haveDB = mBufMap.size() > 0;
       }

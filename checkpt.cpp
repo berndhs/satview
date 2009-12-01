@@ -1,5 +1,7 @@
 #include "checkpt.h"
 #include <QTimer>
+#include <QAbstractButton>
+#include <QPushButton>
 
 //
 //  Copyright (C) 2009 - Bernd H Stramm 
@@ -29,9 +31,20 @@ void
 CheckPt::DoPopupBox()
 {
   QMessageBox box;
+  QAbstractButton *okButton = box.addButton(QMessageBox::Ok);
+  QAbstractButton *crashButton = box.addButton("Crash",
+                                  QMessageBox::ActionRole);
+  QAbstractButton *exitButton = box.addButton("Exit",
+                                  QMessageBox::ActionRole);
   box.setText("Check: " + theMsg);
   QTimer::singleShot(10000,&box,SLOT(accept()));
   box.exec();
+  if (box.clickedButton() == crashButton) {
+     abort();
+  }
+  if (box.clickedButton() == exitButton) {
+     exit(1);
+  }
 }
 
 

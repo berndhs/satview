@@ -77,14 +77,15 @@ namespace satview {
     /** @todo clean up sockets or DB connections
      */
 #if SATVIEW_USE_QSQL
+    if (pIndexQuery) {
+      pIndexQuery->clear();
+      delete pIndexQuery;
+      pIndexQuery = 0;
+    }
     if (pQDB) {
       pQDB->close();
       delete pQDB;
       pQDB = 0;
-    }
-    if (pIndexQuery) {
-      delete pIndexQuery;
-      pIndexQuery = 0;
     }
 #endif
   }
@@ -362,10 +363,10 @@ namespace satview {
       if (mWaitForIndex || mWaitForImage) {  // one at a time !
         return false;
       }
-      mExpectReply = mQMgr->get(req);
+      mExpectIndexReply = mQMgr->get(req);
       mWaitForIndex = true;
-      connect (mQMgr, SIGNAL(finished(QNetworkReply*)),
-               this, SLOT(GetIndexReply(QNetworkReply*)));
+      connect (mExpectIndexReply, SIGNAL(finished()),
+               this, SLOT(GetIndexReply()));
       return true;
     } 
     return false;    
@@ -726,8 +727,6 @@ namespace satview {
   size_t
   DBConnection::ReadImageData_Web (IndexRecord &r, string & simage)
   {
-    string client_msg;
-    string proto (" HTTP/1.0 ");
     string key1, key2;
     chars_to_hex (key1, berndsutil::toString(r.ident));
     chars_to_hex (key2, r.picname);
@@ -748,14 +747,16 @@ namespace satview {
       if (mWaitForImage) {
         return false;
       }
-      mExpectReply = mQMgr->get(req);
+      mExpectImgReply = mQMgr->get(req);
       mWaitForImage = true;
-      connect (mQMgr, SIGNAL(finished(QNetworkReply*)),
-               this, SLOT(GetImageReply(QNetworkReply*)));
+      connect (mExpectImgReply, SIGNAL(finished()),
+               this, SLOT(GetImageReply()));
       return 0;
     }
     return 0;
 #endif
+    string client_msg;
+    string proto (" HTTP/1.0 ");
     client_msg = "GET /test/satserv.php?fn=item"
       + string ("&k1=") + key1
       + string ("&k2=") + key2
@@ -961,6 +962,9 @@ namespace satview {
   void
   DBConnection::GetIndexReply (QNetworkReply *reply)
   {
+    if (reply == 0) {
+      reply = mExpectIndexReply;
+    }
     if (mWaitForIndex && reply) {
       if (reply->error() == QNetworkReply::NoError) {
         QByteArray bytes = reply->readAll();
@@ -1011,6 +1015,9 @@ namespace satview {
   {
     // two parts: get the data, and parse them
     // Part 1: retrieve data
+    if (reply == 0) {
+       reply = mExpectImgReply;
+    }
     if (mWaitForImage && reply) {
       mWaitForImage = false;
       if (reply->error() == QNetworkReply::NoError) {
@@ -1023,8 +1030,8 @@ namespace satview {
         mWebIndex = 0;         // index into mImgWebBuf
         mHaveWebData = true;
         if (nbytes < mWebBufMax) {
-	  memset (mImgWebBuf+nbytes,0, mWebBufMax - nbytes);
-	}
+      	  memset (mImgWebBuf+nbytes,0, mWebBufMax - nbytes);
+      	}
         reply->deleteLater();
 
     // Part 2: deal with the raw data
@@ -1033,35 +1040,35 @@ namespace satview {
          string wb(mImgWebBuf);
          istringstream * istr = new istringstream(wb); // copied TWICE, yuck
          string word;
-	 while (!istr->eof()) {
+      	 while (!istr->eof()) {
            (*istr) >> word;
            if (word == "SATVIEW-ITEM") {
-	     break;
-	   }
-	 }
-         (*istr) >> word;
-         int len;
-         char x;
-         if (word == "LEN") {
-           (*istr) >> word;
-           len = berndsutil::fromString<int>(word);     
+      	     break;
+      	   }
+      	 }
+        (*istr) >> word;
+        int len;
+        char x;
+        if (word == "LEN") {
+          (*istr) >> word;
+          len = berndsutil::fromString<int>(word);     
            // eat characters until we saw an 'x'
-           x = 'a';
-           do {
-             istr->get(x);
-           } while (x != 'x');
+          x = 'a';
+          do {
+            istr->get(x);
+          } while (x != 'x');
 
-	  /** len is the image length in bytes, have 2 hex digits per byte */
-	   char * blobbytes = new char[len+1];
-	   hex_to_chars(blobbytes, mImgWebBuf+istr->tellg(), len*2);
+	       /** len is the image length in bytes, have 2 hex digits per byte */
+  	      char * blobbytes = new char[len+1];
+  	      hex_to_chars(blobbytes, mImgWebBuf+istr->tellg(), len*2);
           DeliverBlob (blobbytes, len); 
           delete istr;
           delete blobbytes;
-         }
-       }
+        }
       }
     }
-  }
+   }
+}
 
 
 #endif

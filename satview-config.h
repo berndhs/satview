@@ -28,23 +28,23 @@
 
 #ifdef _MSC_VER
 
-/* network interfaces */
+/* network interfaces - no more than one */
 #define SATVIEW_USE_QNET 1
 #define SATVIEW_USE_WINSOCK 0
 #define SATVIEW_USE_GNUSOCK 0
 
-/* SQL interfaces */
+/* SQL interfaces - no more than one */
 #define SATVIEW_USE_MYSQL 0
-#define SATVIEW_USE_QSQL 1
+#define SATVIEW_USE_QSQL 0
 
 #else
 
-/* network interfaces */
+/* network interfaces - no more than one */
 #define SATVIEW_USE_QNET 1
 #define SATVIEW_USE_WINSOCK 0
 #define SATVIEW_USE_GNUSOCK 0
 
-/* SQL interfaces */
+/* SQL interfaces - no more than one */
 #define SATVIEW_USE_MYSQL 0
 #define SATVIEW_USE_QSQL 1
 
