@@ -16,7 +16,7 @@ unix:CONFIG(debug, debug|release) {
   TARGET = cloudtrackd
 }
 win32:CONFIG(debug, debug|releast) {
-  LIBS += -lQtNetworkd -lQtSqld
+  LIBS += -lQtNetworkd
   TARGET = cloudtrackd
 }
 unix:CONFIG(release, debug|release) {
@@ -25,11 +25,10 @@ unix:CONFIG(release, debug|release) {
   TARGET = cloudtrackr
 }
 win32:CONFIG(release, debug|release) {
-  LIBS += -lQtNetwork -lQtSql
+  LIBS += -lQtNetwork
   TARGET = cloudtrackr
 }
 
-RESOURCES += cloudtrack.qrc
 
 TEMPLATE = app
 
