@@ -12,19 +12,23 @@
 # //
 CONFIG += qt debug_and_release
 unix:CONFIG(debug, debug|release) {
+  DEFINES += SATVIEW_DEBUG
   QMAKE_CXXFLAGS += -pedantic -Wextra
   TARGET = cloudtrackd
 }
 win32:CONFIG(debug, debug|releast) {
+  DEFINES += SATVIEW_DEBUG
   LIBS += -lQtNetworkd -lQtSqld
   TARGET = cloudtrackd
 }
 unix:CONFIG(release, debug|release) {
+  DEFINES += SATVIEW_RELEASE
   QMAKE_CFLAGS_RELEASE -= -g
   QMAKE_CXXFLAGS_RELEASE -= -g
   TARGET = cloudtrackr
 }
 win32:CONFIG(release, debug|release) {
+  DEFINES += SATVIEW_RELEASE
   LIBS += -lQtNetwork -lQtSql
   TARGET = cloudtrackr
 }

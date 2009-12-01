@@ -101,7 +101,7 @@ main (int argc, char*argv[])
     return(0);
   }
   ControlPanel Control (&App);
- CheckPt::msg("Have App");
+
 
   try {
     string conmeth;
