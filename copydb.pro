@@ -19,10 +19,12 @@ DPENDPATH += .
 DISFILES += Doxyfile
 INCLUDEPATH += /usr/local/include 
 LIBPATH += /usr/local/lib
-unix:LIBS += -lmysqlcppconn -lccgnu2
+unix:LIBS += -lccgnu2 -lQtSql 
 win32:LIBS += -lws2_32
 unix:copydb.path = $(HOME)/bin/
 unix:INSTALLS += copydb
+
+DEFINES += DO_COPYDB=1
 
 FORMS += 
 SOURCES += dbconnect.cpp copydb.cpp

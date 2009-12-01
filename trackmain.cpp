@@ -2,7 +2,7 @@
 #include "satpiclist.h"
 #include "version.h"
 #include "satview-defaults.h"
-
+#include "checkpt.h"
 //
 //  Copyright (C) 2009 - Bernd H Stramm 
 //
@@ -56,10 +56,10 @@ bool
       server = server2;
     }
     if (ar == "web") {
-      method = DBConnection::Con_WebSock;
+      method = DBConnection::Con_Web;
     }
     if (ar == "dir") {
-      method = DBConnection::Con_MySqlCPP;
+      method = DBConnection::Con_MySql;
     }
     if (ar == "-v" || ar == "--version") {
       return true;
@@ -80,12 +80,15 @@ bool
 int
 main (int argc, char*argv[])
 {
-  server = server1;
-  method = DBConnection::Con_WebSock;
+  server = server2;
+  method = DBConnection::Con_Web;
   string db("weather");
   string user("weather");
   string pass("quetzalcoatl");
   bool versionOnly(false);
+
+
+  QApplication App(argc, argv);
 
   versionOnly = checkargs(argc,argv);
 
@@ -97,16 +100,14 @@ main (int argc, char*argv[])
   if (versionOnly) {
     return(0);
   }
-
-  QApplication App(argc, argv);
-
   ControlPanel Control (&App);
+ CheckPt::msg("Have App");
 
   try {
     string conmeth;
-    if (method == DBConnection::Con_MySqlCPP) {
+    if (method == DBConnection::Con_MySql) {
       conmeth = "dir";
-    } else if (method == DBConnection::Con_WebSock) {
+    } else if (method == DBConnection::Con_Web) {
       conmeth = "web";
     } else {
       conmeth = "none";
@@ -114,13 +115,12 @@ main (int argc, char*argv[])
       Control.SetPicname(DefaultFile);
       Control.SetServer(server);
       Control.SetConMeth(conmeth);
-
       SatPicList::Instance()->SetDBParams(method,
                                          server,
 					 db,
 					 user,
 					 pass,
-					 DefaultFile);
+                                         DefaultFile);
       SatPicList::Instance()->LoadFromDB();
       SatPicList::Instance()->SetControl (&Control);
       SatPicList::Instance()->Start();

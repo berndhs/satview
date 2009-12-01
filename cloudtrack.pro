@@ -16,7 +16,7 @@ unix:CONFIG(debug, debug|release) {
   TARGET = cloudtrackd
 }
 win32:CONFIG(debug, debug|releast) {
-  LIBS += -lws2_32
+  LIBS += -lQtNetworkd -lQtSqld
   TARGET = cloudtrackd
 }
 unix:CONFIG(release, debug|release) {
@@ -25,18 +25,19 @@ unix:CONFIG(release, debug|release) {
   TARGET = cloudtrackr
 }
 win32:CONFIG(release, debug|release) {
-  LIBS += -lws2_32
+  LIBS += -lQtNetwork -lQtSql
   TARGET = cloudtrackr
 }
 
+RESOURCES += cloudtrack.qrc
 
 TEMPLATE = app
 
 unix {
    INCLUDEPATH += /usr/local/include
    LIBPATH += /usr/local/lib
-   LIBS += -lmysqlcppconn -lccgnu2 -lQtNetwork
    DISTFILES += userman.txt userman.html
+   LIBS += -lQtNetwork -lQtSql
 }
 win32 {
 }
@@ -50,6 +51,7 @@ SOURCES += satpiclist.cpp satpicbuf.cpp \
 	textbox.cpp \
 	shapeframe.cpp \
 	frametypes.cpp \
+        checkpt.cpp \
 	controlpanel.cpp 
 
 
@@ -62,5 +64,6 @@ HEADERS += satpicbuf.h satpiclist.h dbconnect.h  \
 	frametypes.h \
 	shapeframe.h \
 	textbox.h \
+        checkpt.h \
 	berndsutil.h fault.h 
 

@@ -5,7 +5,7 @@
 #define MyAppVerName "version 0.3"
 #define MyAppPublisher "Bernd Stramm"
 #define MyAppURL "http://www.bernd-stramm.com/"
-#define MyAppExeName "cloudtrack.exe"
+#define MyAppExeName "cloudtrackr.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -34,7 +34,7 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
 
 [Files]
-Source: D:\bernd\sample_codes\satview-qt\ship\cloudtrack.exe; DestDir: {app}; Flags: ignoreversion
+Source: cloudtrackr.exe; DestDir: {app}; Flags: ignoreversion
 Source: D:\bernd\sample_codes\satview-qt\ship\copydb.exe; DestDir: {app}; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 Source: D:\bernd\sample_codes\satview-qt\ship\vcredist_x86.exe; DestDir: {app}
@@ -50,4 +50,3 @@ Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}; Filen
 [Run]
 Filename: {app}\vcredist_x86.exe
 Filename: {app}\{#MyAppExeName}; Description: {cm:LaunchProgram,{#MyAppName}}; Flags: nowait postinstall skipifsilent
-

@@ -17,7 +17,6 @@
 #include <iostream>
 #include <QDebug>
 
-
 namespace satview {
 
   SatPicList* SatPicList::pTheOnly (0);
@@ -161,6 +160,9 @@ namespace satview {
   {
     IndexRecord rec;
     SatPicBuf * pBuf;
+    if (DBCon.Waiting()){
+      return;
+    }
     while (DBCon.ReadIndexRec( rec)) {
        if (rec.picname == mPicfilename) {
          pBuf = new SatPicBuf (rec.ident, rec.picname,
@@ -182,7 +184,7 @@ namespace satview {
       SatPicBuf::SetDBCon(&DBCon);
       haveDB = DBCon.LoadIndex(mPicfilename);
       
-      if (haveDB) {      
+      if (haveDB ) {      
         LoadFromIndex();
         haveDB = mBufMap.size() > 0;
       }
@@ -323,7 +325,7 @@ namespace satview {
   SatPicList*
   SatPicList::Instance()
   {
-    if (!pTheOnly) {      
+    if (pTheOnly == 0) {
        pTheOnly = new SatPicList;
     }
     return pTheOnly;

@@ -64,6 +64,11 @@ function give_image($db_con, $ident, $picname)
 
 function report_bad_request ()
 {
+if (isset ($berndscounterisdefined)) {
+   if ($berndscounterisdefined == "yesitis") {
+      count_serve('query bad: ' . $_SERVER['PHP_SELF'] . ' ' . $funct);
+   }
+}
 }
 
 

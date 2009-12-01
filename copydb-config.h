@@ -1,5 +1,6 @@
-#ifndef SATVIEW_CONFIG_H
-#define SATVIEW_CONFIG_H
+#ifndef COPYDB_CONFIG_H
+#define COPYDB_CONFIG_H
+
 
 //
 //  Copyright (C) 2009 - Bernd H Stramm 
@@ -21,35 +22,31 @@
  * present. Similarly for the ...SOCK and ...QNET flags.
  */
 
-#if DO_COPYDB
-  // don't do anything, it's done someplace else
-  #warning "Compiling CopyDB version"
-#else
+#define DO_COPYDB 1
 
 #ifdef _MSC_VER
 
-/* network interfaces - no more than one */
-#define SATVIEW_USE_QNET 1
-#define SATVIEW_USE_WINSOCK 0
+/* network interfaces - no more than 1 */
+#define SATVIEW_USE_QNET 0
+#define SATVIEW_USE_WINSOCK 1
 #define SATVIEW_USE_GNUSOCK 0
 
-/* SQL interfaces - no more than one */
+/* direct SQL interfaces - no more than 1 */
 #define SATVIEW_USE_MYSQL 0
 #define SATVIEW_USE_QSQL 0
 
 #else
 
-/* network interfaces - no more than one */
-#define SATVIEW_USE_QNET 1
+/* network interfaces - no more than 1 */
+#define SATVIEW_USE_QNET 0
 #define SATVIEW_USE_WINSOCK 0
-#define SATVIEW_USE_GNUSOCK 0
+#define SATVIEW_USE_GNUSOCK 1
 
-/* SQL interfaces - no more than one */
+/* direct SQL interfaces - no more than 1 */
 #define SATVIEW_USE_MYSQL 0
 #define SATVIEW_USE_QSQL 1
 
 #endif
-
 
 #if (SATVIEW_USE_QNET) + (SATVIEW_USE_WINSOCK) + (SATVIEW_USE_GNUSOCK) > 1
 #error "Cannot use more than one Network interface"
@@ -57,7 +54,6 @@
 #if (SATVIEW_USE_MYSQL) + (SATVIEW_USE_QSQL) > 1
 #error "Cannot use more than one SQL Interface"
 #endif
-
 
 #define SATVIEW_USE_TEMPFILE 0
 
@@ -67,8 +63,6 @@
 #else
 #define TMP_JPG_FILE "/tmp/tmp.jpg"
 #endif
-#endif
-
 #endif
 
 #endif

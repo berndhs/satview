@@ -11,10 +11,10 @@
 #include <QtNetwork/QNetworkRequest>
 #include <QDebug>
 #endif
-
 #include "satpicbuf.h"
 #include "satpiclist.h"
 #include "controlpanel.h"
+#include <stdlib.h>
 
 //
 //  Copyright (C) 2009 - Bernd H Stramm 
@@ -62,6 +62,13 @@ namespace satview {
 	mWinAddr = 0;
 	mWinSock = INVALID_SOCKET;
 #endif
+#if SATVIEW_USE_QSQL
+    pQDB = new QSqlDatabase;
+    if (pQDB) {
+       *pQDB = QSqlDatabase::addDatabase("QMYSQL");
+    }
+    pIndexQuery = 0;
+#endif
 	mWebResult = 0;
   }
 
@@ -69,6 +76,18 @@ namespace satview {
   {
     /** @todo clean up sockets or DB connections
      */
+#if SATVIEW_USE_QSQL
+    if (pIndexQuery) {
+      pIndexQuery->clear();
+      delete pIndexQuery;
+      pIndexQuery = 0;
+    }
+    if (pQDB) {
+      pQDB->close();
+      delete pQDB;
+      pQDB = 0;
+    }
+#endif
   }
 
   void
@@ -81,6 +100,15 @@ namespace satview {
     if (pIndexRes) {
       delete pIndexRes;
       pIndexRes = 0;
+    }
+#endif
+#if SATVIEW_USE_QSQL
+    if (pIndexQuery) {
+      delete pIndexQuery;
+      pIndexQuery = 0;
+    }
+    if (pQDB) {
+      pQDB->close();
     }
 #endif
     if (mWebResult) {
@@ -96,6 +124,13 @@ namespace satview {
 #if SATVIEW_USE_MYSQL
     if (pIndexRes) {
       delete pIndexRes;
+      pIndexRes = 0;
+    }
+#endif
+#if SATVIEW_USE_QSQL
+    if (pIndexQuery) {
+      delete pIndexQuery;
+      pIndexQuery = 0;
     }
 #endif
     if (mWebResult) {
@@ -113,11 +148,10 @@ namespace satview {
     mUser = user;
     mPass = pass;
     mDBname = db;
-
-    if (mMeth == Con_MySqlCPP) {
+    if (mMeth == Con_MySql) {
       return ConnectDB_MYSQL(server,db,user,pass);
     }
-    if (mMeth == Con_WebSock) {
+    if (mMeth == Con_Web) {
       // connect socket now, or when loading index?
       // it could time out if we do it here
       return true; 
@@ -143,9 +177,21 @@ namespace satview {
     if (pDBCon) {
       pDBCon->setSchema(db);
       return true;
+    } 
+#endif
+#if SATVIEW_USE_QSQL
+    if (pQDB) {
+       pQDB->setDatabaseName(db.c_str());
+       pQDB->setHostName(server.c_str());
+       pQDB->setUserName(user.c_str());
+       pQDB->setPassword(pass.c_str());
+       bool ok = pQDB->open();
+       return ok;
+    } else {
+       return false;
     }
 #endif
-    // if we get here, something failed
+    // if we get here, something failed, perhaps all SQL flags zero
     mServer="";
     mUser="";
     mPass="";
@@ -159,9 +205,9 @@ namespace satview {
   {
     mPicname = pic;
     switch (mMeth) {
-    case Con_MySqlCPP: 
+    case Con_MySql: 
       return Start_MYSQL_Index();
-    case Con_WebSock:
+    case Con_Web:
       return Start_Web_Index();
     default:
       break;
@@ -189,9 +235,24 @@ namespace satview {
       return false;
     }
     return true;
-#else
-    return false;
 #endif
+#if SATVIEW_USE_QSQL
+    if (pIndexQuery) {
+       pIndexQuery->clear();
+    } else {
+       pIndexQuery = new QSqlQuery(*pQDB);
+       if (pIndexQuery == 0) {
+          return false;
+       }
+    }
+    QString queryString
+        ("SELECT ident, storetime, remark, picname FROM `satpics` WHERE `picname` ='");
+    queryString.append(mPicname.c_str());
+    queryString.append("'");
+    bool ok = pIndexQuery->exec(queryString);
+    return ok;
+#endif
+    return false;
   }
 
   bool
@@ -289,20 +350,22 @@ namespace satview {
     if (Waiting()) {
       return false;
     }
-    QString url ("http://");
-    url.append(mServer.c_str());
-    url.append("/test/satserv.php?fn=index");
+    QUrl url;
+    url.setScheme("http");
+    url.setHost(mServer.c_str());
+    url.setPath("/test/satserv.php");
+    url.setEncodedQuery("fn=index");
     QNetworkRequest req;
-    req.setUrl(QUrl(url));
     req.setRawHeader("User-Agent","Maxwell Smart");
+    req.setUrl(url);
     if (mQMgr) {
       if (mWaitForIndex || mWaitForImage) {  // one at a time !
         return false;
       }
-      mExpectReply = mQMgr->get(req);
+      mExpectIndexReply = mQMgr->get(req);
       mWaitForIndex = true;
-      connect (mQMgr, SIGNAL(finished(QNetworkReply*)),
-               this, SLOT(GetIndexReply(QNetworkReply*)));
+      connect (mExpectIndexReply, SIGNAL(finished()),
+               this, SLOT(GetIndexReply()));
       return true;
     } 
     return false;    
@@ -376,9 +439,9 @@ namespace satview {
   DBConnection::ReadIndexRec (IndexRecord &r)
   {
     switch (mMeth) {
-    case Con_WebSock:
+    case Con_Web:
       return ReadIndexRec_Web(r);
-    case Con_MySqlCPP:
+    case Con_MySql:
       return ReadIndexRec_MYSQL(r);
     default:
       break;
@@ -390,9 +453,9 @@ namespace satview {
   DBConnection::ReadImageData (IndexRecord &r, string & data)
   {
     switch (mMeth) {
-    case Con_WebSock:
+    case Con_Web:
       return ReadImageData_Web(r,data);
-    case Con_MySqlCPP:
+    case Con_MySql:
       return ReadImageData_MYSQL(r, data);
     default:
       break;
@@ -414,6 +477,27 @@ namespace satview {
       r.picname = pIndexRes->getString("picname");
       return true;
     }
+#endif
+#if SATVIEW_USE_QSQL
+   if (pIndexQuery) {
+      bool ok = pIndexQuery->next();
+      if (!ok) {
+         return false;
+      }
+      QSqlRecord rec = pIndexQuery->record();
+      QVariant v;
+      v = pIndexQuery->value(rec.indexOf("storetime"));
+      r.storetime = string(v.toByteArray().data());
+      v = pIndexQuery->value(rec.indexOf("ident"));
+      r.ident = v.toLongLong();
+      v = pIndexQuery->value(rec.indexOf("remark"));
+      r.remark = string(v.toByteArray().data());
+      v = pIndexQuery->value(rec.indexOf("picname"));
+      r.picname = string(v.toByteArray().data());
+      return true;
+   } else {
+     return false;
+   }
 #endif
     return false;
   }
@@ -452,6 +536,30 @@ namespace satview {
       std::cout << e.what() << __LINE__ <<  std::endl;
       simage = "";    
     }
+#endif
+#if SATVIEW_USE_QSQL
+   if (pQDB == 0) {
+     return 0;
+   }
+   QSqlQuery ImgQuery(*pQDB);
+   QString q_str ("SELECT ident, image FROM `satpics` WHERE ident=");
+   QString num;
+   num.setNum(r.ident);
+   q_str.append(num);
+   q_str.append (" AND picname ='");
+   q_str.append (mPicname.c_str() );
+   q_str.append ("' ORDER BY ident DESC");
+   bool ok = ImgQuery.exec(q_str);
+   if (!ok) {
+     return 0;
+   }
+   ImgQuery.next();
+   QVariant v;
+   v = ImgQuery.value(1);
+   simage.clear();
+   int len = v.toByteArray().size();
+   simage = string(v.toByteArray().data(), len);
+   return len;
 #endif
     return 0;
   }  
@@ -492,9 +600,9 @@ namespace satview {
       hexnum = hexbuf + i;
       byte = 0;
       for (int j=0;j<2;j++) {
-	nibble = hexnum[j];
+      	nibble = hexnum[j];
         if (nibble >= '0' && nibble <= '9') {
-	  nibble_val = nibble - '0';
+      	  nibble_val = nibble - '0';
         } else if (nibble >= 'A' && nibble <= 'F') {
           nibble_val = 10 + nibble - 'A';
         } else if (nibble >= 'a' && nibble <= 'f') {
@@ -527,9 +635,9 @@ namespace satview {
       hexnum[1] = inbuf[i+1];
       byte = 0;
       for (int j=0;j<2;j++) {
-	nibble = hexnum[j];
+      	nibble = hexnum[j];
         if (nibble >= '0' && nibble <= '9') {
-	  nibble_val = nibble - '0';
+      	  nibble_val = nibble - '0';
         } else if (nibble >= 'A' && nibble <= 'F') {
           nibble_val = 10 + nibble - 'A';
         } else if (nibble >= 'a' && nibble <= 'f') {
@@ -560,9 +668,9 @@ namespace satview {
       hexnum[1] = inbuf[i+1];
       byte = 0;
       for (int j=0;j<2;j++) {
-	nibble = hexnum[j];
+	      nibble = hexnum[j];
         if (nibble >= '0' && nibble <= '9') {
-	  nibble_val = nibble - '0';
+	        nibble_val = nibble - '0';
         } else if (nibble >= 'A' && nibble <= 'F') {
           nibble_val = 10 + nibble - 'A';
         } else if (nibble >= 'a' && nibble <= 'f') {
@@ -618,8 +726,6 @@ namespace satview {
   size_t
   DBConnection::ReadImageData_Web (IndexRecord &r, string & simage)
   {
-    string client_msg;
-    string proto (" HTTP/1.0 ");
     string key1, key2;
     chars_to_hex (key1, berndsutil::toString(r.ident));
     chars_to_hex (key2, r.picname);
@@ -640,14 +746,16 @@ namespace satview {
       if (mWaitForImage) {
         return false;
       }
-      mExpectReply = mQMgr->get(req);
+      mExpectImgReply = mQMgr->get(req);
       mWaitForImage = true;
-      connect (mQMgr, SIGNAL(finished(QNetworkReply*)),
-               this, SLOT(GetImageReply(QNetworkReply*)));
+      connect (mExpectImgReply, SIGNAL(finished()),
+               this, SLOT(GetImageReply()));
       return 0;
     }
     return 0;
 #endif
+    string client_msg;
+    string proto (" HTTP/1.0 ");
     client_msg = "GET /test/satserv.php?fn=item"
       + string ("&k1=") + key1
       + string ("&k2=") + key2
@@ -735,9 +843,9 @@ namespace satview {
   DBConnection::InsertRec (const IndexRecord &r, const string & data)
   {
     switch (mMeth) {
-    case Con_WebSock:
+    case Con_Web:
       return false;   // can't do it
-    case Con_MySqlCPP:
+    case Con_MySql:
       return InsertRec_MYSQL(r,data);
     default:
       break;
@@ -750,9 +858,9 @@ namespace satview {
                         const char* data)
   {
     switch (mMeth) {
-    case Con_WebSock:
+    case Con_Web:
       return false;   // can't do it
-    case Con_MySqlCPP:
+    case Con_MySql:
       return InsertRec_MYSQL(r, string(data));
     default:
       break;
@@ -804,6 +912,35 @@ namespace satview {
     }
     return ok;
 #endif
+#if SATVIEW_USE_QSQL
+   if (pQDB == 0) {
+     return false;
+   }
+   if (pQDB) {
+     QSqlQuery InsertQuery(*pQDB);
+     QString q_str
+  	("INSERT INTO `satpics` ( ident, picname, storetime, remark, image ) VALUES (?,?,?,?,?) ");
+  	 InsertQuery.prepare(q_str);
+     QVariant v0, v1, v2, v3, v4;
+     v0.setValue(r.ident);
+     InsertQuery.bindValue (0,v0);
+     v1.setValue(QString(r.picname.c_str()));
+     InsertQuery.bindValue (1,v1);
+     v2.setValue (QString(r.storetime.c_str()));
+     InsertQuery.bindValue (2,v2);
+     v3.setValue (QString(r.remark.c_str()));
+     InsertQuery.bindValue (3,v3);
+     quint64 len = data.length();
+     QByteArray bytes (data.c_str(), len);
+     v4.setValue (bytes);
+     InsertQuery.bindValue(4,v4);
+     bool ok = InsertQuery.exec();
+     return ok;
+   } else {
+     return false;
+   }
+   
+#endif
     return false;    
   }
 
@@ -824,6 +961,9 @@ namespace satview {
   void
   DBConnection::GetIndexReply (QNetworkReply *reply)
   {
+    if (reply == 0) {
+      reply = mExpectIndexReply;
+    }
     if (mWaitForIndex && reply) {
       if (reply->error() == QNetworkReply::NoError) {
         QByteArray bytes = reply->readAll();
@@ -860,17 +1000,12 @@ namespace satview {
   void
   DBConnection::DeliverBlob (char * data, qint64 len)
   {
-    sjdata blob_box;
-    blob_box.indata = data;
-    blob_box.inlen = len;
-    blob_box.cur_pos = 0;
-    Blob_Image *img = new Blob_Image(blob_box);
-    QImage * pImg = img;
     if (mBlobReceiver) {
       mBlobReceiver->ReceiveBlob(data,len);
-    }
-    if (mImgReceiver) {
-      mImgReceiver->PicArrive(pImg);
+      QImage *img = mBlobReceiver->Get_Image();
+      if (img && mImgReceiver) {
+        mImgReceiver->PicArrive(img);
+      }
     }
   }
 
@@ -879,6 +1014,9 @@ namespace satview {
   {
     // two parts: get the data, and parse them
     // Part 1: retrieve data
+    if (reply == 0) {
+       reply = mExpectImgReply;
+    }
     if (mWaitForImage && reply) {
       mWaitForImage = false;
       if (reply->error() == QNetworkReply::NoError) {
@@ -891,8 +1029,8 @@ namespace satview {
         mWebIndex = 0;         // index into mImgWebBuf
         mHaveWebData = true;
         if (nbytes < mWebBufMax) {
-	  memset (mImgWebBuf+nbytes,0, mWebBufMax - nbytes);
-	}
+      	  memset (mImgWebBuf+nbytes,0, mWebBufMax - nbytes);
+      	}
         reply->deleteLater();
 
     // Part 2: deal with the raw data
@@ -901,35 +1039,35 @@ namespace satview {
          string wb(mImgWebBuf);
          istringstream * istr = new istringstream(wb); // copied TWICE, yuck
          string word;
-	 while (!istr->eof()) {
+      	 while (!istr->eof()) {
            (*istr) >> word;
            if (word == "SATVIEW-ITEM") {
-	     break;
-	   }
-	 }
-         (*istr) >> word;
-         int len;
-         char x;
-         if (word == "LEN") {
-           (*istr) >> word;
-           len = berndsutil::fromString<int>(word);     
+      	     break;
+      	   }
+      	 }
+        (*istr) >> word;
+        int len;
+        char x;
+        if (word == "LEN") {
+          (*istr) >> word;
+          len = berndsutil::fromString<int>(word);     
            // eat characters until we saw an 'x'
-           x = 'a';
-           do {
-             istr->get(x);
-           } while (x != 'x');
+          x = 'a';
+          do {
+            istr->get(x);
+          } while (x != 'x');
 
-	  /** len is the image length in bytes, have 2 hex digits per byte */
-	   char * blobbytes = new char[len+1];
-	   hex_to_chars(blobbytes, mImgWebBuf+istr->tellg(), len*2);
+	       /** len is the image length in bytes, have 2 hex digits per byte */
+  	      char * blobbytes = new char[len+1];
+  	      hex_to_chars(blobbytes, mImgWebBuf+istr->tellg(), len*2);
           DeliverBlob (blobbytes, len); 
           delete istr;
           delete blobbytes;
-         }
-       }
+        }
       }
     }
-  }
+   }
+}
 
 
 #endif

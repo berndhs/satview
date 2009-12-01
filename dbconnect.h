@@ -13,7 +13,11 @@
 //
 
 //
+#if DO_COPYDB
+#include "copydb-config.h"
+#else
 #include "satview-config.h"
+#endif
 
 #include <string>
 #if SATVIEW_USE_MYSQL
@@ -23,10 +27,22 @@
 #include <cppconn/statement.h>
 #endif
 
+#if SATVIEW_USE_QNET || SATVIEW_USE_QSQL
+#include <QObject>
+#endif
+
 #if SATVIEW_USE_QNET
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>
+#endif
+
+#if SATVIEW_USE_QSQL
+#include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlQuery>
+#include <QtSql/QSqlError>
+#include <QtSql/QSqlRecord>
+#include <QVariant>
 #endif
 
 #if SATVIEW_USE_GNUSOCK
@@ -81,12 +97,12 @@ class IndexRecord {
 
 class DBConnection 
 
-#if SATVIEW_USE_QNET
+#if SATVIEW_USE_QNET || SATVIEW_USE_QSQL
   : public QObject
 #endif
                     {
 
-#if SATVIEW_USE_QNET
+#if SATVIEW_USE_QNET || SATVIEW_USE_QSQL
    Q_OBJECT
 #endif
 
@@ -98,8 +114,8 @@ class DBConnection
 
   enum Method {
     Con_None,
-    Con_WebSock,
-    Con_MySqlCPP,
+    Con_Web,
+    Con_MySql,
     Con_Bad
   };
 
@@ -125,8 +141,8 @@ class DBConnection
 
   public slots:
 
-    void GetIndexReply (QNetworkReply *reply);
-    void GetImageReply (QNetworkReply *reply);
+    void GetIndexReply (QNetworkReply *reply = 0);
+    void GetImageReply (QNetworkReply *reply = 0);
 
 #endif
 
@@ -171,6 +187,11 @@ class DBConnection
   sql::ResultSet * pIndexRes;
 #endif
 
+#if SATVIEW_USE_QSQL
+  QSqlDatabase   * pQDB;
+  QSqlQuery      * pIndexQuery;
+#endif
+
   istringstream * mWebResult;
   int    mWebIndex;
   bool   mHaveWebData;
@@ -181,7 +202,8 @@ class DBConnection
   SatPicList             *mIndexReceiver;
 #if SATVIEW_USE_QNET
   QNetworkAccessManager  *mQMgr;
-  QNetworkReply          *mExpectReply;
+  QNetworkReply          *mExpectIndexReply;
+  QNetworkReply          *mExpectImgReply;
   bool                    mWaitForIndex;
   bool                    mWaitForImage;
 #endif
