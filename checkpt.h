@@ -24,6 +24,9 @@ class CheckPt  {
   CheckPt (QString m);
   CheckPt (const char * m);
   CheckPt ();
+  
+  static bool Silent(bool s=true) { silent=s; return silent; }
+  static bool Verbose (bool v=true) { silent = !v; return !silent; }
 
   static void msg (std::string m)
            {
@@ -48,6 +51,8 @@ class CheckPt  {
     
 
  private:
+ 
+  static bool silent;
 
   void DoPopupBox();
 
