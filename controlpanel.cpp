@@ -23,6 +23,8 @@
 #include "version.h"
 #include <time.h>
 
+#include "satview-debug.h"
+
 using namespace std;
 
 namespace satview  {
@@ -53,6 +55,7 @@ ControlPanel::ControlPanel (QApplication *pA)
     mRunState.show   = true;
     mRunState.backwards = false;
     mRunState.stopped = true;
+    mRunState.pBuf    = 0;
     mPicState.waiting = false;
     mPicState.failed  = false;
     mPicState.pBuf    = 0;
@@ -317,6 +320,7 @@ ControlPanel::EndTime(long int diff)
 void
 ControlPanel::IndexWaitWakeup()
 {
+CheckPt::msg ("index wakeup");
   mRunState.stopped = true;
   stopButton->setEnabled(false);
   SatPicList::Instance()->ToEnd();

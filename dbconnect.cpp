@@ -963,6 +963,7 @@ namespace satview {
   void
   DBConnection::GetIndexReply (QNetworkReply *reply)
   {
+  CheckPt::msg("index coming back");
     if (reply == 0) {
       reply = mExpectIndexReply;
     }
@@ -1016,6 +1017,7 @@ namespace satview {
   {
     // two parts: get the data, and parse them
     // Part 1: retrieve data
+    CheckPt::msg("image coming back");
     if (reply == 0) {
        reply = mExpectImgReply;
     }
@@ -1064,7 +1066,7 @@ namespace satview {
   	      hex_to_chars(blobbytes, mImgWebBuf+istr->tellg(), len*2);
           DeliverBlob (blobbytes, len); 
           delete istr;
-          delete blobbytes;
+          delete[] blobbytes;
         }
       }
     }
