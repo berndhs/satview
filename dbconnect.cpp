@@ -9,12 +9,13 @@
 #if SATVIEW_USE_QNET
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkRequest>
-#include <QDebug>
 #endif
 #include "satpicbuf.h"
 #include "satpiclist.h"
 #include "controlpanel.h"
 #include <stdlib.h>
+
+#include "satview-debug.h"
 
 //
 //  Copyright (C) 2009 - Bernd H Stramm 

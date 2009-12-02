@@ -2,7 +2,7 @@
 #include "satpiclist.h"
 #include "version.h"
 #include "satview-defaults.h"
-#include "checkpt.h"
+#include "satview-debug.h"
 //
 //  Copyright (C) 2009 - Bernd H Stramm 
 //
@@ -101,7 +101,7 @@ main (int argc, char*argv[])
     return(0);
   }
   ControlPanel Control (&App);
- CheckPt::msg("Have App");
+
 
   try {
     string conmeth;

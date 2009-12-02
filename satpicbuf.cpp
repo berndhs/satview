@@ -22,7 +22,7 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
-#include <QDebug>
+#include "satview-debug.h"
 
 
 namespace satview {
