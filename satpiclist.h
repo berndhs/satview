@@ -22,6 +22,10 @@
 #include "fault.h"
 #include "dbconnect.h"
 
+#if SATVIEW_USE_QNET
+#include <QObject>
+#endif
+
 
 namespace satview {
 
@@ -31,7 +35,15 @@ namespace satview {
 
 
 
-class SatPicList {
+class SatPicList
+#if SATVIEW_USE_QNET
+            : public QObject
+#endif
+             {
+
+#if SATVIEW_USE_QNET
+Q_OBJECT
+#endif
 
  private:
 
@@ -58,7 +70,6 @@ class SatPicList {
   bool LoadFromDB();
   bool ConnectDB();
 
-  void LoadFromIndex();
 
   void Ditch();
 
@@ -81,6 +92,12 @@ class SatPicList {
   SatPicBuf* FindSet (unsigned long int sec_stamp);  // DOES affect iterators
 
   void Start();
+  
+#if SATVIEW_USE_QNET
+  public slots:
+  
+  void LoadFromIndex();
+#endif
 
  private:
 

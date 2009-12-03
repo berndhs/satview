@@ -23,6 +23,8 @@
 #include "version.h"
 #include <time.h>
 
+#include "satview-debug.h"
+
 using namespace std;
 
 namespace satview  {
@@ -53,6 +55,7 @@ ControlPanel::ControlPanel (QApplication *pA)
     mRunState.show   = true;
     mRunState.backwards = false;
     mRunState.stopped = true;
+    mRunState.pBuf    = 0;
     mPicState.waiting = false;
     mPicState.failed  = false;
     mPicState.pBuf    = 0;
@@ -109,12 +112,15 @@ ControlPanel::ControlPanel (QApplication *pA)
 	     this, SLOT(FinishPolygon()));
     connect (saveFrameButton, SIGNAL(clicked()), this, SLOT(NotImplemented()));
 
-    SatPicList::Instance()->DBConnect()->SetImageConsumer(this);
 }
 
 ControlPanel::~ControlPanel()
 {
   quit();
+  if (pDisplay) {
+    delete pDisplay;
+    pDisplay = 0;
+  }
 }
 
 void
@@ -248,6 +254,10 @@ ControlPanel::ShowPic (SatPicBuf * pBuf)
     mPicState.waiting = true;
     mPicState.pImg = 0;
     QImage *pI = pBuf->Get_Image();
+    if (pI == 0) {
+      connect (pBuf, SIGNAL(ImageArrival(QImage *)),
+               this, SLOT(PicArrive(QImage *)));
+    }
     if (pI) {
       mPicState.waiting = false;
       mPicState.pImg = pI;

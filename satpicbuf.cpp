@@ -101,25 +101,48 @@ namespace satview {
     IndexRecord rec;
     rec.ident = mIdent;
     rec.picname = mPicname;
-    pDBCon->SetBlobConsumer(this);
     mImageLen = pDBCon->ReadImageData (rec, simage);
+#if SATVIEW_USE_QNET
+    connect (pDBCon,SIGNAL(BlobArrival(char*, quint64)),
+                this,SLOT(ReceiveBlob(char*, quint64)));
+#endif
     if (mImageLen > 0) {
       mBlob = new char[mImageLen + sizeof(void*)];
       memcpy (mBlob, simage.c_str(), mImageLen);
     }
     return mImageLen > 0;
   }
+  
+  
+  QImage *
+  SatPicBuf::UnpackImage () {
+    sjdata blob_box;
+    blob_box.indata = mBlob;
+    blob_box.inlen = mImageLen;
+    blob_box.cur_pos = 0; 
+    mDisplayBuf =  new Blob_Image(blob_box);    
+    QImage * pImage = mDisplayBuf;
+    mHaveRGB = (pImage != 0);
+    return pImage;
+  }
+  
+#if SATVIEW_USE_QNET
 
   void
-  SatPicBuf::ReceiveBlob (char * data, size_t len)
+  SatPicBuf::ReceiveBlob (char * data, quint64 len)
   {
+    disconnect (pDBCon,0,this,SLOT(ReceiveBlob(char*, quint64)));
     if (len > 0) {
       mImageLen = len;
       mBlob = new char[len + sizeof(void*)];
       memcpy (mBlob, data, len);
       mHaveBlob = true;
+      delete[] data;
+      QImage *pImg = UnpackImage();
+      emit ImageArrival(pImg);
     }
   }
+#endif
 
   /** @brief Get_Image - get an RGB image if we have one,
    * otherwise make one from decomressing the blob from the 
@@ -148,20 +171,13 @@ namespace satview {
     string tmpname(TMP_JPG_FILE);
     tmpfile.open(tmpname.c_str(), ios::out | ios::binary);
     tmpfile.write (mBlob,mImageSize);
-	if (tmpfile.bad()) {
-		cout << "cannot write temp file " << tmpname << endl;
-	}
+  	if (tmpfile.bad()) {
+  		cout << "cannot write temp file " << tmpname << endl;
+  	}
     tmpfile.close();
     #endif 
 
-    sjdata blob_box;
-    blob_box.indata = mBlob;
-    blob_box.inlen = mImageLen;
-    blob_box.cur_pos = 0; 
-    mDisplayBuf =  new Blob_Image(blob_box);    
-    QImage * pImage = mDisplayBuf;
-    mHaveRGB = (pImage != 0);
-    return pImage;
+    return UnpackImage(); 
   }
 
   /** @brief This needs access to the Connection, to load the 

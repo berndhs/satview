@@ -473,9 +473,9 @@ Image</string>
    <widget class="QPushButton" name="runBackButton">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>3</x>
       <y>20</y>
-      <width>81</width>
+      <width>79</width>
       <height>31</height>
      </rect>
     </property>
@@ -486,7 +486,7 @@ Image</string>
    <widget class="QPushButton" name="backWeekButton">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>1</x>
       <y>60</y>
       <width>83</width>
       <height>28</height>
@@ -499,7 +499,7 @@ Image</string>
    <widget class="QPushButton" name="backDayButton">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>1</x>
       <y>90</y>
       <width>83</width>
       <height>28</height>
@@ -512,7 +512,7 @@ Image</string>
    <widget class="QPushButton" name="backHoursButton">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>1</x>
       <y>120</y>
       <width>83</width>
       <height>28</height>
@@ -525,7 +525,7 @@ Image</string>
    <widget class="QPushButton" name="backStepButton">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>1</x>
       <y>150</y>
       <width>83</width>
       <height>28</height>
@@ -551,9 +551,9 @@ Image</string>
    <widget class="QPushButton" name="runForwardButton">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>3</x>
       <y>20</y>
-      <width>81</width>
+      <width>79</width>
       <height>31</height>
      </rect>
     </property>
@@ -564,7 +564,7 @@ Image</string>
    <widget class="QPushButton" name="forwardWeekButton">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>1</x>
       <y>60</y>
       <width>83</width>
       <height>28</height>
@@ -577,7 +577,7 @@ Image</string>
    <widget class="QPushButton" name="forwardDayButton">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>1</x>
       <y>90</y>
       <width>83</width>
       <height>28</height>
@@ -590,7 +590,7 @@ Image</string>
    <widget class="QPushButton" name="forwardHoursButton">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>1</x>
       <y>120</y>
       <width>83</width>
       <height>28</height>
@@ -603,7 +603,7 @@ Image</string>
    <widget class="QPushButton" name="forwardStepButton">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>1</x>
       <y>150</y>
       <width>83</width>
       <height>28</height>
@@ -629,7 +629,7 @@ Image</string>
    <widget class="QPushButton" name="windBackWeekButton">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>1</x>
       <y>20</y>
       <width>83</width>
       <height>28</height>
@@ -642,7 +642,7 @@ Image</string>
    <widget class="QPushButton" name="windBackDayButton">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>1</x>
       <y>50</y>
       <width>83</width>
       <height>28</height>
@@ -655,7 +655,7 @@ Image</string>
    <widget class="QPushButton" name="windBackHoursButton">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>1</x>
       <y>80</y>
       <width>83</width>
       <height>28</height>
@@ -681,7 +681,7 @@ Image</string>
    <widget class="QPushButton" name="windFwdWeekButton">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>1</x>
       <y>20</y>
       <width>83</width>
       <height>28</height>
@@ -694,7 +694,7 @@ Image</string>
    <widget class="QPushButton" name="windFwdDayButton">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>1</x>
       <y>50</y>
       <width>83</width>
       <height>28</height>
@@ -707,7 +707,7 @@ Image</string>
    <widget class="QPushButton" name="windFwdHoursButton">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>1</x>
       <y>80</y>
       <width>83</width>
       <height>28</height>
@@ -722,7 +722,7 @@ Image</string>
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>10</y>
+     <y>4</y>
      <width>211</width>
      <height>31</height>
     </rect>
@@ -732,7 +732,7 @@ Image</string>
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>50</y>
+     <y>36</y>
      <width>211</width>
      <height>31</height>
     </rect>
@@ -742,7 +742,7 @@ Image</string>
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>10</y>
+     <y>4</y>
      <width>51</width>
      <height>31</height>
     </rect>
@@ -756,7 +756,7 @@ Name</string>
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>50</y>
+     <y>36</y>
      <width>51</width>
      <height>31</height>
     </rect>
@@ -770,7 +770,7 @@ Name</string>
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>90</y>
+     <y>68</y>
      <width>211</width>
      <height>31</height>
     </rect>
@@ -780,7 +780,7 @@ Name</string>
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>90</y>
+     <y>70</y>
      <width>41</width>
      <height>31</height>
     </rect>
@@ -793,9 +793,9 @@ Name</string>
    <property name="geometry">
     <rect>
      <x>6</x>
-     <y>120</y>
+     <y>123</y>
      <width>341</width>
-     <height>91</height>
+     <height>90</height>
     </rect>
    </property>
    <property name="palette">
@@ -1867,6 +1867,16 @@ Frame</string>
    </property>
    <property name="text">
     <string>Author</string>
+   </property>
+  </widget>
+  <widget class="QPlainTextEdit" name="commentBox">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>100</y>
+     <width>211</width>
+     <height>31</height>
+    </rect>
    </property>
   </widget>
  </widget>

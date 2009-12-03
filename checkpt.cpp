@@ -14,6 +14,8 @@
 // of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
+bool CheckPt::silent(false);
+
 CheckPt::CheckPt (std::string msg)
 {
   theMsg = QString(msg.c_str());
@@ -30,20 +32,28 @@ CheckPt::CheckPt (const char * msg)
 void
 CheckPt::DoPopupBox()
 {
-  QMessageBox box;
-  QAbstractButton *okButton = box.addButton(QMessageBox::Ok);
-  QAbstractButton *crashButton = box.addButton("Crash",
-                                  QMessageBox::ActionRole);
-  QAbstractButton *exitButton = box.addButton("Exit",
-                                  QMessageBox::ActionRole);
-  box.setText("Check: " + theMsg);
-  QTimer::singleShot(10000,&box,SLOT(accept()));
-  box.exec();
-  if (box.clickedButton() == crashButton) {
-     abort();
-  }
-  if (box.clickedButton() == exitButton) {
-     exit(1);
+  if (!silent) {
+    QMessageBox box;
+    QAbstractButton *okButton = box.addButton(QMessageBox::Ok);
+    QAbstractButton *crashButton = box.addButton("Crash",
+                                    QMessageBox::ActionRole);
+    QAbstractButton *exitButton = box.addButton("Exit",
+                                    QMessageBox::ActionRole);
+    QAbstractButton *silentButton = box.addButton("Silent",
+                                    QMessageBox::ActionRole);
+    box.setText("Check: " + theMsg);
+    QTimer::singleShot(10000,&box,SLOT(accept()));
+    box.exec();
+    QAbstractButton *result = box.clickedButton();
+    if (result == crashButton) {
+       abort();
+    }
+    if (result == exitButton) {
+       exit(1);
+    }
+    if (result == silentButton) {
+       Silent();
+    }
   }
 }
 

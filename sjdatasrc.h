@@ -20,7 +20,8 @@
 
 namespace satview {
 
-typedef struct sjdata {
+class sjdata {
+public:
   char    * indata;
   size_t  inlen;
   size_t  cur_pos;
@@ -31,8 +32,12 @@ typedef struct sjdata {
       + "  " + berndsutil::toString(cur_pos) ;
     return s;
   }
-    
-} sjdata;
+  
+  sjdata() : indata(0),
+             inlen(0),
+             cur_pos(0)
+             {}
+};
 
 }
 

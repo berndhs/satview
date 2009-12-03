@@ -39,6 +39,14 @@ namespace satview {
   ImageWin::~ImageWin ()
   {
     quit();
+    if (updateTimer) {
+      delete updateTimer;
+      updateTimer = 0;
+    }
+    if (painter) {
+      delete painter;
+      painter = 0;
+    }
   }
 
   void
@@ -46,8 +54,6 @@ namespace satview {
   {
     if (updateTimer) {
       updateTimer->stop();
-      delete updateTimer;
-      updateTimer = 0;
     }
   }
 
