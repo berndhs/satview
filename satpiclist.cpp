@@ -15,6 +15,9 @@
 #include "satpiclist.h"
 #include <time.h>
 #include <iostream>
+#if SATVIEW_USE_QNET
+#include <QObject>
+#endif
 
 namespace satview {
 
@@ -24,7 +27,9 @@ namespace satview {
     :
      pDC(0)
   {
-    DBCon.SetIndexConsumer(this);
+#if SATVIEW_USE_QNET
+    connect (&DBCon, SIGNAL(IndexArrival()),this,SLOT(LoadFromIndex()));
+#endif
   }
 
   SatPicList::~SatPicList()
@@ -189,10 +194,10 @@ namespace satview {
       }
     }
     if (!haveDB) { // run without any images
-	std::cout << " no images " << std::endl;
-	LoadDummy();
+    	std::cout << " no images " << std::endl;
+    	LoadDummy();
     }
-    Rewind();
+    ToEnd();
     return haveDB;
   }
 

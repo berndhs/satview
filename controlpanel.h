@@ -161,6 +161,7 @@ Q_OBJECT
     int           showTimeDelay;
     int           noshowTimeDelay;
     int           currentDelay;
+    
 
     RunState               mRunState;
     ShowPicState           mPicState;

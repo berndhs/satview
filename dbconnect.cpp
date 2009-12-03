@@ -12,7 +12,6 @@
 #endif
 #include "satpicbuf.h"
 #include "satpiclist.h"
-#include "controlpanel.h"
 #include <stdlib.h>
 
 #include "satview-debug.h"
@@ -40,9 +39,6 @@ namespace satview {
      mWebBytes(0)
  
   {
-    mIndexReceiver = 0;
-    mBlobReceiver = 0;
-    mImgReceiver = 0;
 #if SATVIEW_USE_QNET
     mWaitForIndex = false;
     mWaitForImage = false;
@@ -963,7 +959,6 @@ namespace satview {
   void
   DBConnection::GetIndexReply (QNetworkReply *reply)
   {
-  CheckPt::msg("index coming back");
     if (reply == 0) {
       reply = mExpectIndexReply;
     }
@@ -978,46 +973,31 @@ namespace satview {
         mWebIndex = 0;         // index into mWebBuf
         mHaveWebData = true;
         if (nbytes < mWebBufMax) {
-	  memset (mWebBuf+nbytes,0, mWebBufMax - nbytes);
-	}
+	        memset (mWebBuf+nbytes,0, mWebBufMax - nbytes);
+	      }
         reply->deleteLater();
         mWebResult = new istringstream(string(mWebBuf)); // copied TWICE, yuck
         /** to have the istringstream ready for reading index entries,	  
          * eat up everything until we have seen SATVIEW-INDEX
 	  */
         string word;
-	while (!mWebResult->eof()) {
+	      while (!mWebResult->eof()) {
           (*mWebResult) >> word;
           if (word == "SATVIEW-INDEX") {
-	    break;
-	  }
-	}
-        if (mIndexReceiver) {
-          mIndexReceiver->LoadFromIndex();
-	}
+	          break;
+	        }
+	      }
+	      emit IndexArrival();
       }
     }
   }
 
-
-  void
-  DBConnection::DeliverBlob (char * data, qint64 len)
-  {
-    if (mBlobReceiver) {
-      mBlobReceiver->ReceiveBlob(data,len);
-      QImage *img = mBlobReceiver->Get_Image();
-      if (img && mImgReceiver) {
-        mImgReceiver->PicArrive(img);
-      }
-    }
-  }
 
   void
   DBConnection::GetImageReply (QNetworkReply *reply)
   {
     // two parts: get the data, and parse them
     // Part 1: retrieve data
-    CheckPt::msg("image coming back");
     if (reply == 0) {
        reply = mExpectImgReply;
     }
@@ -1036,6 +1016,7 @@ namespace satview {
       	  memset (mImgWebBuf+nbytes,0, mWebBufMax - nbytes);
       	}
         reply->deleteLater();
+        mExpectImgReply = 0;
 
     // Part 2: deal with the raw data
        if (nbytes > 0) {
@@ -1064,9 +1045,8 @@ namespace satview {
 	       /** len is the image length in bytes, have 2 hex digits per byte */
   	      char * blobbytes = new char[len+1];
   	      hex_to_chars(blobbytes, mImgWebBuf+istr->tellg(), len*2);
-          DeliverBlob (blobbytes, len); 
+  	      emit BlobArrival (blobbytes, static_cast<quint64>(len));
           delete istr;
-          delete[] blobbytes;
         }
       }
     }

@@ -112,12 +112,15 @@ ControlPanel::ControlPanel (QApplication *pA)
 	     this, SLOT(FinishPolygon()));
     connect (saveFrameButton, SIGNAL(clicked()), this, SLOT(NotImplemented()));
 
-    SatPicList::Instance()->DBConnect()->SetImageConsumer(this);
 }
 
 ControlPanel::~ControlPanel()
 {
   quit();
+  if (pDisplay) {
+    delete pDisplay;
+    pDisplay = 0;
+  }
 }
 
 void
@@ -251,6 +254,10 @@ ControlPanel::ShowPic (SatPicBuf * pBuf)
     mPicState.waiting = true;
     mPicState.pImg = 0;
     QImage *pI = pBuf->Get_Image();
+    if (pI == 0) {
+      connect (pBuf, SIGNAL(ImageArrival(QImage *)),
+               this, SLOT(PicArrive(QImage *)));
+    }
     if (pI) {
       mPicState.waiting = false;
       mPicState.pImg = pI;
@@ -320,7 +327,6 @@ ControlPanel::EndTime(long int diff)
 void
 ControlPanel::IndexWaitWakeup()
 {
-CheckPt::msg ("index wakeup");
   mRunState.stopped = true;
   stopButton->setEnabled(false);
   SatPicList::Instance()->ToEnd();
