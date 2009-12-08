@@ -19,7 +19,7 @@ DPENDPATH += .
 DISFILES += Doxyfile
 INCLUDEPATH += /usr/local/include 
 LIBPATH += /usr/local/lib
-unix:LIBS += -lccgnu2 -lQtSql 
+unix:LIBS += -lccgnu2 -lQtSql -lboost_program_options
 win32:LIBS += -lws2_32
 unix:copydb.path = $(HOME)/bin/
 unix:INSTALLS += copydb
@@ -27,8 +27,8 @@ unix:INSTALLS += copydb
 DEFINES += DO_COPYDB=1
 
 FORMS += 
-SOURCES += dbconnect.cpp copydb.cpp
+SOURCES += dbconnect.cpp copydb.cpp cmdoptions.cpp
 
 
-HEADERS +=  dbconnect.h
+HEADERS +=  dbconnect.h cmdoptions.h
 

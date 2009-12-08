@@ -25,6 +25,8 @@ class CheckPt  {
   CheckPt (const char * m);
   CheckPt ();
   
+  void DoPopupBox();
+  
   static bool Silent(bool s=true) { silent=s; return silent; }
   static bool Verbose (bool v=true) { silent = !v; return !silent; }
 
@@ -43,6 +45,14 @@ class CheckPt  {
              CheckPt p(m);
              p.DoPopupBox();
            }
+  static void msg (char *m, qint64 n)
+           {
+              QString num;
+              num.setNum(n);
+              QString mess(m);
+              CheckPt p(mess + " " + num);
+              p.DoPopupBox();
+           }
   static void msg ()
            {
              CheckPt p("?");
@@ -54,7 +64,6 @@ class CheckPt  {
  
   static bool silent;
 
-  void DoPopupBox();
 
   QString theMsg;
 
