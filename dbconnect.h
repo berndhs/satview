@@ -124,10 +124,6 @@ class DBConnection
 
   void SetServer (string server);
 
-  void SetImageConsumer (ControlPanel *pCp) { mImgReceiver = pCp; }
-  void SetBlobConsumer  (SatPicBuf    *pBuf) { mBlobReceiver = pBuf; }
-  void SetIndexConsumer (SatPicList   *pLst) { mIndexReceiver = pLst; }
-
   bool ConnectDB (string server, string db, string user, string pass);
   void Disconnect ();
 
@@ -143,6 +139,10 @@ class DBConnection
 
     void GetIndexReply (QNetworkReply *reply = 0);
     void GetImageReply (QNetworkReply *reply = 0);
+    
+  signals:
+    void IndexArrival ();
+    void BlobArrival (char * data, quint64 len);
 
 #endif
 
@@ -168,8 +168,8 @@ class DBConnection
   bool Attempt_Web_Connect();
   void Web_Close();
 
-  bool ReadIndexRec_Web (IndexRecord &r);
-  bool ReadIndexRec_MYSQL (IndexRecord &r);
+  bool    ReadIndexRec_Web (IndexRecord &r);
+  bool    ReadIndexRec_MYSQL (IndexRecord &r);
   size_t  ReadImageData_Web (IndexRecord &r, string & data);
   size_t  ReadImageData_MYSQL (IndexRecord &r, string & data);
 
@@ -197,9 +197,6 @@ class DBConnection
   bool   mHaveWebData;
   int    mWebBytes;
 
-  ControlPanel           *mImgReceiver;
-  SatPicBuf              *mBlobReceiver;
-  SatPicList             *mIndexReceiver;
 #if SATVIEW_USE_QNET
   QNetworkAccessManager  *mQMgr;
   QNetworkReply          *mExpectIndexReply;

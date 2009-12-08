@@ -109,21 +109,31 @@ Q_OBJECT
 
   private:
 
-    typedef struct {
+    class RunState {
+      public:
       unsigned long int  timelimit;
       bool               allway;
       bool               show;
       bool               backwards;
       bool               stopped;
       SatPicBuf         *pBuf;
-    } RunState;
+      RunState(): timelimit(0),
+                  allway(false),
+                  show(false),
+                  backwards(false),
+                  stopped(false),
+                  pBuf(0)
+                  {}
+    };
 
-    typedef struct {
+    class ShowPicState {
+      public:
       SatPicBuf         *pBuf;
       QImage            *pImg;
       bool               waiting;
       bool               failed;
-    } ShowPicState;
+      ShowPicState (): pBuf(0),pImg(0),waiting(false),failed(false){}
+    };
 
     void StartImage ();
     void ShowPic (SatPicBuf *pBuf);
@@ -151,6 +161,7 @@ Q_OBJECT
     int           showTimeDelay;
     int           noshowTimeDelay;
     int           currentDelay;
+    
 
     RunState               mRunState;
     ShowPicState           mPicState;

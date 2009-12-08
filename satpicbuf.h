@@ -24,6 +24,12 @@
 
 #include "dbconnect.h"
 
+#if SATVIEW_USE_QNET
+
+#include <QObject>
+
+#endif
+
 using namespace std;
 
 namespace satview {
@@ -32,7 +38,15 @@ namespace satview {
    * This is not a container for a bunch of images, just ony.
    */
 
-class SatPicBuf {
+class SatPicBuf 
+#if SATVIEW_USE_QNET
+       : public QObject
+#endif
+                 {
+
+#if SATVIEW_USE_QNET
+Q_OBJECT
+#endif
 
  public:
 
@@ -46,7 +60,6 @@ class SatPicBuf {
   QImage * Get_Image();  // don't call delete, call Forget_Image instead
 
   void           Forget_Image();  
-  void    ReceiveBlob (char * data, size_t len);
   
 
   unsigned long int Ident()   { return mIdent; }
@@ -60,10 +73,24 @@ class SatPicBuf {
   bool     ImageLen()         { return mImageLen; }
 
   void     DitchBufs();
+  
+#if SATVIEW_USE_QNET
+
+  public slots:
+  
+  void    ReceiveBlob (char * data, quint64 len);
+  
+  signals:
+  
+  void    ImageArrival (QImage *pI);
+  
+#endif
+  
 
  private:
 
   bool    LoadBlob();
+  QImage* UnpackImage();
 
    static int     SerialCount;
    int            mSerial;
