@@ -18,7 +18,7 @@ unix:CONFIG(debug, debug|release) {
   QMAKE_CXXFLAGS += -pedantic -Wextra
   TARGET = cloudtrackd
 }
-win32:CONFIG(debug, debug|releast) {
+win32:CONFIG(debug, debug|release) {
   DEFINES += SATVIEW_DEBUG
   LIBS += -lQtNetworkd -lQtSqld
   TARGET = cloudtrackd
