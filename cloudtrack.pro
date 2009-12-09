@@ -23,6 +23,7 @@ win32:CONFIG(debug, debug|releast) {
 }
 unix:CONFIG(release, debug|release) {
   DEFINES += SATVIEW_RELEASE
+  DEFINES += QT_NO_DEBUG
   QMAKE_CFLAGS_RELEASE -= -g
   QMAKE_CXXFLAGS_RELEASE -= -g
   TARGET = cloudtrackr
@@ -30,6 +31,7 @@ unix:CONFIG(release, debug|release) {
 win32:CONFIG(release, debug|release) {
   LIBS += -lQtNetwork
   DEFINES += SATVIEW_RELEASE
+  DEFINES += QT_NO_DEBUG
   TARGET = cloudtrackr
 }
 
@@ -61,6 +63,7 @@ SOURCES += satpiclist.cpp satpicbuf.cpp \
 HEADERS += satpicbuf.h satpiclist.h dbconnect.h  \
 	version.h satview-config.h blob-image.h sjdatasrc.h \
 	satview-defaults.h \
+	satview-debug.h \
 	controlpanel.h \
 	trackmain.h \
 	imagewin.h \
