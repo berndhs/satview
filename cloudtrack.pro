@@ -18,20 +18,20 @@ unix:CONFIG(debug, debug|release) {
   QMAKE_CXXFLAGS += -pedantic -Wextra
   TARGET = cloudtrackd
 }
-win32:CONFIG(debug, debug|release) {
-  DEFINES += SATVIEW_DEBUG
-  LIBS += -lQtNetworkd -lQtSqld
-  TARGET = cloudtrackd
-}
 unix:CONFIG(release, debug|release) {
   DEFINES += SATVIEW_RELEASE
   QMAKE_CFLAGS_RELEASE -= -g
   QMAKE_CXXFLAGS_RELEASE -= -g
   TARGET = cloudtrack
 }
+win32:CONFIG(debug, debug|release) {
+  DEFINES += SATVIEW_DEBUG
+  LIBS += -lQtNetworkd 
+  TARGET = cloudtrackd
+}
 win32:CONFIG(release, debug|release) {
   DEFINES += SATVIEW_RELEASE
-  LIBS += -lQtNetwork -lQtSql
+  LIBS += -lQtNetwork
   TARGET = cloudtrack
 }
 
@@ -46,8 +46,10 @@ unix {
    LIBS += -lQtNetwork -lQtSql -lboost_program_options
 }
 win32 {
+   LIBPATH += $$quote(d:/bernd/software/boost140/lib)
+   INCLUDEPATH += $$quote(d:/bernd/software/boost140)
 }
-VERSION = 0.2.0
+VERSION = 0.4.0
 
 FORMS += control.ui imagewin.ui getstring.ui
 SOURCES += satpiclist.cpp satpicbuf.cpp \
