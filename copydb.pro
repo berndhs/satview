@@ -20,7 +20,7 @@ DISFILES += Doxyfile
 INCLUDEPATH += /usr/local/include 
 LIBPATH += /usr/local/lib
 unix:LIBS += -lccgnu2 -lQtSql -lboost_program_options
-win32:LIBS += -lws2_32
+win32:LIBS += -lws2_32 -lboost_program_
 unix:copydb.path = $(HOME)/bin/
 unix:INSTALLS += copydb
 
