@@ -16,11 +16,6 @@ unix:CONFIG(debug, debug|release) {
   QMAKE_CXXFLAGS += -pedantic -Wextra
   TARGET = cloudtrackd
 }
-win32:CONFIG(debug, debug|releast) {
-  LIBS += -lQtNetworkd -lboost_program_options
-  DEFINES += SATVIEW_DEBUG
-  TARGET = cloudtrackd
-}
 unix:CONFIG(release, debug|release) {
   DEFINES += SATVIEW_RELEASE
   DEFINES += QT_NO_DEBUG
@@ -28,10 +23,14 @@ unix:CONFIG(release, debug|release) {
   QMAKE_CXXFLAGS_RELEASE -= -g
   TARGET = cloudtrack
 }
+win32:CONFIG(debug, debug|release) {
+  LIBS += -lQtNetworkd
+  DEFINES += SATVIEW_DEBUG
+  TARGET = cloudtrackd
+}
 win32:CONFIG(release, debug|release) {
-  LIBS += -lQtNetwork
   DEFINES += SATVIEW_RELEASE
-  LIBS += -lQtNetwork -lboost_program_options
+  LIBS += -lQtNetwork
   TARGET = cloudtrack
 }
 
@@ -45,6 +44,8 @@ unix {
    LIBS += -lQtNetwork -lQtSql -lboost_program_options
 }
 win32 {
+   LIBPATH += $$quote(d:/bernd/software/boost140/lib)
+   INCLUDEPATH += $$quote(d:/bernd/software/boost140)
 }
 VERSION = 0.2.0
 
