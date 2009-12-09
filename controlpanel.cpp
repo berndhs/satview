@@ -212,6 +212,7 @@ ControlPanel::ShowIndexRec (SatPicBuf *pBuf)
   plain[len] = 0;
   SetDate (plain);
   SetPicname (pBuf->PicName().c_str());
+  SetRemark (pBuf->Remark().c_str());
 }
 
 void
