@@ -3,6 +3,7 @@
 #include "version.h"
 #include "satview-defaults.h"
 #include "satview-debug.h"
+#include "cmdoptions.h"
 //
 //  Copyright (C) 2009 - Bernd H Stramm 
 //
@@ -24,49 +25,11 @@ using namespace satview;
 
 string DefaultFile(SATVIEW_DEFAULT_PICNAME);
 string server0(SATVIEW_DEFAULT_S0);
-string server1(SATVIEW_DEFAULT_S1);
-string server2(SATVIEW_DEFAULT_S2);
 
 
 string server;
 DBConnection::Method method;
 
-
-bool
-  checkargs (int argc, char*argv[])
-{
-
-  int a;
-  for (a = 1; a<argc; a++) {
- 
-    string ar = string(argv[a]);
-    if (ar == "W") {
-      DefaultFile = "WCIR.JPG";
-    } 
-    if (ar == "E") {
-      DefaultFile = "ECIR.JPG";
-    }
-    if (ar == "S0") {
-      server = server0;
-    }
-    if (ar == "S1") {
-      server = server1;
-    }
-    if (ar == "S2") {
-      server = server2;
-    }
-    if (ar == "web") {
-      method = DBConnection::Con_Web;
-    }
-    if (ar == "dir") {
-      method = DBConnection::Con_MySql;
-    }
-    if (ar == "-v" || ar == "--version") {
-      return true;
-    }
-  }
-  return false;
-}
 /** @brief This program loads a bunch of weather satellite pictures
  * from a database, and displays them one by one. It has options for 
  * stepping forwards, backwards, stepping by 6 hours (subject to 
@@ -80,7 +43,8 @@ bool
 int
 main (int argc, char*argv[])
 {
-  server = server2;
+  server = server0;
+  string IFarg("web");
   method = DBConnection::Con_Web;
   string db("weather");
   string user("weather");
@@ -89,25 +53,43 @@ main (int argc, char*argv[])
 
 
   QApplication App(argc, argv);
+  
+  CmdOptions opt(satview::MyName());
+  bool cliOk = opt.Parse (argc,argv);
+  if (!cliOk) {
+    cout << satview::MyName() << ":" << endl;
+    opt.Usage();
+    exit(1);
+  }
 
-  versionOnly = checkargs(argc,argv);
+  versionOnly = opt.WantVersion();
+  opt.SetImage(DefaultFile);
+  opt.SetServerInbound(server);
+  opt.SetInterface(IFarg);
 
   /** @brief some elementary command line, 2 choices of image names.
    * More later when we have time.
    */
 
-  std::cout << satview::Version() << std::endl;
+  satview::CLIVersion();
   if (versionOnly) {
     return(0);
+  }
+  if (opt.WantHelp()) {
+    std::cout << satview::MyName() << ":" << endl;
+    opt.Usage();
+    exit(0);
   }
   ControlPanel Control (&App);
 
 
   try {
     string conmeth;
-    if (method == DBConnection::Con_MySql) {
+    if (IFarg == "dir") {
+      method = DBConnection::Con_MySql;
       conmeth = "dir";
-    } else if (method == DBConnection::Con_Web) {
+    } else if (IFarg == "web") {
+      method = DBConnection::Con_Web;
       conmeth = "web";
     } else {
       conmeth = "none";

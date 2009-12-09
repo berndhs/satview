@@ -218,7 +218,9 @@ namespace satview {
   SatPicList::ToEnd()
   {
     mIt = mBufMap.end();
-    mIt--;
+    if (mBufMap.size() > 0 ) {
+      mIt--;
+    }
   }
 
   bool
@@ -230,6 +232,9 @@ namespace satview {
   SatPicBuf *
   SatPicList::Current()
   {
+    if (mBufMap.size() < 1) {
+      return 0;
+    }
     if (mIt == mBufMap.end()) {
       mIt--;
       if (mIt == mBufMap.end()) {  // empty
@@ -267,9 +272,9 @@ namespace satview {
     int i;
     if (n>=0) {
       for (i=1; i<=n; i++) {
-	if (mIt == mBufMap.end()) {     
+      	if (mIt == mBufMap.end()) {     
           return;
-	}
+      	}
         mIt++;
       }
     } else {

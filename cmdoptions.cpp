@@ -21,15 +21,22 @@ CmdOptions::CmdOptions (string pgmname)
    :mPgm("")
 {
   mPgm = pgmname;
+  defaultWestImage = "WCIR.JPG";
+  defaultEastImage = "ECIR.JPG";
+  string Wmsg = string("show GOES ") + defaultWestImage + string(" images");
+  string Emsg = string("show GOES ") + defaultEastImage + string(" images");
   mDashOpts.add_options()
         ("help,h","give help message and exit")
         ("version,v","give version and exit")
         ("web,w","use web interface")
         ("dir,d","user direct sql interface")
+        ("eastcoast,E",Emsg.c_str())
+        ("westcoast,W",Wmsg.c_str())
         ("server,s",bpo::value<string>(),"input server")
         ("outserver,o",bpo::value<string>(),"output server")
         ("minhours,m",bpo::value<int>(),"minimum image age to consider")
         ("maxhours,M",bpo::value<int>(),"maximum image age to consider")
+        ("image,i",bpo::value<string>(),"image name")
         ;
   mSimpleOpts.add ("server",-1);   
 }
@@ -53,6 +60,27 @@ CmdOptions::Usage ()
 {
   cout << mPgm << ":" << endl;
   mDashOpts.print(cout);
+}
+
+bool
+CmdOptions::SetImage (string & image)
+{
+  int seenImage = mOptValues.count("image");
+  int seenWest = mOptValues.count("westcoast");
+  int seenEast = mOptValues.count("eastcoast");
+  if (seenImage > 0) {
+     image = mOptValues["image"].as<string>();
+     return true;
+  }
+  if (seenWest > 0) {
+    image = defaultWestImage;
+    return true;
+  }
+  if (seenEast > 0) {
+    image = defaultEastImage;
+    return true;
+  }
+  return false;
 }
 
 bool

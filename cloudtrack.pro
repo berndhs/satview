@@ -25,12 +25,12 @@ unix:CONFIG(release, debug|release) {
   DEFINES += SATVIEW_RELEASE
   QMAKE_CFLAGS_RELEASE -= -g
   QMAKE_CXXFLAGS_RELEASE -= -g
-  TARGET = cloudtrackr
+  TARGET = cloudtrack
 }
 win32:CONFIG(release, debug|release) {
   DEFINES += SATVIEW_RELEASE
   LIBS += -lQtNetwork -lQtSql
-  TARGET = cloudtrackr
+  TARGET = cloudtrack
 }
 
 RESOURCES += cloudtrack.qrc
@@ -41,7 +41,7 @@ unix {
    INCLUDEPATH += /usr/local/include
    LIBPATH += /usr/local/lib
    DISTFILES += userman.txt userman.html
-   LIBS += -lQtNetwork -lQtSql
+   LIBS += -lQtNetwork -lQtSql -lboost_program_options
 }
 win32 {
 }
@@ -56,6 +56,7 @@ SOURCES += satpiclist.cpp satpicbuf.cpp \
 	shapeframe.cpp \
 	frametypes.cpp \
         checkpt.cpp \
+	cmdoptions.cpp \
 	controlpanel.cpp 
 
 
@@ -69,5 +70,6 @@ HEADERS += satpicbuf.h satpiclist.h dbconnect.h  \
 	shapeframe.h \
 	textbox.h \
         checkpt.h \
+	cmdoptions.h \
 	berndsutil.h fault.h 
 
