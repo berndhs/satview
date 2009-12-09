@@ -10,7 +10,9 @@
 # // but WITHOUT ANY WARRANTY; without even the implied warranty 
 # // of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 # //
+
 CONFIG += qt debug_and_release
+
 unix:CONFIG(debug, debug|release) {
   DEFINES += SATVIEW_DEBUG
   QMAKE_CXXFLAGS += -pedantic -Wextra
