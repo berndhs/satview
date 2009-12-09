@@ -35,6 +35,7 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>
+#include <QTimer>
 #endif
 
 #if SATVIEW_USE_QSQL
@@ -138,7 +139,8 @@ class DBConnection
   public slots:
 
     void GetIndexReply (QNetworkReply *reply = 0);
-    void GetImageReply (QNetworkReply *reply = 0);
+    void GetImageReply (QNetworkReply *reply = 0, bool timedout = false);
+    void NoImageReply ();
     
   signals:
     void IndexArrival ();
@@ -203,6 +205,8 @@ class DBConnection
   QNetworkReply          *mExpectImgReply;
   bool                    mWaitForIndex;
   bool                    mWaitForImage;
+  
+  QTimer                  mGetTimeout;
 #endif
 
 #if SATVIEW_USE_GNUSOCK

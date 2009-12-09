@@ -15,6 +15,7 @@
 #include <stdlib.h>
 
 #include "satview-debug.h"
+#include <QDebug>
 
 //
 //  Copyright (C) 2009 - Bernd H Stramm 
@@ -408,24 +409,24 @@ namespace satview {
 	   } while (chunk_read > 0 && buf_remain > 0);
 #endif
        if (numbytes > 0) {
-	 mWebBytes = numbytes;
+      	 mWebBytes = numbytes;
          mWebIndex = 0;
          mHaveWebData = true;
-	 memset (mWebBuf+numbytes,0,mWebBufMax - numbytes);
+      	 memset (mWebBuf+numbytes,0,mWebBufMax - numbytes);
          if (mWebResult) {
-	   delete mWebResult;
+      	   delete mWebResult;
          }
          mWebResult = new istringstream(string(mWebBuf)); // copied TWICE, yuck
          /** to have the istringstream ready for reading index entries,
 	  * eat up everything until we have seen SATVIEW-INDEX
 	  */
          string word;
-	 while (!mWebResult->eof()) {
+      	 while (!mWebResult->eof()) {
            (*mWebResult) >> word;
            if (word == "SATVIEW-INDEX") {
-	     break;
-	   }
-	 }
+      	     break;
+      	   }
+      	 }
        }
     }
     Web_Close();
@@ -725,8 +726,10 @@ namespace satview {
   DBConnection::ReadImageData_Web (IndexRecord &r, string & simage)
   {
     string key1, key2;
-    chars_to_hex (key1, berndsutil::toString(r.ident));
-    chars_to_hex (key2, r.picname);
+    string raw_key1 = berndsutil::toString(r.ident);
+    string raw_key2 = r.picname;
+    chars_to_hex (key1, raw_key1);
+    chars_to_hex (key2, raw_key2);
 
 #if SATVIEW_USE_QNET
     if (Waiting()) {
@@ -748,6 +751,9 @@ namespace satview {
       mWaitForImage = true;
       connect (mExpectImgReply, SIGNAL(finished()),
                this, SLOT(GetImageReply()));
+      connect (&mGetTimeout, SIGNAL(timeout()),this,SLOT(NoImageReply()));
+      mGetTimeout.setSingleShot(true);
+      mGetTimeout.start(60000);
       return 0;
     }
     return 0;
@@ -992,16 +998,30 @@ namespace satview {
     }
   }
 
+  void
+  DBConnection::NoImageReply ()
+  {
+    GetImageReply(0,true);
+  }
 
   void
-  DBConnection::GetImageReply (QNetworkReply *reply)
+  DBConnection::GetImageReply (QNetworkReply *reply, bool timedout)
   {
     // two parts: get the data, and parse them
     // Part 1: retrieve data
+    
+    bool badimage = true;
     if (reply == 0) {
        reply = mExpectImgReply;
+       disconnect (&mGetTimeout,SIGNAL(timeout()),this,SLOT(NoImageReply()));
+       mGetTimeout.stop();
+       disconnect (mExpectImgReply,SIGNAL(finished()),
+               this, SLOT(GetImageReply()));
     }
-    if (mWaitForImage && reply) {
+    if (timedout) {
+       mWaitForImage = false;
+    }
+    if (!timedout && mWaitForImage && reply) {
       mWaitForImage = false;
       if (reply->error() == QNetworkReply::NoError) {
         QByteArray bytes = reply->readAll();
@@ -1045,11 +1065,18 @@ namespace satview {
 	       /** len is the image length in bytes, have 2 hex digits per byte */
   	      char * blobbytes = new char[len+1];
   	      hex_to_chars(blobbytes, mImgWebBuf+istr->tellg(), len*2);
+  	      badimage = false;
   	      emit BlobArrival (blobbytes, static_cast<quint64>(len));
           delete istr;
+          return;
         }
       }
     }
+   }
+   if (badimage) {
+     char * badbytes = new char[1024];
+     memset (badbytes, 0, 1024);
+     emit BlobArrival (badbytes, 1024);
    }
 }
 

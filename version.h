@@ -20,6 +20,7 @@ namespace satview {
   std::string Version() ;
   
   void ShowVersionWindow();
+  void CLIVersion();
 
 }
 
