@@ -3,6 +3,9 @@
 
 #include "dbconnect.h"
 #include "berndsutil.h"
+
+#include "cmdoptions.h"
+
 #include <iostream>
 #include <time.h>
 #include <stdlib.h>
@@ -26,13 +29,14 @@ using namespace std;
 DBConnection DBin;
 DBConnection DBout;
 unsigned long int secs_in_hour (60*60);
-unsigned long int max_age ( 24 * secs_in_hour );
+int               max_hours (24);
+int               min_hours (0);
 string  source_server ("www.bernd-stramm.com");
 string  dest_server   ("localhost");
 
-string version("Version 1.0");
-string help("[max-age-in-hours] [S0 | S1 | S2] ");
+string version("Version 1.1");
 
+#if 0
 void
 check_args (int argc, char * argv[])
 {
@@ -73,6 +77,7 @@ check_args (int argc, char * argv[])
     a++;
   }
 }
+#endif
 
 void
 copy_rec (IndexRecord &r, 
@@ -99,18 +104,62 @@ copy_rec (IndexRecord &r,
 int
 main (int argc, char*argv[])
 {
+#if 0
   check_args (argc, argv);
+#endif
+
+  string interface("web");
+  CmdOptions opts(argv[0]);
+  bool ok = opts.Parse (argc, argv);
+  if (!ok || opts.WantHelp()) {
+     opts.Usage();
+     exit(0);
+  }
+  if (opts.WantVersion()) {
+     cout << argv[0] << "" << version << endl;
+     exit(0);
+  }
+  
+  opts.SetInterface (interface);
+  opts.SetServerInbound (source_server);
+  bool changed = opts.SetServerOutbound (dest_server);
+  cout << " changed " << changed << endl;
+  cout << " going out to " << dest_server << endl;
+  
+  opts.SetMinHours (min_hours);
+  opts.SetMaxHours (max_hours);
+  if (min_hours < 0 || max_hours < 0) {
+    cout << " no negative ages!" << endl;
+    opts.Usage();
+    exit(1);
+  }
+  unsigned long int max_age ( max_hours * secs_in_hour );
+  unsigned long int min_age ( min_hours * secs_in_hour );
   unsigned long int now = time(0);
   unsigned long int deadline = now - max_age;
+  unsigned long int toorecent = now - min_age;
   time_t dl = time_t(deadline);
+  time_t cutoff = time_t (toorecent);
 
   cout << "Trying " << source_server << " -> " << dest_server << endl;
   cout << " newer than " << ctime(&dl) << " = "
-       << max_age/secs_in_hour << " hours (" 
+       << max_hours << " hours (" 
        << max_age << " secs)" 
        << endl;
-  
-  DBin.SetMethod(DBConnection::Con_Web);
+  cout << " older than " << ctime(&cutoff) << " = "
+       << min_hours << " hours ("
+       << min_age << " secs)"
+       << endl;
+       
+  if (min_age > max_age) {
+     cout << " min > max, nothing to do" << endl;
+     exit (1);
+  }
+  if (interface == "web") {
+    DBin.SetMethod(DBConnection::Con_Web);
+  } else {
+    DBin.SetMethod(DBConnection::Con_MySql);
+  }
   bool inok = DBin.ConnectDB(source_server,"weather",
                            "weather","quetzalcoatl");
   if (!inok) {
@@ -143,13 +192,19 @@ main (int argc, char*argv[])
       num_older++;
       continue;
     }
+    if (r.ident > toorecent) {
+      break;
+    }
     copy_rec(r, readfailed, writefailed, numcopied);
     break;
   }
-  cout << num_older << " records skipped" << endl;
+  cout << num_older << " old records skipped" << endl;
   while (DBin.ReadIndexRec(r)) {
     if (r.ident < deadline) {
       continue;
+    }
+    if (r.ident > toorecent) {
+      break; // finished
     }
     copy_rec (r, readfailed, writefailed, numcopied);
   }
