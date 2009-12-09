@@ -17,7 +17,12 @@
 
 #include <map>
 
+#if DO_COPYDB
+  // nothing
+#else
 #include "controlpanel.h"
+#endif
+
 #include "satpicbuf.h"
 #include "fault.h"
 #include "dbconnect.h"

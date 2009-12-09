@@ -71,7 +71,7 @@ tar:
 
 
 install:
-	install -p cloudtrackr copydb $(INSTALLDIR)
+	install -p cloudtrack copydb $(INSTALLDIR)
 
 docu:
 	doxygen
