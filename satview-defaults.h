@@ -17,7 +17,7 @@
 #define SATVIEW_DEFAULT_PICNAME     "ECIR.JPG"
 
 #define SATVIEW_DEFAULT_S0          "localhost"
-#define SATVIEW_DEFAULT_S1          "www.bernd-stramm.com"
-#define SATVIEW_DEFAULT_S2          "192.168.1.152"
+
+#define SATVIEW_DEFAULT_PATH         "/test/satserv.php"
 
 #endif

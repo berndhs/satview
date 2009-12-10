@@ -17,7 +17,12 @@
 
 #include <map>
 
+#if DO_COPYDB
+  // nothing
+#else
 #include "controlpanel.h"
+#endif
+
 #include "satpicbuf.h"
 #include "fault.h"
 #include "dbconnect.h"
@@ -61,6 +66,7 @@ Q_OBJECT
                    string picname);
 
   void SetServer (string server);
+  void SetPath   (string path);
   void SetFilename (string filename);
   string Filename () { return mPicfilename; }
   void SetMethod (const DBConnection::Method m);
@@ -109,6 +115,7 @@ Q_OBJECT
   string     mDBName;
   string     mUser;
   string     mPass;
+  string     mPath;
 
   DBConnection DBCon;
 
@@ -127,6 +134,7 @@ Q_OBJECT
  public:
 
   static SatPicList  *Instance();
+  static void Destroy();
 
 };
 }

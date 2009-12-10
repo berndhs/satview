@@ -67,8 +67,6 @@ namespace satview {
       string identstring = (as_secs + string (" - ")
 			    + berndsutil::toString(pBuf->Serial()));
       pDC->SetIdentTag(identstring);
-      cout << plain << endl;
-      cout << identstring << endl;
     }
   }
 
@@ -113,6 +111,13 @@ namespace satview {
   SatPicList::SetServer (string server)
   {
     mServer = server;
+  }
+  
+  void
+  SatPicList::SetPath (string path)
+  {
+    DBCon.SetWebPath(path);
+    mPath = path;
   }
 
   void
@@ -218,7 +223,9 @@ namespace satview {
   SatPicList::ToEnd()
   {
     mIt = mBufMap.end();
-    mIt--;
+    if (mBufMap.size() > 0 ) {
+      mIt--;
+    }
   }
 
   bool
@@ -230,6 +237,9 @@ namespace satview {
   SatPicBuf *
   SatPicList::Current()
   {
+    if (mBufMap.size() < 1) {
+      return 0;
+    }
     if (mIt == mBufMap.end()) {
       mIt--;
       if (mIt == mBufMap.end()) {  // empty
@@ -267,9 +277,9 @@ namespace satview {
     int i;
     if (n>=0) {
       for (i=1; i<=n; i++) {
-	if (mIt == mBufMap.end()) {     
+      	if (mIt == mBufMap.end()) {     
           return;
-	}
+      	}
         mIt++;
       }
     } else {
@@ -333,6 +343,15 @@ namespace satview {
        pTheOnly = new SatPicList;
     }
     return pTheOnly;
+   }
+   
+   void
+   SatPicList::Destroy()
+   {
+     if (pTheOnly) {
+       delete pTheOnly;
+       pTheOnly = 0;
+     }
    }
 
 }

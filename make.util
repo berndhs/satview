@@ -24,6 +24,7 @@ ALLSRC = \
 blob-image.cpp \
 controlpanel.cpp \
 copydb.cpp \
+cmdoptions.cpp \
 dbconnect.cpp \
 frametypes.cpp \
 imagewin.cpp \
@@ -39,6 +40,7 @@ ALLHDR = \
 berndsutil.h \
 blob-image.h \
 controlpanel.h \
+cmdoptions.h \
 dbconnect.h \
 fault.h \
 frametypes.h \
@@ -69,7 +71,7 @@ tar:
 
 
 install:
-	install -p cloudtrackr copydb $(INSTALLDIR)
+	install -p cloudtrack copydb $(INSTALLDIR)
 
 docu:
 	doxygen

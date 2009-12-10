@@ -212,6 +212,7 @@ ControlPanel::ShowIndexRec (SatPicBuf *pBuf)
   plain[len] = 0;
   SetDate (plain);
   SetPicname (pBuf->PicName().c_str());
+  SetRemark (pBuf->Remark().c_str());
 }
 
 void
@@ -236,7 +237,7 @@ ControlPanel::ReallyShowPic ()
 
     }
   }  
-  mPicState.waiting = false;   
+  mPicState.waiting = false;  
 }
 
 void
@@ -627,6 +628,22 @@ ControlPanel::SetPicname (string pn)
   picnameBox->setPlainText(newname);
   mPicname = pn;
   return mPicname;
+}
+
+string
+ControlPanel::Remark ()
+{
+  return mRemark;
+}
+
+string
+ControlPanel::SetRemark (string rm)
+{
+  QString newremark(rm.c_str());
+  commentBox->clear();
+  commentBox->setPlainText(newremark);
+  mRemark = rm;
+  return mRemark;
 }
 
 string

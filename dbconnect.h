@@ -35,6 +35,7 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>
+#include <QTimer>
 #endif
 
 #if SATVIEW_USE_QSQL
@@ -43,6 +44,7 @@
 #include <QtSql/QSqlError>
 #include <QtSql/QSqlRecord>
 #include <QVariant>
+#include <QStringList>
 #endif
 
 #if SATVIEW_USE_GNUSOCK
@@ -122,7 +124,9 @@ class DBConnection
   void SetMethod (Method m);
   Method GetMethod() { return mMeth; }
 
-  void SetServer (string server);
+  void SetServer (string server) {mServer = server; }
+  
+  void SetWebPath (string path) { mPathOnServer = path; }
 
   bool ConnectDB (string server, string db, string user, string pass);
   void Disconnect ();
@@ -138,7 +142,8 @@ class DBConnection
   public slots:
 
     void GetIndexReply (QNetworkReply *reply = 0);
-    void GetImageReply (QNetworkReply *reply = 0);
+    void GetImageReply (QNetworkReply *reply = 0, bool timedout = false);
+    void NoImageReply ();
     
   signals:
     void IndexArrival ();
@@ -155,6 +160,8 @@ class DBConnection
   string     mPass;
   string     mDBname;
   string     mPicname;
+  
+  string     mPathOnServer;
 
   bool ConnectDB_MYSQL (string server, string db, string user, string pass);
   bool Start_MYSQL_Index ();
@@ -188,8 +195,9 @@ class DBConnection
 #endif
 
 #if SATVIEW_USE_QSQL
-  QSqlDatabase   * pQDB;
-  QSqlQuery      * pIndexQuery;
+  QSqlDatabase     mQDB;
+  QSqlQuery        mIndexQuery;
+  QString          mQConnection;
 #endif
 
   istringstream * mWebResult;
@@ -203,6 +211,8 @@ class DBConnection
   QNetworkReply          *mExpectImgReply;
   bool                    mWaitForIndex;
   bool                    mWaitForImage;
+  
+  QTimer                  mGetTimeout;
 #endif
 
 #if SATVIEW_USE_GNUSOCK

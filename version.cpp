@@ -1,5 +1,6 @@
 #include "version.h"
 #include <string>
+#include <iostream>
 #include <QMessageBox>
 #include <QTimer>
 
@@ -16,15 +17,23 @@
 
 namespace satview {
 
-  std::string CloudTrackVersion("0.3.5");
+  std::string ProgramVersion("0.3.6");
 
   std::string ProgramName("CloudTrack");
-  
+  std::string copyright ("Copyright (C) 2009 Bernd H Stramm");
+   
   std::string Version ()
   { 
-    return std::string(ProgramName + " " 
-                   + CloudTrackVersion + " " + std::string(__DATE__) + " "
-		       + std::string(__TIME__));
+    return std::string(ProgramName + " Version " 
+                   + ProgramVersion + " " + std::string(__DATE__) + " "
+		       + std::string(__TIME__)
+		       + std::string("\r\n")
+		       + copyright);
+  }
+
+  std::string MyName()
+  {
+    return ProgramName;
   }
 
   void ShowVersionWindow ()
@@ -35,5 +44,11 @@ namespace satview {
     QTimer::singleShot(30000,&box,SLOT(accept()));
     box.exec();
   }
-
+  
+  void CLIVersion ()
+  {
+    std::cout << Version() << std::endl;
+  }
+  
+ 
 }

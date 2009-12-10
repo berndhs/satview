@@ -41,8 +41,10 @@ bool WantVersion ();
   * parameter was changed
   */
 bool SetInterface (string & interface);
+bool SetImage (string &image);
 bool SetServerInbound (string & servIn);
 bool SetServerOutbound (string & servOut);
+bool SetPath (string & path);
 bool SetMinHours (int & hours);
 bool SetMaxHours (int & hours);
 
@@ -53,6 +55,10 @@ private:
    bpo::options_description             mDashOpts;
    bpo::positional_options_description  mSimpleOpts;
    bpo::variables_map                   mOptValues;
+   
+   string defaultWestImage;
+   string defaultEastImage;
+   
 };
 
 

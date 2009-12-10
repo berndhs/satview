@@ -18,6 +18,7 @@
 #include "satpiclist.h"
 #include <QApplication>
 #include <QTimer>
+#include <QDebug>
 #include <string>
 
 using namespace std;
@@ -53,6 +54,8 @@ Q_OBJECT
     string SetIdentTag (string id);
     string Date();
     string SetDate (string dt);
+    string Remark();
+    string SetRemark (string rm);
 
     void ShowStatus ();
 
@@ -133,6 +136,13 @@ Q_OBJECT
       bool               waiting;
       bool               failed;
       ShowPicState (): pBuf(0),pImg(0),waiting(false),failed(false){}
+      void Debug () { 
+                 qDebug() << "-- Pic State-- ";
+                 qDebug() << "pBuf " << pBuf;
+                 qDebug() << "pImg " << pImg;
+                 qDebug() << "waiting " << waiting;
+                 qDebug() << "failed " << failed;
+                 }
     };
 
     void StartImage ();
@@ -176,6 +186,7 @@ Q_OBJECT
     string                 mDate;
     string                 mIdFancy;
     DBConnection::Method   mMeth;
+    string                 mRemark;
 
   };
 

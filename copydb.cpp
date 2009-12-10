@@ -123,8 +123,6 @@ main (int argc, char*argv[])
   opts.SetInterface (interface);
   opts.SetServerInbound (source_server);
   bool changed = opts.SetServerOutbound (dest_server);
-  cout << " changed " << changed << endl;
-  cout << " going out to " << dest_server << endl;
   
   opts.SetMinHours (min_hours);
   opts.SetMaxHours (max_hours);
