@@ -127,9 +127,10 @@ main (int argc, char*argv[])
         Control.Restart();
       }
     } while (again);
-      exit(0);
+    exit(0);
   } catch (berndsutil::Fault &F) {
    
     cout << F.String() << endl;
+    exit (1);
   }
 }
