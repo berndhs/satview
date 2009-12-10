@@ -44,6 +44,7 @@ bool SetInterface (string & interface);
 bool SetImage (string &image);
 bool SetServerInbound (string & servIn);
 bool SetServerOutbound (string & servOut);
+bool SetPath (string & path);
 bool SetMinHours (int & hours);
 bool SetMaxHours (int & hours);
 

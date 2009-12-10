@@ -25,7 +25,7 @@ clean: clean.copydb clean.cloud
 
 debug: cloudtrackd
 
-release: cloudtrack copydb
+release: cloudtrack
 
 $(MAKE_COPYDB): copydb.pro
 	$(QMAKE) copydb.pro -o $(MAKE_COPYDB)

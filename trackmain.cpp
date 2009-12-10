@@ -49,6 +49,7 @@ main (int argc, char*argv[])
   string db("weather");
   string user("weather");
   string pass("quetzalcoatl");
+  string path(SATVIEW_DEFAULT_PATH);
   bool versionOnly(false);
 
 
@@ -66,6 +67,7 @@ main (int argc, char*argv[])
   opt.SetImage(DefaultFile);
   opt.SetServerInbound(server);
   opt.SetInterface(IFarg);
+  opt.SetPath(path);
 
   /** @brief some elementary command line, 2 choices of image names.
    * More later when we have time.
@@ -97,6 +99,7 @@ main (int argc, char*argv[])
       Control.SetPicname(DefaultFile);
       Control.SetServer(server);
       Control.SetConMeth(conmeth);
+      SatPicList::Instance()->SetPath(path);
       SatPicList::Instance()->SetDBParams(method,
                                          server,
 					 db,
@@ -111,7 +114,8 @@ main (int argc, char*argv[])
       Control.show();
       App.processEvents();
       App.exec();
-      return 0;
+      SatPicList::Destroy();
+      exit(0);
   } catch (berndsutil::Fault &F) {
    
     cout << F.String() << endl;

@@ -33,6 +33,7 @@ CmdOptions::CmdOptions (string pgmname)
         ("eastcoast,E",Emsg.c_str())
         ("westcoast,W",Wmsg.c_str())
         ("server,s",bpo::value<string>(),"input server")
+        ("path,P",bpo::value<string>(),"path on web server")
         ("outserver,o",bpo::value<string>(),"output server")
         ("minhours,m",bpo::value<int>(),"minimum image age to consider")
         ("maxhours,M",bpo::value<int>(),"maximum image age to consider")
@@ -105,6 +106,17 @@ CmdOptions::SetServerInbound (string & server)
   int seenServer = mOptValues.count("server");
   if (seenServer > 0) {
     server = mOptValues["server"].as<string>();
+    return true;
+  }
+  return false;
+}
+
+bool
+CmdOptions::SetPath (string & path)
+{
+  int seenPath = mOptValues.count("path");
+  if (seenPath > 0) {
+    path = mOptValues["path"].as<string>();
     return true;
   }
   return false;
