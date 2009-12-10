@@ -30,7 +30,8 @@ using namespace std;
 namespace satview  {
 
 ControlPanel::ControlPanel (QApplication *pA)
-  :mMeth(DBConnection::Con_None)
+  :wantRerun(false),
+   mMeth(DBConnection::Con_None)
 {
     pApp = pA;
 
@@ -62,16 +63,10 @@ ControlPanel::ControlPanel (QApplication *pA)
     mPicState.pImg    = 0;
 
     runStatusLabel->setText (mStateStoppedText);
-    showTimeDelay = 100;
-    noshowTimeDelay = 1;
-    currentDelay = noshowTimeDelay;
     connect (&showTimer, SIGNAL(timeout()), this, SLOT(DoShowMove()));
-    showTimer.start(currentDelay);
 
     /** @brief make sure we check for clicked buttons every now and then */
-    updateDelay = 300;
     connect (&updateTimer, SIGNAL(timeout()), this, SLOT(update()));
-    updateTimer.start(updateDelay);
 
     /** and we have a whole bunch of buttons to connect */
 
@@ -80,6 +75,7 @@ ControlPanel::ControlPanel (QApplication *pA)
 
     connect (newNameButton, SIGNAL(clicked()), this, SLOT(DoSwitchPicname()));
     connect (quitButton, SIGNAL(clicked()), this, SLOT(quit()));
+    connect (restartButton, SIGNAL(clicked()), this, SLOT(DoAgain()));
     
     connect (stopButton, SIGNAL(clicked()), this, SLOT(DoStopMoving()));
     stopButton->setEnabled(false);
@@ -112,6 +108,8 @@ ControlPanel::ControlPanel (QApplication *pA)
 	     this, SLOT(FinishPolygon()));
     connect (saveFrameButton, SIGNAL(clicked()), this, SLOT(NotImplemented()));
 
+    StartTimers ();
+
 }
 
 ControlPanel::~ControlPanel()
@@ -121,6 +119,39 @@ ControlPanel::~ControlPanel()
     delete pDisplay;
     pDisplay = 0;
   }
+}
+
+void
+ControlPanel::StartTimers ()
+{
+    showTimeDelay = 100;
+    noshowTimeDelay = 1;
+    currentDelay = noshowTimeDelay;
+    updateDelay = 300;
+    showTimer.start(currentDelay);
+    updateTimer.start(updateDelay);
+
+}
+
+void
+ControlPanel::Restart ()
+{
+   hide();
+   showTimer.stop();
+   updateTimer.stop();
+   if (pDisplay) {
+     delete pDisplay;
+   }
+   pDisplay = new ImageWin(this);
+   StartTimers();
+   pDisplay->show();
+   show();
+}
+
+void
+ControlPanel::Reset ()
+{
+   wantRerun = false;
 }
 
 void
@@ -135,6 +166,13 @@ ControlPanel::quit()
   if (pApp) {
     pApp->quit();
   }
+}
+
+void
+ControlPanel::DoAgain ()
+{
+  wantRerun = true;
+  quit();
 }
 
 void
@@ -301,12 +339,6 @@ ControlPanel::NotImplemented ()
   QTimer::singleShot(15000, &msgBox, SLOT(accept()));
   msgBox.setText("not implemented at this time");
   msgBox.exec();
-}
-
-void
-ControlPanel::StartImage ()
-{
-  pDisplay = new ImageWin(this);
 }
 
 

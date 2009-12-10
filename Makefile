@@ -23,6 +23,10 @@ all: copydb cloudtrack cloudtrackd
 
 clean: clean.copydb clean.cloud
 
+ultraclean:
+	make clean
+	$(RM) $(MAKE_CLOUD) $(MAKE_COPYDB)
+
 debug: cloudtrackd
 
 release: cloudtrack

@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>280</x>
-     <y>10</y>
+     <y>60</y>
      <width>71</width>
      <height>31</height>
     </rect>
@@ -31,7 +31,7 @@ Image</string>
    <property name="geometry">
     <rect>
      <x>290</x>
-     <y>60</y>
+     <y>4</y>
      <width>51</width>
      <height>51</height>
     </rect>
@@ -1877,6 +1877,20 @@ Frame</string>
      <width>211</width>
      <height>31</height>
     </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="restartButton">
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>97</y>
+     <width>71</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Restart 
+Viewer</string>
    </property>
   </widget>
  </widget>

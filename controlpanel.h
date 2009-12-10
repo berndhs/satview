@@ -56,6 +56,10 @@ Q_OBJECT
     string SetDate (string dt);
     string Remark();
     string SetRemark (string rm);
+    bool   Again() { return wantRerun; }
+
+    void Reset ();
+    void Restart ();
 
     void ShowStatus ();
 
@@ -69,6 +73,7 @@ Q_OBJECT
     void update();
     void quit ();
     void show();
+    void DoAgain ();
 
     void ConnectDB ();
     void ReloadDB ();
@@ -145,7 +150,7 @@ Q_OBJECT
                  }
     };
 
-    void StartImage ();
+    void StartTimers ();
     void ShowPic (SatPicBuf *pBuf);
     void ShowIndexRec (SatPicBuf *pBuf);
     void ReallyShowPic();
@@ -171,6 +176,7 @@ Q_OBJECT
     int           showTimeDelay;
     int           noshowTimeDelay;
     int           currentDelay;
+    bool          wantRerun;
     
 
     RunState               mRunState;

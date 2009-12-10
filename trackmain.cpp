@@ -96,6 +96,8 @@ main (int argc, char*argv[])
     } else {
       conmeth = "none";
     }
+    bool again(false);
+    do {
       Control.SetPicname(DefaultFile);
       Control.SetServer(server);
       Control.SetConMeth(conmeth);
@@ -114,7 +116,17 @@ main (int argc, char*argv[])
       Control.show();
       App.processEvents();
       App.exec();
+      again = Control.Again();
       SatPicList::Destroy();
+      Control.hide();
+      if (again) {
+        DefaultFile = Control.Picname();
+        server = Control.Server();
+        conmeth = Control.ConMeth();
+        Control.Reset();
+        Control.Restart();
+      }
+    } while (again);
       exit(0);
   } catch (berndsutil::Fault &F) {
    
