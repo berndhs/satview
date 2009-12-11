@@ -51,8 +51,7 @@ main (int argc, char*argv[])
   string pass("quetzalcoatl");
   string path(SATVIEW_DEFAULT_PATH);
   
-  unsigned long int maxAge = std::numeric_limits<unsigned long int>::max()
-                             / (60*60);
+  unsigned long int maxAge = 30 * 24; // 30 days
   
   unsigned long int minAge = 0;
   

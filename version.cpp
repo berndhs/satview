@@ -17,7 +17,7 @@
 
 namespace satview {
 
-  std::string ProgramVersion("0.3.6");
+  std::string ProgramVersion("0.4.0");
 
   std::string ProgramName("CloudTrack");
   std::string copyright ("Copyright (C) 2009 Bernd H Stramm");
