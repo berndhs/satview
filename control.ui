@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>355</width>
+    <width>356</width>
     <height>480</height>
    </rect>
   </property>
@@ -462,9 +462,9 @@ Image</string>
    <property name="geometry">
     <rect>
      <x>90</x>
-     <y>290</y>
+     <y>330</y>
      <width>85</width>
-     <height>181</height>
+     <height>151</height>
     </rect>
    </property>
    <property name="title">
@@ -509,24 +509,11 @@ Image</string>
      <string>Day</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="backHoursButton">
-    <property name="geometry">
-     <rect>
-      <x>1</x>
-      <y>120</y>
-      <width>83</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>6 Hours</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="backStepButton">
     <property name="geometry">
      <rect>
-      <x>1</x>
-      <y>150</y>
+      <x>0</x>
+      <y>120</y>
       <width>83</width>
       <height>28</height>
      </rect>
@@ -540,9 +527,9 @@ Image</string>
    <property name="geometry">
     <rect>
      <x>180</x>
-     <y>290</y>
+     <y>330</y>
      <width>85</width>
-     <height>181</height>
+     <height>151</height>
     </rect>
    </property>
    <property name="title">
@@ -587,24 +574,11 @@ Image</string>
      <string>Day</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="forwardHoursButton">
-    <property name="geometry">
-     <rect>
-      <x>1</x>
-      <y>120</y>
-      <width>83</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>6 Hours</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="forwardStepButton">
     <property name="geometry">
      <rect>
-      <x>1</x>
-      <y>150</y>
+      <x>0</x>
+      <y>120</y>
       <width>83</width>
       <height>28</height>
      </rect>
@@ -618,9 +592,9 @@ Image</string>
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>330</y>
+     <y>370</y>
      <width>85</width>
-     <height>111</height>
+     <height>81</height>
     </rect>
    </property>
    <property name="title">
@@ -652,27 +626,14 @@ Image</string>
      <string>Day</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="windBackHoursButton">
-    <property name="geometry">
-     <rect>
-      <x>1</x>
-      <y>80</y>
-      <width>83</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>6 Hours</string>
-    </property>
-   </widget>
   </widget>
   <widget class="QGroupBox" name="windFwdBox">
    <property name="geometry">
     <rect>
      <x>270</x>
-     <y>330</y>
+     <y>370</y>
      <width>85</width>
-     <height>111</height>
+     <height>81</height>
     </rect>
    </property>
    <property name="title">
@@ -702,19 +663,6 @@ Image</string>
     </property>
     <property name="text">
      <string>Day</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="windFwdHoursButton">
-    <property name="geometry">
-     <rect>
-      <x>1</x>
-      <y>80</y>
-      <width>83</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>6 Hours</string>
     </property>
    </widget>
   </widget>
@@ -792,10 +740,10 @@ Name</string>
   <widget class="QGroupBox" name="serverGroup">
    <property name="geometry">
     <rect>
-     <x>6</x>
-     <y>123</y>
-     <width>341</width>
-     <height>90</height>
+     <x>5</x>
+     <y>130</y>
+     <width>340</width>
+     <height>131</height>
     </rect>
    </property>
    <property name="palette">
@@ -1220,7 +1168,7 @@ Name</string>
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>16</y>
+      <y>14</y>
       <width>341</width>
       <height>31</height>
      </rect>
@@ -1229,8 +1177,8 @@ Name</string>
    <widget class="QPushButton" name="connectServerButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>50</y>
+      <x>10</x>
+      <y>90</y>
       <width>68</width>
       <height>38</height>
      </rect>
@@ -1243,7 +1191,7 @@ Name</string>
     <property name="geometry">
      <rect>
       <x>100</x>
-      <y>50</y>
+      <y>90</y>
       <width>68</width>
       <height>38</height>
      </rect>
@@ -1256,8 +1204,8 @@ Name</string>
    <widget class="QPushButton" name="changeInterfaceButton">
     <property name="geometry">
      <rect>
-      <x>260</x>
-      <y>50</y>
+      <x>250</x>
+      <y>90</y>
       <width>71</width>
       <height>38</height>
      </rect>
@@ -1270,8 +1218,8 @@ Name</string>
    <widget class="QLabel" name="interfaceLabel">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>60</y>
+      <x>180</x>
+      <y>100</y>
       <width>61</width>
       <height>18</height>
      </rect>
@@ -1280,13 +1228,78 @@ Name</string>
      <string>Interface</string>
     </property>
    </widget>
+   <widget class="QPlainTextEdit" name="minHoursBox">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>50</y>
+      <width>81</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="maxHoursBox">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>50</y>
+      <width>160</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="ageGroup">
+    <property name="geometry">
+     <rect>
+      <x>4</x>
+      <y>41</y>
+      <width>340</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Age</string>
+    </property>
+    <widget class="QLabel" name="minLabel">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>18</y>
+       <width>41</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>min </string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="maxLabel">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>18</y>
+       <width>30</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>max</string>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <widget class="QGroupBox" name="DrawBox">
    <property name="geometry">
     <rect>
      <x>6</x>
-     <y>210</y>
-     <width>341</width>
+     <y>260</y>
+     <width>340</width>
      <height>71</height>
     </rect>
    </property>
@@ -1367,7 +1380,7 @@ Frame</string>
    <property name="geometry">
     <rect>
      <x>280</x>
-     <y>290</y>
+     <y>340</y>
      <width>61</width>
      <height>28</height>
     </rect>
@@ -1794,8 +1807,8 @@ Frame</string>
   <widget class="QLabel" name="runStatusLabel">
    <property name="geometry">
     <rect>
-     <x>6</x>
-     <y>290</y>
+     <x>3</x>
+     <y>340</y>
      <width>80</width>
      <height>22</height>
     </rect>
@@ -1831,7 +1844,7 @@ Frame</string>
    <property name="geometry">
     <rect>
      <x>290</x>
-     <y>450</y>
+     <y>460</y>
      <width>41</width>
      <height>21</height>
     </rect>
@@ -1852,7 +1865,7 @@ Frame</string>
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>450</y>
+     <y>460</y>
      <width>51</width>
      <height>21</height>
     </rect>

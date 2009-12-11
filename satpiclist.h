@@ -68,6 +68,16 @@ Q_OBJECT
   void SetServer (string server);
   void SetPath   (string path);
   void SetFilename (string filename);
+  void SetMinAge (unsigned long int minhours)
+                  { mMinHours = minhours;
+                    mMinSecs = minhours * 60 * 60;}
+  unsigned long int MinAge () { return mMinHours;}
+  
+  void SetMaxAge (unsigned long int maxhours)
+                  { mMaxHours = maxhours;
+                    mMaxSecs = maxhours * 60 * 60;}
+  unsigned long int MaxAge () { return mMaxHours; }
+  
   string Filename () { return mPicfilename; }
   void SetMethod (const DBConnection::Method m);
   DBConnection::Method Method();
@@ -116,6 +126,11 @@ Q_OBJECT
   string     mUser;
   string     mPass;
   string     mPath;
+  
+  unsigned long int mMinHours;
+  unsigned long int mMinSecs;
+  unsigned long int mMaxHours;
+  unsigned long int mMaxSecs;
 
   DBConnection DBCon;
 

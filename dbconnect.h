@@ -131,7 +131,14 @@ class DBConnection
   bool ConnectDB (string server, string db, string user, string pass);
   void Disconnect ();
 
-  bool    LoadIndex (string pic);              // ReadIndexRec wont work before this
+
+  // ReadIndexRec wont work before LoadIndex
+
+  bool    LoadIndex (const string            pic, 
+                     const bool              everything = true,
+                     const unsigned long int minIdent = 0,
+                     const unsigned long int maxIdent = 0);   
+                     
   bool    ReadIndexRec  (IndexRecord &r);  // read the index entries
   size_t  ReadImageData (IndexRecord &r, string & data);    // fill in image data
   bool  InsertRec (const IndexRecord &r, const string &data);
@@ -164,8 +171,8 @@ class DBConnection
   string     mPathOnServer;
 
   bool ConnectDB_MYSQL (string server, string db, string user, string pass);
-  bool Start_MYSQL_Index ();
-  bool Start_Web_Index();
+  bool Start_MYSQL_Index (unsigned long int min, unsigned long int max);
+  bool Start_Web_Index (unsigned long int min, unsigned long int max);
 
 #if SATVIEW_USE_QNET
 

@@ -20,27 +20,38 @@ function login ()
 
 }
 
-function give_index($db_con)
+function give_index($db_con, $imin, $imax)
 {
     $query = "select ident, picname, storetime, remark from `satpics` where 1";
+    
+    if ($imin != "") {
+        $query .= " and ident >= " . $imin;
+    }
+    if ($imax != "") {
+        $query .= " and ident <= " . $imax;
+    }
     $result = mysql_query ($query,$db_con);
    
     $nrows = mysql_num_rows($result);
-
-    $r = 0;
-    $fields = array("ident","picname","storetime","remark");
-    while ($r<$nrows) {
-      $row_array = mysql_fetch_assoc($result);
-      echo "record " . $r . "\r\n";
-      foreach ($fields as $f) {
-        $rawval = trim($row_array[$f]);
-        if (strlen($rawval) == 0) {
-          $rawval = "0";
-	}
-	$val = bin2hex($rawval);
-	echo $f . " - " . $val . "\r\n";
+    if ($nrows > 0) {
+      echo "SATVIEW-INDEX\r\n";
+      $r = 0;
+      $fields = array("ident","picname","storetime","remark");
+      while ($r<$nrows) {
+        $row_array = mysql_fetch_assoc($result);
+        echo "record " . $r . "\r\n";
+        foreach ($fields as $f) {
+          $rawval = trim($row_array[$f]);
+          if (strlen($rawval) == 0) {
+            $rawval = "0";
+        	}
+  	      $val = bin2hex($rawval);
+  	      echo $f . " - " . $val . "\r\n";
+        }
+        $r++;
       }
-      $r++;
+    } else {
+      header ("HTTP/1.0 204 No Data\r\n",false,204);
     }
 }
 
@@ -57,8 +68,13 @@ function give_image($db_con, $ident, $picname)
   if ($nrows > 0) {
     $row_array = mysql_fetch_row($res); 
     $len_array = mysql_fetch_lengths($res);
+    echo "SATVIEW-ITEM\r\n" ;
     echo "LEN ". $len_array[0] . "\r\nx";
     echo bin2hex($row_array[0]);
+  } else {
+  
+      header ("HTTP/1.0 204 No Data\r\n",false,204);
+    
   }
 }
 
@@ -68,7 +84,8 @@ if (isset ($berndscounterisdefined)) {
    if ($berndscounterisdefined == "yesitis") {
       count_serve('query bad: ' . $_SERVER['PHP_SELF'] . ' ' . $funct);
    }
-}
+}  
+header ("HTTP/1.1 400 Bad Request Format\r\n");
 }
 
 
@@ -82,11 +99,12 @@ $was_ok = FALSE;
 if (in_array($funct,$supported)) {
   $con = login();
   if ($funct == "index") {
-    echo "SATVIEW-INDEX\r\n";
-    give_index ($con);
+    $ndxmin = $_REQUEST["min"];
+    $ndxmax = $_REQUEST["max"];
+    
+    give_index ($con,$ndxmin,$ndxmax);
     $was_ok=TRUE;
   } else if ($funct == "item") {
-    echo "SATVIEW-ITEM\r\n" ;
     $key1=  $_REQUEST["k1"];
     $key2=  $_REQUEST["k2"];
     $real_k1 = pack('H*',$key1);

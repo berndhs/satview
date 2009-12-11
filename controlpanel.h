@@ -56,6 +56,13 @@ Q_OBJECT
     string SetDate (string dt);
     string Remark();
     string SetRemark (string rm);
+    string MinAge ();
+    string SetMinAge (string ma);
+    string SetMinAge (unsigned long int ma);
+    string MaxAge ();
+    string SetMaxAge (string ma);
+    string SetMaxAge (unsigned long int ma);
+    
     bool   Again() { return wantRerun; }
 
     void Reset ();
@@ -193,6 +200,8 @@ Q_OBJECT
     string                 mIdFancy;
     DBConnection::Method   mMeth;
     string                 mRemark;
+    string                 mMinHours;
+    string                 mMaxHours;
 
   };
 

@@ -27,6 +27,10 @@ namespace satview {
     :
      pDC(0)
   {
+    mMaxHours = 0;
+    mMaxSecs = 0;
+    mMinHours = 0;
+    mMinSecs = 0;
 #if SATVIEW_USE_QNET
     connect (&DBCon, SIGNAL(IndexArrival()),this,SLOT(LoadFromIndex()));
 #endif
@@ -160,7 +164,7 @@ namespace satview {
   {
      SatPicBuf * pBuf;
      pBuf = new SatPicBuf (0,string("no image"), 
-		string("0"), string("no images available"));
+	   string("0"), string("no images available"));
      mBufMap.insert(pair<unsigned long int, SatPicBuf*>(0,pBuf));
   }
 
@@ -191,7 +195,12 @@ namespace satview {
     bool haveDB = DBCon.ConnectDB (mServer, mDBName, mUser, mPass);
     if (haveDB) {
       SatPicBuf::SetDBCon(&DBCon);
-      haveDB = DBCon.LoadIndex(mPicfilename);
+      unsigned long int now = time(NULL);
+      unsigned long int fromSec = ( mMaxSecs > now ? 0
+                                                   : now - mMaxSecs);
+      unsigned long int toSec = now - mMinSecs;
+      
+      haveDB = DBCon.LoadIndex(mPicfilename, false, fromSec, toSec);
       
       if (haveDB ) {      
         LoadFromIndex();

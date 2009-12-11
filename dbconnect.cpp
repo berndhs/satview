@@ -14,6 +14,8 @@
 #include "satpiclist.h"
 #include <stdlib.h>
 
+#include <limits>
+
 #include "satview-debug.h"
 #include "satview-defaults.h"
 
@@ -81,7 +83,9 @@ namespace satview {
     /** @todo clean up sockets or DB connections
      */
 #if SATVIEW_USE_QSQL
-    mIndexQuery.clear();
+    if (mIndexQuery.isActive()) {
+      mIndexQuery.clear();
+    }
     mQDB.close();
 #endif
   }
@@ -99,7 +103,9 @@ namespace satview {
     }
 #endif
 #if SATVIEW_USE_QSQL
-    mIndexQuery.clear();
+    if (mIndexQuery.isActive()) {
+      mIndexQuery.clear();
+    }
     if (mQDB.isOpen()) {
       mQDB.close();
     }
@@ -122,7 +128,9 @@ namespace satview {
     }
 #endif
 #if SATVIEW_USE_QSQL
-    mIndexQuery.clear();
+    if (mIndexQuery.isActive()) {
+      mIndexQuery.clear();
+    }
 #endif
     if (mWebResult) {
       delete mWebResult;
@@ -150,7 +158,9 @@ namespace satview {
          mQDB = QSqlDatabase::addDatabase("QMYSQL");
          mQConnection = mQDB.connectionNames()[0];
       }
-      mIndexQuery.clear();      
+      if (mIndexQuery.isActive()) {
+        mIndexQuery.clear();      
+      }
 #endif
       return true; 
     }
@@ -195,14 +205,23 @@ namespace satview {
 
 
   bool
-  DBConnection::LoadIndex (string pic) 
+  DBConnection::LoadIndex (const string pic,
+                           const bool              everything,
+                           const unsigned long int minIdent,
+                           const unsigned long int maxIdent) 
   {
+    unsigned long int useMinIdent(minIdent);
+    unsigned long int useMaxIdent(maxIdent);
     mPicname = pic;
+    if (everything) {
+       useMinIdent = 0;
+       useMaxIdent = std::numeric_limits<unsigned long int>::max();
+    }
     switch (mMeth) {
     case Con_MySql: 
-      return Start_MYSQL_Index();
+      return Start_MYSQL_Index(useMinIdent, useMaxIdent);
     case Con_Web:
-      return Start_Web_Index();
+      return Start_Web_Index(useMinIdent, useMaxIdent);
     default:
       break;
     }
@@ -211,13 +230,15 @@ namespace satview {
 
 
   bool
-  DBConnection::Start_MYSQL_Index()
+  DBConnection::Start_MYSQL_Index(unsigned long int min, unsigned long int max)
   {
 #if SATVIEW_USE_MYSQL
     try {
       string q_str = 
 	string ("SELECT ident, storetime, remark, picname FROM `satpics` WHERE `picname`=")
         + string ("'") + mPicname + string ("'");
+      q_str.append (string(" AND `ident` >= ") + berndsutil::toString(min));
+      q_str.append (string(" AND `ident <= ") + berndsutil::toString(max));
       if (!pDBCon) {
         return false;
       }
@@ -231,11 +252,20 @@ namespace satview {
     return true;
 #endif
 #if SATVIEW_USE_QSQL
-    mIndexQuery.clear();
+    if (mIndexQuery.isActive()) {
+      mIndexQuery.clear();
+    }
     QString queryString
         ("SELECT ident, storetime, remark, picname FROM `satpics` WHERE `picname` ='");
     queryString.append(mPicname.c_str());
     queryString.append("'");
+    queryString.append (" AND `ident` >= ");
+    QString minmax;
+    minmax.setNum(min);
+    queryString.append (minmax);
+    queryString.append (" AND `ident` <= ");
+    minmax.setNum(max);
+    queryString.append (minmax);
     QSqlQuery q(mQDB);
     q.setForwardOnly(true);
     q.prepare(queryString);
@@ -332,7 +362,7 @@ namespace satview {
   }
 
   bool
-  DBConnection::Start_Web_Index()
+  DBConnection::Start_Web_Index(unsigned long int min, unsigned long int max)
   {
     mHaveWebData = false;
     if (!Attempt_Web_Connect()) {
@@ -347,6 +377,11 @@ namespace satview {
     url.setHost(mServer.c_str());
     url.setPath(mPathOnServer.c_str());
     url.setEncodedQuery("fn=index");     // setEncodedQuery adds the '?'
+    QString minmax;
+    minmax.setNum(min);
+    url.addQueryItem("min",minmax);
+    minmax.setNum(max);
+    url.addQueryItem("max",minmax);
     QNetworkRequest req;
     req.setRawHeader("User-Agent","Maxwell Smart");
     req.setUrl(url);
@@ -364,7 +399,9 @@ namespace satview {
 #endif
     string client_msg;
     string proto (" HTTP/1.0 ");
-    client_msg = mPathOnServer + "?fn=index " 
+    client_msg = mPathOnServer + "?fn=index" 
+       + string("&min=") + berndsutil::toString(min)
+       + string("&max=") + berndsutil::toString(max)
        + proto 
        + string("\nUser-Agent: Maxwell Smart \n") 
        + string ("Accept: */*\n")

@@ -18,23 +18,29 @@ RM = rm
 
 MAKE_CLOUD = Make.cloud
 MAKE_COPYDB = Make.copydb
+ORIGIN_CLOUD = cloudtrack.pro
+ORIGIN_COPYDB = copydb.pro
 
 all: copydb cloudtrack cloudtrackd
+
+force:
+	$(MAKE) -i ultraclean
+	$(MAKE) -B all
 
 clean: clean.copydb clean.cloud
 
 ultraclean:
-	make clean
+	make -i clean
 	$(RM) $(MAKE_CLOUD) $(MAKE_COPYDB)
 
 debug: cloudtrackd
 
 release: cloudtrack
 
-$(MAKE_COPYDB): copydb.pro
+$(MAKE_COPYDB): $(ORIGIN_COPYDB)
 	$(QMAKE) copydb.pro -o $(MAKE_COPYDB)
 
-$(MAKE_CLOUD): cloudtrack.pro
+$(MAKE_CLOUD): $(ORIGIN_CLOUD)
 	$(QMAKE) cloudtrack.pro -o $(MAKE_CLOUD)
 
 
@@ -46,13 +52,13 @@ clean.cloud:
 	$(MAKE) -f $(MAKE_CLOUD) clean
 	$(RM) $(MAKE_CLOUD)
 
-copydb: $(MAKE_COPYDB)
+copydb: $(MAKE_COPYDB) $(ORIGIN_COPYDB)
 	$(MAKE) -f $(MAKE_COPYDB)
 
-cloudtrack: $(MAKE_CLOUD)
+cloudtrack: $(MAKE_CLOUD) $(ORIGIN_CLOUD)
 	$(MAKE) -f $(MAKE_CLOUD) release
 
-cloudtrackd: $(MAKE_CLOUD)
+cloudtrackd: $(MAKE_CLOUD) $(ORIGIN_CLOUD)
 	$(MAKE) -f $(MAKE_CLOUD) debug
 
 install:

@@ -83,20 +83,17 @@ ControlPanel::ControlPanel (QApplication *pA)
     connect (runBackButton, SIGNAL(clicked()), this, SLOT(DoRunBack()));
     connect (backWeekButton, SIGNAL(clicked()), this, SLOT(DoRunBackWeek()));
     connect (backDayButton, SIGNAL(clicked()), this, SLOT(DoRunBackDay()));
-    connect (backHoursButton, SIGNAL(clicked()), this, SLOT(DoRunBackHours()));
     connect (backStepButton, SIGNAL(clicked()), this, SLOT(DoStepBack()));
     connect (runForwardButton, SIGNAL(clicked()), this, SLOT(DoRunFwd()));
     connect (forwardWeekButton, SIGNAL(clicked()), this, SLOT(DoRunFwdWeek()));
     connect (forwardDayButton, SIGNAL(clicked()), this, SLOT(DoRunFwdDay()));
-    connect (forwardHoursButton, SIGNAL(clicked()), this, SLOT(DoRunFwdHours()));
     connect (forwardStepButton, SIGNAL(clicked()), this, SLOT(DoStepFwd()));
-    connect (windBackWeekButton, SIGNAL(clicked()), this, SLOT(DoWindBackWeek()));
-    connect (windBackDayButton, SIGNAL(clicked()), this, SLOT(DoWindBackDay()));
-    connect (windBackHoursButton, SIGNAL(clicked()), this, SLOT(DoWindBackHours()));
+    connect (windBackWeekButton, SIGNAL(clicked()), this, 
+                SLOT(DoWindBackWeek()));
+    connect (windBackDayButton, SIGNAL(clicked()), this, 
+                SLOT(DoWindBackDay()));
     connect (windFwdWeekButton, SIGNAL(clicked()), this, SLOT(DoWindFwdWeek()));
     connect (windFwdDayButton, SIGNAL(clicked()), this, SLOT(DoWindFwdDay()));
-    connect (windFwdHoursButton, SIGNAL(clicked()), this, SLOT(DoWindFwdHours()));
-
     connect (connectServerButton, SIGNAL(clicked()), this, SLOT(ReloadDB()));
     connect (reloadServerButton, SIGNAL(clicked()), this, SLOT(ReloadDB()));
     connect (changeInterfaceButton, SIGNAL(clicked()),
@@ -709,6 +706,50 @@ ControlPanel::SetDate (string dt)
   dateBox->setPlainText(newdate);
   mDate = dt;
   return mDate;
+}
+
+string
+ControlPanel::SetMinAge (unsigned long int ma)
+{
+  return SetMinAge(berndsutil::toString(ma));
+}
+
+string
+ControlPanel::SetMinAge (string ma)
+{
+  mMinHours = ma;
+  QString age(ma.c_str());
+  minHoursBox->clear();
+  minHoursBox->setPlainText(age);
+  return mMinHours;
+}
+
+string
+ControlPanel::MinAge ()
+{
+  return mMinHours;
+}
+
+string
+ControlPanel::SetMaxAge (unsigned long int ma)
+{
+  return SetMaxAge (berndsutil::toString(ma));
+}
+
+string 
+ControlPanel::SetMaxAge (string ma)
+{
+  mMaxHours = ma;
+  QString age(ma.c_str());
+  maxHoursBox->clear();
+  maxHoursBox->setPlainText(age);
+  return mMaxHours;
+}
+
+string
+ControlPanel::MaxAge ()
+{
+  return mMaxHours;
 }
 
 string

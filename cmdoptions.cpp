@@ -35,8 +35,10 @@ CmdOptions::CmdOptions (string pgmname)
         ("server,s",bpo::value<string>(),"input server")
         ("path,P",bpo::value<string>(),"path on web server")
         ("outserver,o",bpo::value<string>(),"output server")
-        ("minhours,m",bpo::value<int>(),"minimum image age to consider")
-        ("maxhours,M",bpo::value<int>(),"maximum image age to consider")
+        ("minhours,m",bpo::value<unsigned long int>(),
+                      "minimum image age to consider")
+        ("maxhours,M",bpo::value<unsigned long int>(),
+                      "maximum image age to consider")
         ("image,i",bpo::value<string>(),"image name")
         ;
   mSimpleOpts.add ("server",-1);   
@@ -134,22 +136,22 @@ CmdOptions::SetServerOutbound (string & server)
 }
 
 bool
-CmdOptions::SetMinHours (int & hours)
+CmdOptions::SetMinHours (unsigned long int & hours)
 {
   int seenMin = mOptValues.count("minhours");
   if (seenMin > 0) {
-    hours = mOptValues["minhours"].as<int>();
+    hours = mOptValues["minhours"].as<unsigned long int>();
     return true;
   }
   return false;
 }
 
 bool
-CmdOptions::SetMaxHours (int &hours)
+CmdOptions::SetMaxHours (unsigned long int &hours)
 {
   int seenMax = mOptValues.count("maxhours");
   if (seenMax > 0) {
-    hours = mOptValues["maxhours"].as<int>();
+    hours = mOptValues["maxhours"].as<unsigned long int>();
     return true;
   }
   return false;

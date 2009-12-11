@@ -50,6 +50,12 @@ main (int argc, char*argv[])
   string user("weather");
   string pass("quetzalcoatl");
   string path(SATVIEW_DEFAULT_PATH);
+  
+  unsigned long int maxAge = std::numeric_limits<unsigned long int>::max()
+                             / (60*60);
+  
+  unsigned long int minAge = 0;
+  
   bool versionOnly(false);
 
 
@@ -68,6 +74,8 @@ main (int argc, char*argv[])
   opt.SetServerInbound(server);
   opt.SetInterface(IFarg);
   opt.SetPath(path);
+  opt.SetMinHours(minAge);
+  opt.SetMaxHours(maxAge);
 
   /** @brief some elementary command line, 2 choices of image names.
    * More later when we have time.
@@ -82,7 +90,6 @@ main (int argc, char*argv[])
     opt.Usage();
     exit(0);
   }
-  ControlPanel Control (&App);
 
 
   try {
@@ -98,9 +105,12 @@ main (int argc, char*argv[])
     }
     bool again(false);
     do {
+      ControlPanel Control (&App);
       Control.SetPicname(DefaultFile);
       Control.SetServer(server);
       Control.SetConMeth(conmeth);
+      Control.SetMinAge (minAge);
+      Control.SetMaxAge (maxAge);
       SatPicList::Instance()->SetPath(path);
       SatPicList::Instance()->SetDBParams(method,
                                          server,
@@ -108,6 +118,8 @@ main (int argc, char*argv[])
 					 user,
 					 pass,
                                          DefaultFile);
+      SatPicList::Instance()->SetMinAge(minAge);
+      SatPicList::Instance()->SetMaxAge(maxAge);
       SatPicList::Instance()->LoadFromDB();
       SatPicList::Instance()->SetControl (&Control);
       SatPicList::Instance()->Start();
@@ -123,8 +135,11 @@ main (int argc, char*argv[])
         DefaultFile = Control.Picname();
         server = Control.Server();
         conmeth = Control.ConMeth();
+        
         Control.Reset();
+        #if 0
         Control.Restart();
+        #endif
       }
     } while (again);
     exit(0);

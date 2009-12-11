@@ -45,8 +45,8 @@ bool SetImage (string &image);
 bool SetServerInbound (string & servIn);
 bool SetServerOutbound (string & servOut);
 bool SetPath (string & path);
-bool SetMinHours (int & hours);
-bool SetMaxHours (int & hours);
+bool SetMinHours (unsigned long int & hours);
+bool SetMaxHours (unsigned long int & hours);
 
 private:
 
