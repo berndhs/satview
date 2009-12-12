@@ -214,11 +214,10 @@ namespace satview {
       
       if (haveDB ) {      
         LoadFromIndex();
-        haveDB = mBufMap.size() > 1;
+        haveDB = mBufMap.size() > 0;
       }
     }
     if (!haveDB) { // run without any images
-    	std::cout << " no images " << std::endl;
     	LoadDummy();
     }
     ToEnd();

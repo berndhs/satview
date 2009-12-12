@@ -399,7 +399,7 @@ namespace satview {
 #endif
     string client_msg;
     string proto (" HTTP/1.0 ");
-    client_msg = mPathOnServer + "?fn=index" 
+    client_msg = string("GET ") + mPathOnServer + "?fn=index" 
        + string("&min=") + berndsutil::toString(min)
        + string("&max=") + berndsutil::toString(max)
        + proto 

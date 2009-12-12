@@ -29,55 +29,13 @@ using namespace std;
 DBConnection DBin;
 DBConnection DBout;
 unsigned long int secs_in_hour (60*60);
-int               max_hours (24);
-int               min_hours (0);
+unsigned long int max_hours (24);
+unsigned long int min_hours (0);
 string  source_server ("www.bernd-stramm.com");
 string  dest_server   ("localhost");
 
 string version("Version 1.1");
 
-#if 0
-void
-check_args (int argc, char * argv[])
-{
-  string s_arg;
-  signed long int maybe_number(0);
-  int a(1);
-  while (a < argc) {
-    s_arg = string(argv[a]); 
-    if (s_arg == "-v" || s_arg == "--version") {
-      cout << argv[0] << " " << version << endl;
-      exit(0);
-    }
-    if (s_arg == "-h" || s_arg == "--help") {
-      cout << help << endl;
-      exit(0);
-    }
-    if (s_arg == "S0") {
-      source_server = "localhost";
-    } else if (s_arg == "S1") {
-      source_server = "www.bernd-stramm.com";
-    } else if (s_arg == "S2") {
-      source_server = "192.168.1.152";
-    } else {
-      try {
-        maybe_number = berndsutil::fromString<unsigned long long int>(s_arg);
-      } catch (...) {
-        maybe_number = 0;
-      }
-      if (maybe_number > 0) {
-        max_age = maybe_number * secs_in_hour;
-      } else {
-        cerr << argv[0] << ":  ";
-        cerr << "don't understand argument " << s_arg << endl;
-        cerr << "usage:  " << argv[0] << " " << help << endl;
-       exit(1);
-     }
-    }
-    a++;
-  }
-}
-#endif
 
 void
 copy_rec (IndexRecord &r, 
@@ -126,18 +84,13 @@ main (int argc, char*argv[])
   
   opts.SetMinHours (min_hours);
   opts.SetMaxHours (max_hours);
-  if (min_hours < 0 || max_hours < 0) {
-    cout << " no negative ages!" << endl;
-    opts.Usage();
-    exit(1);
-  }
   unsigned long int max_age ( max_hours * secs_in_hour );
   unsigned long int min_age ( min_hours * secs_in_hour );
   unsigned long int now = time(0);
-  unsigned long int deadline = now - max_age;
-  unsigned long int toorecent = now - min_age;
-  time_t dl = time_t(deadline);
-  time_t cutoff = time_t (toorecent);
+  unsigned long int too_old = now - max_age;
+  unsigned long int too_recent = now - min_age;
+  time_t dl = time_t(too_old);
+  time_t cutoff = time_t (too_recent);
 
   cout << "Trying " << source_server << " -> " << dest_server << endl;
   cout << " newer than " << ctime(&dl) << " = "
@@ -174,7 +127,7 @@ main (int argc, char*argv[])
  
   IndexRecord r;
   bool gotindex(false);
-  gotindex = DBin.LoadIndex("ECIR.JPG");
+  gotindex = DBin.LoadIndex("ECIR.JPG", false, too_old, too_recent);
   if (!gotindex) {
     cout << "can't get input index" << endl;
     return (3);
@@ -186,11 +139,11 @@ main (int argc, char*argv[])
   cout.flush();
   int   num_older(0);
   while (DBin.ReadIndexRec(r)) {
-    if (r.ident < deadline) {
+    if (r.ident < too_old) {
       num_older++;
       continue;
     }
-    if (r.ident > toorecent) {
+    if (r.ident > too_recent) {
       break;
     }
     copy_rec(r, readfailed, writefailed, numcopied);
@@ -198,10 +151,10 @@ main (int argc, char*argv[])
   }
   cout << num_older << " old records skipped" << endl;
   while (DBin.ReadIndexRec(r)) {
-    if (r.ident < deadline) {
+    if (r.ident < too_old) {
       continue;
     }
-    if (r.ident > toorecent) {
+    if (r.ident > too_recent) {
       break; // finished
     }
     copy_rec (r, readfailed, writefailed, numcopied);

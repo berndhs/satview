@@ -143,6 +143,7 @@ class DBConnection
   size_t  ReadImageData (IndexRecord &r, string & data);    // fill in image data
   bool  InsertRec (const IndexRecord &r, const string &data);
   bool  InsertRec (const IndexRecord &r, const char* data);
+  
 
 #if SATVIEW_USE_QNET
 
