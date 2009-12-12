@@ -31,6 +31,8 @@ namespace satview {
     mMaxSecs = 0;
     mMinHours = 0;
     mMinSecs = 0;
+    mHaveDummy = false;
+    LoadDummy();
 #if SATVIEW_USE_QNET
     connect (&DBCon, SIGNAL(IndexArrival()),this,SLOT(LoadFromIndex()));
 #endif
@@ -162,10 +164,18 @@ namespace satview {
   void
   SatPicList::LoadDummy ()
   {
-     SatPicBuf * pBuf;
-     pBuf = new SatPicBuf (0,string("no image"), 
-	   string("0"), string("no images available"));
-     mBufMap.insert(pair<unsigned long int, SatPicBuf*>(0,pBuf));
+     if (mHaveDummy) {
+       return;
+     }
+     if (pDummyBuf == 0) {
+       pDummyBuf = new SatPicBuf (0,string("no image"),
+                       string("0"),string("no images available"));
+     }
+     if (pDummyBuf) {
+       mDummyIt = mBufMap.insert
+                  (pair<unsigned long int, SatPicBuf*>(0,pDummyBuf));
+       mHaveDummy = true;
+     }
   }
 
   void
@@ -204,7 +214,7 @@ namespace satview {
       
       if (haveDB ) {      
         LoadFromIndex();
-        haveDB = mBufMap.size() > 0;
+        haveDB = mBufMap.size() > 1;
       }
     }
     if (!haveDB) { // run without any images
@@ -222,19 +232,28 @@ namespace satview {
     return mBufMap.size();
   }
 
-  void
-  SatPicList::Rewind()
+  SatPicBuf*
+  SatPicList::ToStart()
   {
     mIt = mBufMap.begin();
+    if (mIt == mDummyIt) {
+      mIt++;
+    }
+    if (mIt == mBufMap.end()) {
+      return 0;
+    } else {
+      return mIt->second;
+    }
   }
 
-  void
+  SatPicBuf*
   SatPicList::ToEnd()
   {
     mIt = mBufMap.end();
     if (mBufMap.size() > 0 ) {
       mIt--;
     }
+    return Current();
   }
 
   bool
@@ -244,23 +263,30 @@ namespace satview {
   }
 
   SatPicBuf *
-  SatPicList::Current()
+  SatPicList::Current(bool snap)
   {
     if (mBufMap.size() < 1) {
       return 0;
     }
-    if (mIt == mBufMap.end()) {
+    if (mIt == mBufMap.end() && snap) {
       mIt--;
-      if (mIt == mBufMap.end()) {  // empty
-        return 0;
-      }
     }
-    return mIt->second;
+    if (mIt == mBufMap.end()) {
+      return 0;
+    }
+    SatPicBuf * pBuf = mIt->second;
+    if (pBuf == pDummyBuf) {
+      return 0;
+    }
+    return pBuf;
   }
 
   SatPicBuf *
   SatPicList::PostIncr()
   {
+    if (mIt == mDummyIt) { // could be dummy at front
+      mIt++;
+    }
     if (mIt == mBufMap.end()) {
       return 0;
     }
@@ -272,36 +298,17 @@ namespace satview {
   SatPicBuf *
   SatPicList::PostDecr()
   {
+    if (mIt == mDummyIt) {
+      return 0;
+    }
     if (mIt == mBufMap.end()) {
+      mIt--;
       return 0;
     }
     SatPicBuf * pBuf = mIt->second;
     mIt--;
     return pBuf;
   }
-
-  void
-  SatPicList::Skip(int n)
-  {
-    int i;
-    if (n>=0) {
-      for (i=1; i<=n; i++) {
-      	if (mIt == mBufMap.end()) {     
-          return;
-      	}
-        mIt++;
-      }
-    } else {
-      for (i= -1; i>=n; i--) {	
-        if (mIt == mBufMap.end()) {
-          mIt--;
-          return;
-	}
-        mIt--;
-      }
-    }
-  }
-
 
   SatPicBuf *
   SatPicList::Find (unsigned long int sec_stamp)
@@ -325,25 +332,7 @@ namespace satview {
     mIt = it;
     return it->second;
   }
-
-  void
-  SatPicList::Wind (int n)
-  {
-    SatPicBuf * pBuf = Current();
-    unsigned long int cur_time = 0;
-    unsigned long int bound = cur_time;
-    if (pBuf) {
-      cur_time = pBuf->Ident();
-      bound = cur_time + n;
-    }
-
-    PicMap_Type::iterator it = ( n > 0 
-                   ? mBufMap.lower_bound(bound)
-		   : mBufMap.upper_bound(bound));      
-    if (it != mBufMap.end()) {
-      mIt = it;
-    }
-  }
+  
   
   SatPicList*
   SatPicList::Instance()

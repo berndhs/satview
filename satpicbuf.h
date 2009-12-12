@@ -74,6 +74,16 @@ Q_OBJECT
 
   void     DitchBufs();
   
+  string   String() { return string("SatPicBuf ")
+                             + berndsutil::toString(mIdent)
+                             + " " + mPicname
+                             + " " + mTimeStamp
+                             + " " + mRemark
+                             + " haveIndex " + berndsutil::toString(mHaveIndex)
+                             + " haveBlob " + berndsutil::toString(mHaveBlob)
+                             + " imglen " + berndsutil::toString(mImageLen)
+                             ;}
+  
 #if SATVIEW_USE_QNET
 
   public slots:

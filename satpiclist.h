@@ -93,15 +93,12 @@ Q_OBJECT
 
   void SetControl (ControlPanel *dcon) { pDC = dcon; }
 
-  void        Rewind();
-  void        ToEnd();
-  SatPicBuf*  Current();
+  SatPicBuf*  ToStart();
+  SatPicBuf*  ToEnd();
+  SatPicBuf*  Current(bool snap = true);  // snap - move to last if fails
   SatPicBuf*  PostIncr();
   SatPicBuf*  PostDecr();
-  void        Skip(int n=1);
   bool        AtEnd();
-
-  void        Wind (int n); // wind forward or back n seconds
 
 
   SatPicBuf* Find (unsigned long int sec_stamp); // doesn't affect iterators
@@ -143,6 +140,9 @@ Q_OBJECT
   bool ConnectDB (string server, string db, string user, string pass);
   void DisconnectDB ();
   void LoadDummy();
+  SatPicBuf             * pDummyBuf;
+  PicMap_Type::iterator   mDummyIt;
+  bool                    mHaveDummy;
 
   static SatPicList  *pTheOnly;
 

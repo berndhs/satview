@@ -62,7 +62,15 @@ ControlPanel::ControlPanel (QApplication *pA)
     mPicState.pBuf    = 0;
     mPicState.pImg    = 0;
 
-    runStatusLabel->setText (mStateStoppedText);
+    ChangeStatusLabel (mStateStoppedText);
+    bool loadok;
+    loadok = mStateStoppedPix.load(":/statusDone.png");
+    loadok &= mStateRunningPix.load(":/statusRun.png");
+    loadok &= mStateLoadingPix.load(":/statusLoad.png");
+    if (!loadok) {
+      exit(1);
+    }
+    
     connect (&showTimer, SIGNAL(timeout()), this, SLOT(DoShowMove()));
 
     /** @brief make sure we check for clicked buttons every now and then */
@@ -77,6 +85,8 @@ ControlPanel::ControlPanel (QApplication *pA)
     connect (quitButton, SIGNAL(clicked()), this, SLOT(quit()));
     connect (restartButton, SIGNAL(clicked()), this, SLOT(DoAgain()));
     
+    connect (reloadImgButton, SIGNAL(clicked()),
+                this, SLOT(ShowImgAgain()));
     connect (stopButton, SIGNAL(clicked()), this, SLOT(DoStopMoving()));
     stopButton->setEnabled(false);
 
@@ -92,8 +102,10 @@ ControlPanel::ControlPanel (QApplication *pA)
                 SLOT(DoWindBackWeek()));
     connect (windBackDayButton, SIGNAL(clicked()), this, 
                 SLOT(DoWindBackDay()));
+    connect (windBackAllButton, SIGNAL(clicked()), this, SLOT(DoWindBack()));
     connect (windFwdWeekButton, SIGNAL(clicked()), this, SLOT(DoWindFwdWeek()));
     connect (windFwdDayButton, SIGNAL(clicked()), this, SLOT(DoWindFwdDay()));
+    connect (windFwdAllButton, SIGNAL(clicked()), this, SLOT(DoWindFwd()));
     connect (connectServerButton, SIGNAL(clicked()), this, SLOT(ReloadDB()));
     connect (reloadServerButton, SIGNAL(clicked()), this, SLOT(ReloadDB()));
     connect (changeInterfaceButton, SIGNAL(clicked()),
@@ -208,6 +220,19 @@ ControlPanel::ShowVersion()
   ShowVersionWindow();
 }
 
+void
+ControlPanel::ChangeStatusLabel (QString status)
+{
+  if (status == mStateRunningText) {
+    runStatusLabel->setPixmap (mStateRunningPix);
+  } else if (status == mStateLoadingText) {
+    runStatusLabel->setPixmap (mStateLoadingPix);
+  } else {
+    runStatusLabel->setPixmap (mStateStoppedPix);
+  }
+ // runStatusLabel->setText (status);
+}
+
 void 
 ControlPanel::ShowStatus ()
 {
@@ -223,6 +248,7 @@ void
 ControlPanel::PicArrive (QImage * pImg)
 {
   mPicState.pImg = pImg;
+  mPicState.waiting = false;
   ReallyShowPic();
 }
 
@@ -276,6 +302,16 @@ ControlPanel::ReallyShowPic ()
 }
 
 void
+ControlPanel::ShowImgAgain ()
+{
+  SatPicBuf * pBuf;
+  pBuf = SatPicList::Instance()->Current(false);
+  mPicState.SetNewBuf(pBuf);
+  pBuf->Forget_Image();
+  ShowPic(pBuf);
+}
+
+void
 ControlPanel::ShowPic (SatPicBuf * pBuf)
 {
   if (pBuf) {
@@ -285,10 +321,8 @@ ControlPanel::ShowPic (SatPicBuf * pBuf)
     if (DBWaiting()) {
       return;
     }
-    mPicState.pBuf = pBuf;
-    mPicState.failed = false;
+    mPicState.SetNewBuf(pBuf);
     mPicState.waiting = true;
-    mPicState.pImg = 0;
     QImage *pI = pBuf->Get_Image();
     if (pI == 0) {
       connect (pBuf, SIGNAL(ImageArrival(QImage *)),
@@ -375,8 +409,8 @@ ControlPanel::DoStepFwd ()
   }
   mRunState.stopped = true;
   stopButton->setEnabled(false);
-  SatPicList::Instance()->Skip(1);
-  SatPicBuf *pBuf = SatPicList::Instance()->Current();
+  SatPicList::Instance()->PostIncr();
+  SatPicBuf *pBuf = SatPicList::Instance()->Current(false);
   if (pBuf) {
     ShowPic(pBuf);
     stopButton->setEnabled(DBWaiting());
@@ -391,8 +425,8 @@ ControlPanel::DoStepBack ()
   }
   mRunState.stopped = true;
   stopButton->setEnabled(false);
-  SatPicList::Instance()->Skip(-1);
-  SatPicBuf *pBuf = SatPicList::Instance()->Current();
+  SatPicList::Instance()->PostDecr();
+  SatPicBuf *pBuf = SatPicList::Instance()->Current(false);
   if (pBuf) {
     ShowPic(pBuf);
     stopButton->setEnabled(DBWaiting());
@@ -409,6 +443,15 @@ ControlPanel::DoWindBack (int secs, bool allway)
   mRunState.show = false;
   mRunState.stopped = false;
   mRunState.backwards = true;
+  mRunState.pBuf = SatPicList::Instance()->Current(false);
+  if (allway) {
+    mRunState.pBuf = SatPicList::Instance()->ToStart();
+    mRunState.stopped = true;
+    mRunState.show = true;
+    mPicState.SetNewBuf(mRunState.pBuf);
+    ShowPic (mRunState.pBuf);
+    return;
+  }
   if (!DBWaiting()) {
     SatPicBuf *pBuf = SatPicList::Instance()->PostDecr();
     mRunState.pBuf = pBuf;
@@ -428,6 +471,7 @@ ControlPanel::DoRunBack (int secs, bool allway)
   mRunState.show = true;
   mRunState.stopped = false;
   mRunState.backwards = true;
+  mRunState.pBuf = SatPicList::Instance()->Current(false);
   if (!DBWaiting()) {
     SatPicBuf *pBuf = SatPicList::Instance()->PostDecr();
     if (pBuf) {
@@ -449,6 +493,7 @@ ControlPanel::DoWindFwd (int secs, bool allway)
   mRunState.show = false;
   mRunState.stopped = false;
   mRunState.backwards = false;
+  mRunState.pBuf = SatPicList::Instance()->Current();
   if (!DBWaiting()) {
     SatPicBuf *pBuf = SatPicList::Instance()->PostIncr();
     mRunState.pBuf = pBuf;
@@ -468,6 +513,7 @@ ControlPanel::DoRunFwd (int secs, bool allway)
   mRunState.show = true;
   mRunState.stopped = false;
   mRunState.backwards = false;
+  mRunState.pBuf = SatPicList::Instance()->Current();
   if (!DBWaiting()) {
     SatPicBuf *pBuf = SatPicList::Instance()->PostIncr();
     if (pBuf) {
@@ -500,7 +546,7 @@ ControlPanel::FwdSome ()
   } else { // fell off end
     mRunState.stopped = true;
     if (allway) {
-      SatPicList::Instance()->ToEnd();
+      pBuf = SatPicList::Instance()->ToEnd();
     }
   }
   if (mRunState.stopped != oldStopped) { /* if we stopped just now */
@@ -533,7 +579,7 @@ ControlPanel::BackSome ()
   } else { // fell off end
     mRunState.stopped = true;
     if (allway || pBuf == 0) {
-      SatPicList::Instance()->Rewind();
+      pBuf = SatPicList::Instance()->ToStart();
     }
   }
   if (mRunState.stopped != oldStopped) { /* if we stopped just now */
@@ -556,9 +602,9 @@ void
 ControlPanel::DoShowMove ()
 {
   if (DBWaiting()) {
-    runStatusLabel->setText(mStateLoadingText);
+    ChangeStatusLabel(mStateLoadingText);
   } else {
-    runStatusLabel->setText (mRunState.stopped ?
+    ChangeStatusLabel(mRunState.stopped ?
                              mStateStoppedText
                   			   : mStateRunningText);
   }

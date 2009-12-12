@@ -18,6 +18,7 @@
 #include "satpiclist.h"
 #include <QApplication>
 #include <QTimer>
+#include <QPixmap>
 #include <QDebug>
 #include <string>
 
@@ -81,6 +82,8 @@ Q_OBJECT
     void quit ();
     void show();
     void DoAgain ();
+    
+    void ShowImgAgain ();
 
     void ConnectDB ();
     void ReloadDB ();
@@ -99,23 +102,19 @@ Q_OBJECT
     void DoRunBack ()      { DoRunBack (0,true); }
     void DoRunBackWeek ()  { DoRunBack (7*24*3600); }
     void DoRunBackDay ()   { DoRunBack (24*3600);   }
-    void DoRunBackHours () { DoRunBack (6*3600);   }
 
     void DoRunFwd ()      { DoRunFwd (0,true); }
     void DoRunFwdWeek ()  { DoRunFwd (7*24*3600); }
     void DoRunFwdDay ()   { DoRunFwd (24*3600);   }
-    void DoRunFwdHours () { DoRunFwd (6*3600);   }
 
     void DoWindBack ()      { DoWindBack (0,true); }
     void DoWindBackWeek ()  { DoWindBack (7*24*3600); }
     void DoWindBackDay ()   { DoWindBack (24*3600);   }
-    void DoWindBackHours () { DoWindBack (6*3600);   }
-
+ 
     void DoWindFwd ()      { DoWindFwd (0,true); }
     void DoWindFwdWeek ()  { DoWindFwd (7*24*3600); }
     void DoWindFwdDay ()   { DoWindFwd (24*3600);   }
-    void DoWindFwdHours () { DoWindFwd (6*3600);   }
-
+ 
     void ToggleConn();
     void IndexWaitWakeup();
 
@@ -139,6 +138,12 @@ Q_OBJECT
                   stopped(false),
                   pBuf(0)
                   {}
+      void Debug() {
+           qDebug() << " run state time limit " << timelimit;
+           qDebug() << "     all " << allway << " show " << show 
+                    << " back " << backwards << " stopped " << stopped;
+           qDebug () << "    pBuf " << pBuf;
+      }
     };
 
     class ShowPicState {
@@ -148,6 +153,10 @@ Q_OBJECT
       bool               waiting;
       bool               failed;
       ShowPicState (): pBuf(0),pImg(0),waiting(false),failed(false){}
+      void SetNewBuf (SatPicBuf *pB) {
+                 pBuf = pB; pImg = 0; 
+                 waiting = false; failed=false;
+                 }
       void Debug () { 
                  qDebug() << "-- Pic State-- ";
                  qDebug() << "pBuf " << pBuf;
@@ -161,6 +170,8 @@ Q_OBJECT
     void ShowPic (SatPicBuf *pBuf);
     void ShowIndexRec (SatPicBuf *pBuf);
     void ReallyShowPic();
+    
+    void ChangeStatusLabel (QString status);
 
     bool DBWaiting ();
 
@@ -194,8 +205,11 @@ Q_OBJECT
     QString                mMethWebLabel;
     QString                mMethDirLabel;
     QString                mStateRunningText;
+    QPixmap                mStateRunningPix;
     QString                mStateStoppedText;
+    QPixmap                mStateStoppedPix;
     QString                mStateLoadingText;
+    QPixmap                mStateLoadingPix;
     string                 mDate;
     string                 mIdFancy;
     DBConnection::Method   mMeth;

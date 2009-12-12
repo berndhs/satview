@@ -27,6 +27,18 @@ force:
 	$(MAKE) -i ultraclean
 	$(MAKE) -B all
 
+fresh:
+	$(MAKE) -i clean
+	$(MAKE) all
+
+fresh.debug:
+	$(MAKE) -i clean.cloud
+	$(MAKE) debug
+
+fresh.release:
+	$(MAKE) -i clean.cloud
+	$(MAKE) release
+
 clean: clean.copydb clean.cloud
 
 ultraclean:
