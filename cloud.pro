@@ -13,6 +13,7 @@
 
 CONFIG += qt debug_and_release
 RESOURCES += cloudtrack.qrc
+MAKEFILE = Make.cloud
 
 unix:CONFIG(debug, debug|release) {
   DEFINES += SATVIEW_DEBUG

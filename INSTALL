@@ -5,7 +5,7 @@ This is now a Qt4 project, so you should use qmake (version 4.x, not 3.x).
 
 There are 2 project files, so do this:
 
-qmake-qt4 cloudtrack.pro
+qmake-qt4 cloud.pro
 qmake-qt4 copydb.pro
 
 this should create some makefiles, in particular "Makefile" and "Make.copydb".
@@ -28,7 +28,7 @@ Windows
 -------
 
 I used Qt Creator, with the Microsoft Visual C++ 2008 Express tool chain.
-Open the project files "cloudtrack.pro" and "qcopy/copydb.pro" and build 
+Open the project files "cloud.pro" and "qcopy/copydb.pro" and build 
 from there.
 
 Creator will put the executable in the debug/ and release/ subdirectories

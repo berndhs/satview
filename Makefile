@@ -18,7 +18,7 @@ RM = rm
 
 MAKE_CLOUD = Make.cloud
 MAKE_COPYDB = Make.copydb
-ORIGIN_CLOUD = cloudtrack.pro
+ORIGIN_CLOUD = cloud.pro
 ORIGIN_COPYDB = copydb.pro
 
 all: copydb cloudtrack cloudtrackd
@@ -50,10 +50,10 @@ debug: cloudtrackd
 release: cloudtrack
 
 $(MAKE_COPYDB): $(ORIGIN_COPYDB)
-	$(QMAKE) copydb.pro -o $(MAKE_COPYDB)
+	$(QMAKE) $(ORIGIN_COPYDB) -o $(MAKE_COPYDB)
 
 $(MAKE_CLOUD): $(ORIGIN_CLOUD)
-	$(QMAKE) cloudtrack.pro -o $(MAKE_CLOUD)
+	$(QMAKE) $(ORIGIN_CLOUD) -o $(MAKE_CLOUD)
 
 
 clean.copydb:
