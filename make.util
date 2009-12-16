@@ -57,7 +57,7 @@ version.h
 
 ALLUI = control.ui imagewin.ui getstring.ui
 
-ALLMAKE = Makefile cloudtrack.pro copydb.pro
+ALLMAKE = Makefile cloud.pro copydb.pro
 
 ALLDOC = Doxyfile userman.txt userman.html INSTALL COPYING
 

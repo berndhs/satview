@@ -42,12 +42,14 @@ win32:CONFIG(release, debug|release) {
 TEMPLATE = app
 
 unix {
+   QT += network sql
    INCLUDEPATH += /usr/local/include
    LIBPATH += /usr/local/lib
    DISTFILES += userman.txt userman.html
-   LIBS += -lQtNetwork -lQtSql -lboost_program_options
+   LIBS += -lboost_program_options
 }
 win32 {
+   QT += network
    LIBPATH += $$quote(d:/bernd/software/boost140/lib)
    INCLUDEPATH += $$quote(d:/bernd/software/boost140)
 }
