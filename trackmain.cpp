@@ -4,6 +4,7 @@
 #include "satview-defaults.h"
 #include "satview-debug.h"
 #include "cmdoptions.h"
+#include "clouddebug.h"
 //
 //  Copyright (C) 2009 - Bernd H Stramm 
 //
@@ -57,6 +58,8 @@ main (int argc, char*argv[])
   
   bool versionOnly(false);
 
+
+  satview::UseMyOwnMsgHandler();
 
   QApplication App(argc, argv);
   

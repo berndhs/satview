@@ -16,7 +16,7 @@ RESOURCES += cloudtrack.qrc
 MAKEFILE = Make.cloud
 
 unix:CONFIG(debug, debug|release) {
-  DEFINES += SATVIEW_DEBUG
+  DEFINES += SATVIEW_DEBUG=1
   QMAKE_CXXFLAGS += -pedantic -Wextra
   TARGET = cloudtrackd
 }
@@ -29,7 +29,7 @@ unix:CONFIG(release, debug|release) {
 }
 win32:CONFIG(debug, debug|release) {
   LIBS += -lQtNetworkd
-  DEFINES += SATVIEW_DEBUG
+  DEFINES += SATVIEW_DEBUG=1
   TARGET = cloudtrackd
 }
 win32:CONFIG(release, debug|release) {
@@ -65,6 +65,7 @@ SOURCES += satpiclist.cpp satpicbuf.cpp \
 	frametypes.cpp \
         checkpt.cpp \
 	cmdoptions.cpp \
+        clouddebug.cpp \
 	controlpanel.cpp 
 
 
@@ -80,5 +81,6 @@ HEADERS += satpicbuf.h satpiclist.h dbconnect.h  \
 	textbox.h \
         checkpt.h \
 	cmdoptions.h \
+        clouddebug.h \
 	berndsutil.h fault.h 
 
