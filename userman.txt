@@ -1,12 +1,12 @@
-Satview Manual
-==============
+Cloudtrack Manual
+=================
 Bernd Stramm <bernd.stramm@gmail.com>
-v1.0.1, November 2009
+v1.2.1, December 2009
 
-Satview is a little distributed system that can collect and present
-weather satellite images for personal use.
+Cloudtrack is a little distributed system that can collect and present
+weather satellite images for personal use. 
 
-This manual briefly describes what the satview programs are for, and how
+This manual briefly describes what the cloudtrack programs are for, and how
 they work. The manual describes the xref:structure[structure] of the system and
 xref:usage[how to use] the system. Included are also remarks on how to
 xref:further[further develop] these things. Some xref:specs[specifications] are 
@@ -19,16 +19,16 @@ or xref:ownservers[target it to your own servers].
 The system consists of three layers:
 
 + xref:sat-da[Data Aquisition Layer]
-+ xref:sat-sl[Satview Storage Layer]
-+ xref:sat-ui[Satview User Interface Layer]
++ xref:sat-sl[Cloudtrack Storage Layer]
++ xref:sat-ui[Cloudtrack User Interface Layer]
 
 [[sat-da]]
 === Data Aquisition
 
 The Data Aquisition Layer is provided by the friendly people who operate
 weather satellites, and make their images available to the public. The only
-part involving satview is when satview downloads their images. When
-implementing this part of satview, care must be taken to respect copyrights
+part involving cloudtrack is when cloudtrack downloads their images. When
+implementing this part of cloudtrack, care must be taken to respect copyrights
 and similar issues. 
 
 Currently data aquisition is done by simple scripts that download images from
@@ -50,7 +50,7 @@ publicly available, tell them that they should.
 ****
 
 [[sat-sl]]
-=== Satview Storage Layer 
+=== Cloudtrack Storage Layer 
 
 The Storage Layer keeps a (MySql) database containing satellite images,
 indexed by a time stamp (when the image was aquired) and an image name. It
@@ -65,15 +65,9 @@ on the database side.
 [Note]
 ****
 *Note:*
-Satview uses a C\+\+ interface library that you can
-get from 
-the http://dev.mysql.com/doc/refman/5.1/en/connector-cpp.html[MySql website]. 
-You can alse get it from the repositories of some Linux distributions. 
-C\+\+ does not seem to be particularly high on MySql's list of priorities. 
-However the database interface needed by Satview is extremely simple,
-so this is not a major consideration. In fact MySql is being used here
-simply because I had one around, there is nothing special about it. 
-If you want to use some other database, it will work just as well.
+The web and SQL interface are the ones from Qt4. This has changed from previous
+versions of Cloudtrack and from Satview. While I have only tested the
+SQL/MySql interface on Linux, it should work on other platforms as well.
 ****
 
 The Web Interface works with a simple HTTP GET API, which encasulates the
@@ -83,10 +77,10 @@ speaking necessary (the Web Interface code opens a database connection on
 "localhost", it could open a connection anywhere).
 
 [[sat-ui]]
-=== Satview User Interface ===
+=== Cloudtrack User Interface ===
 
 The User Interface program loads images from the database server on the
-Satview Storage Layer, and displays them in a simple GUI. The Gui allows
+Cloudtrack Storage Layer, and displays them in a simple GUI. The Gui allows
 stepping through images, or running through a number of sequeltial
 images to view short animations. The controls operate much like
 tape player controls. The Gui allows the user to change database servers
@@ -103,7 +97,7 @@ case where a user perfers to view data from a local server, but the local
 server does not do aquisition 24 hours a day.
 
 [[usage]]
-== How to Use Satview ==
+== How to Use Cloudtrack ==
 
 The only thing an end-user really has to know is the viewer Gui. This is called
 from the command line:
@@ -111,30 +105,48 @@ from the command line:
 .Calling the GUI in Linux
 [source,sh]
 ----
-$ viewsat [<interface>] [<server>]
+$ cloudtrack --help
+  -h [ --help ]          give help message and exit
+  -v [ --version ]       give version and exit
+  -w [ --web ]           use web interface
+  -d [ --dir ]           user direct sql interface
+  -E [ --eastcoast ]     show GOES ECIR.JPG images
+  -W [ --westcoast ]     show GOES WCIR.JPG images
+  -s [ --server ] arg    input server
+  -P [ --path ] arg      path on web server
+  -o [ --outserver ] arg output server
+  -m [ --minhours ] arg  minimum image age to consider
+  -M [ --maxhours ] arg  maximum image age to consider
+  -i [ --image ] arg     image name
+
 ----
 
-where 
+where these options do more or less what you would expect.
 
+The server defaults to "localhost", and the interface defaults to "--web".
+Default maximum age is "--maxhours 720", which gives you 30 days from the
+present. So the following are equivalent:
+[source,sh]
 ----
-<interface> can be
-  dir      - use the direct mysql interface
-  web      - ues the HTTP Web interface
-----
-
-and
-
-----
-<server> can be
-  S0       - use localhost
-  S1       - use the the default remote server
-  S2       - reserved, don't use this
+$ cloudtrack --web --server localhost -M 720
+is the same as
+$ cloudtrack
 ----
 
-Since there are no really public servers at this time (don't expect any
-soon either), it is best that these defaults are set individually, 
-see xref:ui-default-source[further instructions] below.
+At the point of this writing, I am not aware of any servers except mine,
+so you can try
+[source,sh]
+----
+$ cloudtrack --web --server www.bernd-stramm.com
+----
+but be aware that this server is slow. You could wait 30 seconds for the first
+image to show up.
 
+Of course it is much better if you have your own server, particularly
+if you are interested in images other than ECIR.JPG and WCIR.JPG, which
+only cover the US and surrounding areas. If you live in Europe that doesn't
+do you much good. Unless you are in Iceland, where you will get the cloud
+systems just after they leave Newfoundland.
 
 The user interface allows changing the host and the interface after the program
 is running. Changing either one means that all currently cached images
@@ -142,13 +154,13 @@ are discarded, and a new index is loaded.
 
 The controls look like a window with some buttons and a little text:
 
-image::controlwin.png[The control window]
+image::controlwin.jpg[The control window]
 
 where the buttons do more or less what the labeling says they do.
 The images look like weather satellite images and are displayed in a separate
 window:
 
-image::imagewin.png[weather satellite image]
+image::imagewin.jpg[weather satellite image]
 
 [[ownservers]]
 == Using Your Own Servers ==
@@ -161,7 +173,7 @@ this. The table can be in a database by itself, which can simplify managing
 access privileges. See the xref:database-defs[Database Definitions] to define your own.
 Note that these are the minimum requirements, if your table contains more
 it doesn't hurt. Just be aware that *storeID.php* will only supply
-the fields defined for Satview.
+the fields defined for Cloudtrack.
 
 One resonable way of doing this is to use a remote host that grabs the
 images every few hours using *cron* to run *getit.sh* and *storeinDB.php*,
@@ -171,23 +183,12 @@ and using *copydb* to refresh a local database.
 [[further]]
 == Future Development ==
 
-I will probably add a cmake build system to this. Also I'm not sure
-that I like the encoding of the images on the web interface, I may change that.
-The web interface could also be more specific when it comes to
-sending the index, currently it sends all of it. That will probably
-change very soon. 
-
-Also nice would be a feature to tag individual images, so they can be
-referred back to later. Perhaps a sequence of tagged images could be
-made into an animation.
 
 Of course there is no reason that only weather images are the subject.
 Basically anything that has is a natural sequence, and that can
-be captured as images, makes sense to use. Making the file name
-choice (picname) more general, probably with a browser, would make
-this easier.
+be captured as images, makes sense to use. 
 
-Currently the main satview program is just a viewer - it doesn't store 
+Currently the main cloudtrack program is just a viewer - it doesn't store 
 anything, or process any images. Some ambitious person could add more
 functionality. Storing selected images or sequences perhaps, with markup
 of images. 
@@ -203,7 +204,7 @@ pieces of code that make up the system:
 .. storeIR.php
 .. satserv.php
 . User Interface
-.. viewsat
+.. cloudtrack
 .. copydb
 
 === User Interface ===
@@ -212,14 +213,49 @@ To change the user interface defaults, change the file *satview-defaults.h*:
 
 [[ui-default-source]]
 .satview-defaults.h
-[source:]
+[source,C]
 ----
 #define SATVIEW_DEFAULT_PICNAME     "ECIR.JPG"
 
 #define SATVIEW_DEFAULT_S0          "localhost"
-#define SATVIEW_DEFAULT_S1          "www.bernd-stramm.com"
-#define SATVIEW_DEFAULT_S2          "192.168.1.152"
+
+#define SATVIEW_DEFAULT_PATH         "/test/satserv.php"
+
 ----
+
+==== copydb ====
+The *copydb* utility allows you to copy images between databases. It is command
+command line only at this point, and I don't have any plans to make a GUI. The
+usage is very simple:
+[source,sh]
+----
+$ copydb:
+  -h [ --help ]          give help message and exit
+  -v [ --version ]       give version and exit
+  -w [ --web ]           use web interface
+  -d [ --dir ]           user direct sql interface
+  -E [ --eastcoast ]     show GOES ECIR.JPG images
+  -W [ --westcoast ]     show GOES WCIR.JPG images
+  -s [ --server ] arg    input server
+  -P [ --path ] arg      path on web server
+  -o [ --outserver ] arg output server
+  -m [ --minhours ] arg  minimum image age to consider
+  -M [ --maxhours ] arg  maximum image age to consider
+  -i [ --image ] arg     image name
+----
+You may notice that this is the same as for the viewer. A typical usage 
+after a long weekend could be:
+[source,sh]
+----
+$ copydb --web --server www.yourownbigserver.com -o localhost -m 0 -M 72
+----
+to copy three day's worth of images from yourownbigserver to your local
+machine. Then you have fast access to the images locally.
+
+Note that *copydb* will do third-party copies, meaning that you can
+copy from server A to server B, running copydb on machine C. Note also that
+the interface for the outgoing server is assumed to be direct. This is
+because the web interface is read-only.
 
 
 === Database ===
@@ -296,14 +332,17 @@ ident  </i></td>
 Look in *satserv.php*. Basically you can ask for the index of
 available images with a get
 
-[source:http]
+[source,sh]
 ----
-GET .../satserve.php?fn=index
+GET .../satserve.php?fn=index&min=<timestamp>&max=<timestamp>
 ----
+where the timestamps are Unix epoch seconds. Well, they are for
+the currently present databases. For your own database, the can
+be anything you want.
 
 and for individual images
 
-[source:http]
+[source,sh]
 ----
 GET .../satserve.php?fn=item&k1=<ident>&k2=<picname>
 ----
@@ -317,35 +356,18 @@ At the time of this writing, my personal web
 server provides data on the web interface. It is not wise to
 count on it being there.
 
-=== dcomp/ ===
-
-The *dcomp/* directory contains decompression code for JPEG. This is taken
-mostly from the website of the http://www.ijg.org/[Independent JPEG Group], 
-in particular version 7. The reason for this is that http://fltk.org/[FLTK]
-does not provide in-memory jpeg decompression, and neither does any other
-GUI tool that I have found. Hence I provided my own hooks into the jpeg
-library code. Since this introduces ugly dependencies on specific versions,
-I repackaged the decompression part of the jpeg library as C\+\+ code. That's 
-what is in dcomp/.
-
-The only way around this mess is for the user interface to write the jpeg file
-to a temporary file on the file system, and read this back to display
-the decompressed image. This means that the user interface has to make some
-assumptions about what it is running on, such as
-
-. there is a file system
-
-which I didn't want to do.
-
 === Prerequisits ===
 
-To build and run the parts of Satview, the current version uses:
+To build and run the parts of Cloudtrack, the current version uses:
 
 . On the user interface
 .. C\+\+
 ... Gcc or Visual C\+\+
-.. FLTK 1.1.9 (*not* FLTK 2 or FLTK 1.3)
-.. Gnu sockets or WinSock2
+.. Qt4, including these parts:
+... Core
+... Gui
+... Network
+... Sql
 . On the server you need
 .. PHP5 on the server
 .. Apache or something else that serves PHP over HTTP
@@ -354,7 +376,7 @@ To build and run the parts of Satview, the current version uses:
 
 [Note]
 ****
-*Memory:* The Satview user interface viewer
+*Memory:* The Cloudtrack user interface viewer
 buffers the jpeg version of all images that have been viewed
 in the current session, plus *one* decompressed image. It does not
 save anything between sessions.
@@ -362,17 +384,16 @@ save anything between sessions.
 
 ==== How to Build ====
 
-Read the INSTALL file.
+Read the INSTALL file. It's easy.
 
-==== Where to Change Sockets ====
+==== Conditionally Compiled Sections ====
 
-Look in *dbconnect.h* and *dbconnect.cpp*, that is where the communication
-between the database and the user interface is implemented.
+The code contains some sections that are compiled only when certain
+flags are set. This in controlled in the file *satview-config.h*.
+For historical reasons, there are multiple network and SQL interfaces.
+You can turn them on and off in this file. 
 
-==== Where to Change the Web Interface
-
-Look in *dbconnect.h*, *dbconnect.cpp* on the user interface side, and
-in *satserv.php* on the server side.
+Note that only the ones turned on in the shipping archive are currently tested.
 
 ==== Can I Run Something Like This in My Browser ====
 

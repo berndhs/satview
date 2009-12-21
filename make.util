@@ -34,6 +34,7 @@ shapeframe.cpp \
 sjdatasrc.cpp \
 textbox.cpp \
 trackmain.cpp \
+clouddebug.cpp \
 version.cpp 
 
 ALLHDR = \
@@ -53,6 +54,7 @@ shapeframe.h \
 sjdatasrc.h \
 textbox.h \
 trackmain.h \
+clouddebug.h \
 version.h
 
 ALLUI = control.ui imagewin.ui getstring.ui
@@ -77,5 +79,5 @@ docu:
 	doxygen
 
 userman:
-	asciidoc -n userman.txt
+	asciidoc  -n userman.txt
 	
