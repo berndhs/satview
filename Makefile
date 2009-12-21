@@ -11,8 +11,8 @@
 # // of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 # //
 
+include qmake.name
 
-QMAKE = qmake-qt4
 MAKE = make
 RM = rm
 

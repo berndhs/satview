@@ -1,25 +1,21 @@
 Linux
 -----
 
-This is now a Qt4 project, so you should use qmake (version 4.x, not 3.x).
+This is a Qt4 project, so you should use qmake (version 4.x, not 3.x).
+You need to have qmake version 4. You also need Qt header files and libraries.
 
-There are 2 project files, so do this:
+You can edit the file 'qmake.name', so that is has the correct name
+for your qmake version 4 in it. If you don't change 'qmake.name' it uses
+qmake-qt4.
 
-qmake-qt4 cloud.pro
-qmake-qt4 copydb.pro
-
-this should create some makefiles, in particular "Makefile" and "Make.copydb".
-
-Then:
+To build, type
 
 make all
-make -f Make.copydb all
 
-should produce these executables:
+this should produce these executables:
 
-cloudtrackr      - the "release" version
+cloudtrack       - the "release" version
 cloudtrackd      - the "debug" version
-
 copydb           - the copydb utility
 
 and that's it.
@@ -28,8 +24,7 @@ Windows
 -------
 
 I used Qt Creator, with the Microsoft Visual C++ 2008 Express tool chain.
-Open the project files "cloud.pro" and "qcopy/copydb.pro" and build 
-from there.
+Open the project file "cloud.pro" build from there.
 
 Creator will put the executable in the debug/ and release/ subdirectories
 and in the qcopy/debug and qcopy/release subdirectories.
@@ -39,10 +34,9 @@ Prerequisits:
 -------------
 
 You need on Linux:
-Qt4.5
-libmysqlconn
-libccgnu2
+Qt4.5   (Core, Gui, Sql, Network)
+libboost_program_options
 
 You need on Windows:
-Qt4.5
+Qt4.5  (Core, Gui, Network)
 WinSock2 (ws2_32.lib)
