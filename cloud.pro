@@ -17,7 +17,7 @@ MAKEFILE = Make.cloud
 
 unix:CONFIG(debug, debug|release) {
   DEFINES += SATVIEW_DEBUG=1
-  QMAKE_CXXFLAGS += -pedantic -Wextra
+  QMAKE_CXXFLAGS += -Wall
   TARGET = cloudtrackd
 }
 unix:CONFIG(release, debug|release) {
@@ -25,6 +25,7 @@ unix:CONFIG(release, debug|release) {
   DEFINES += QT_NO_DEBUG
   QMAKE_CFLAGS_RELEASE -= -g
   QMAKE_CXXFLAGS_RELEASE -= -g
+  QMAKE_CXXFLAGS_RELEASE += -Wall
   TARGET = cloudtrack
 }
 win32:CONFIG(debug, debug|release) {

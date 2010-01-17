@@ -61,7 +61,7 @@ CmdOptions::Parse (int argc, char *argv[])
 void
 CmdOptions::Usage ()
 {
-  cout << mPgm << ":" << endl;
+  cout << mPgm.c_str() << ":" << endl;
   mDashOpts.print(cout);
 }
 

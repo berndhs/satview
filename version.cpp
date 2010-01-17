@@ -3,6 +3,7 @@
 #include <iostream>
 #include <QMessageBox>
 #include <QTimer>
+#include <stdio.h>
 
 //
 //  Copyright (C) 2009 - Bernd H Stramm 
@@ -47,7 +48,8 @@ namespace satview {
   
   void CLIVersion ()
   {
-    std::cout << Version() << std::endl;
+  // printf ("%s\n",Version().c_str()); 
+   std::cout << Version().c_str() << std::endl;
   }
   
  

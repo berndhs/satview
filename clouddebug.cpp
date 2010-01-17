@@ -61,4 +61,5 @@ void SatviewMessageOutput (QtMsgType type, const char* msg)
 
 }
 
+
 }

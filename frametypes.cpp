@@ -36,8 +36,6 @@ namespace satview {
     PointList::iterator corner1 = corners.begin();
     if (corners.size() == 1) {
       // draw a point
-      cout << " single-point poly at " << corner1->x() << " , " 
-	   << corner1->y() << endl;
     } else {
       QLine line;
       PointList::iterator corner2 = corner1++;
