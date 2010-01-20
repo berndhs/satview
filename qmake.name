@@ -1,1 +1,1 @@
-QMAKE = qmake-qt4
+QMAKE = qmake

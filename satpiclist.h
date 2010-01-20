@@ -64,6 +64,7 @@ Q_OBJECT
                    string server, string db, 
                    string user, string pass, 
                    string picname);
+  void SetDBType (const string dbType);
 
   void SetServer (string server);
   void SetPath   (string path);

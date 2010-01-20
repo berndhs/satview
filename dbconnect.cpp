@@ -20,6 +20,7 @@
 #include "satview-defaults.h"
 
 #include <QDebug>
+#include <QStringList>
 
 //
 //  Copyright (C) 2009 - Bernd H Stramm 
@@ -67,16 +68,30 @@ namespace satview {
 	mWinSock = INVALID_SOCKET;
 #endif
 #if SATVIEW_USE_QSQL
-   mQDB = QSqlDatabase::addDatabase("QMYSQL","satview_QDB");
-   mQConnection = mQDB.connectionNames()[0];
-   
-   if (mQDB.isOpen()) {
-     mIndexQuery = QSqlQuery(mQDB);
-   }
-
+   mDBType = "QMYSQL";
 #endif
  	mWebResult = 0;
   }
+  
+#if SATVIEW_USE_QSQL
+  void
+  DBConnection::OpenDB ()
+  {
+    mQDB = QSqlDatabase::addDatabase(mDBType, mConnectName);
+    mQConnection = mQDB.connectionNames()[0];
+    mIndexQuery = QSqlQuery(mQDB);
+  }
+  
+  void
+  DBConnection::SetDBType (const string type)
+  {
+    QString qtype(type.c_str());
+    if (qtype != mDBType) {
+      mDBType = qtype;
+    }
+  }
+
+#endif
 
   DBConnection::~DBConnection ()
   {
@@ -153,15 +168,7 @@ namespace satview {
     if (mMeth == Con_Web) {
       // connect socket now, or when loading index?
       // it could time out if we do it here
-#if SATVIEW_USE_QSQL
-      if (!mQDB.isOpen()) {
-         mQDB = QSqlDatabase::addDatabase("QMYSQL");
-         mQConnection = mQDB.connectionNames()[0];
-      }
-      if (mIndexQuery.isActive()) {
-        mIndexQuery.clear();      
-      }
-#endif
+
       return true; 
     }
     return false;
@@ -180,7 +187,7 @@ namespace satview {
     } catch (std::exception &e) {
       std::cout << e.what() << __LINE__ << std::endl;
        std::cout << " no DB driver, can't get images " << std::endl;
-	pDBCon = 0;
+	     pDBCon = 0;
     }  
     if (pDBCon) {
       pDBCon->setSchema(db);
@@ -188,10 +195,20 @@ namespace satview {
     } 
 #endif
 #if SATVIEW_USE_QSQL
-     mQDB.setDatabaseName(db.c_str());
+
+     OpenDB ();
+     string dbname (db);
+     if (mDBType == "QSQLITE") {
+       dbname = mPathOnServer + string("/") + db;
+     }
+     mQDB.setDatabaseName(dbname.c_str());
      mQDB.setHostName(server.c_str());
      mQDB.setUserName(user.c_str());
      mQDB.setPassword(pass.c_str());
+        
+     if (mIndexQuery.isActive()) {
+       mIndexQuery.clear();      
+     }
      bool ok = mQDB.open();
      return ok;
 #endif
@@ -270,7 +287,6 @@ namespace satview {
     q.setForwardOnly(true);
     q.prepare(queryString);
     bool ok = q.exec();
-    
     mIndexQuery = q;
     return ok;
 #endif

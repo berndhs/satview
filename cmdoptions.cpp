@@ -30,6 +30,8 @@ CmdOptions::CmdOptions (string pgmname)
         ("version,v","give version and exit")
         ("web,w","use web interface")
         ("dir,d","user direct sql interface")
+        ("sqlite,L","use SQLITE database")
+        ("mysql,Y","use MySql database (default)")
         ("eastcoast,E",Emsg.c_str())
         ("westcoast,W",Wmsg.c_str())
         ("server,s",bpo::value<string>(),"input server")
@@ -98,6 +100,22 @@ CmdOptions::SetInterface (string & interface)
   if (seenDir > 0) {
      interface = "dir";
      return true;
+  }
+  return false;
+}
+
+bool
+CmdOptions::SetDBType (string &dbtype)
+{
+  int seenLite = mOptValues.count("sqlite");
+  int seenMy   = mOptValues.count("mysql");
+  if (seenLite > 0) {
+    dbtype = "QSQLITE";
+    return true;
+  }
+  if (seenMy > 0) {
+    dbtype = "QMYSQL";
+    return true;
   }
   return false;
 }

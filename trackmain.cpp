@@ -45,8 +45,9 @@ int
 main (int argc, char*argv[])
 {
   server = server0;
-  string IFarg("web");
+  string IFarg("dir");
   method = DBConnection::Con_Web;
+  string dbType("QMYSQL");
   string db("weather");
   string user("weather");
   string pass("quetzalcoatl");
@@ -78,6 +79,7 @@ main (int argc, char*argv[])
   opt.SetPath(path);
   opt.SetMinHours(minAge);
   opt.SetMaxHours(maxAge);
+  opt.SetDBType (dbType);
 
   /** @brief some elementary command line, 2 choices of image names.
    * More later when we have time.
@@ -113,7 +115,8 @@ main (int argc, char*argv[])
       Control.SetConMeth(conmeth);
       Control.SetMinAge (minAge);
       Control.SetMaxAge (maxAge);
-      SatPicList::Instance()->SetPath(path);
+      SatPicList::Instance()->SetPath (path);
+      SatPicList::Instance()->SetDBType (dbType);
       SatPicList::Instance()->SetDBParams(method,
                                          server,
 					 db,

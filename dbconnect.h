@@ -143,6 +143,10 @@ class DBConnection
   size_t  ReadImageData (IndexRecord &r, string & data);    // fill in image data
   bool  InsertRec (const IndexRecord &r, const string &data);
   bool  InsertRec (const IndexRecord &r, const char* data);
+
+#if SATVIEW_USE_QSQL
+  void  SetDBType (const string type);
+#endif
   
 
 #if SATVIEW_USE_QNET
@@ -179,6 +183,9 @@ class DBConnection
 
   void DeliverBlob (char * data, qint64 len);
 #endif
+#if SATVIEW_USE_QSQL
+  void OpenDB ();
+#endif
 
   bool Attempt_Web_Connect();
   void Web_Close();
@@ -206,6 +213,8 @@ class DBConnection
   QSqlDatabase     mQDB;
   QSqlQuery        mIndexQuery;
   QString          mQConnection;
+  QString          mDBType;      /* QMYSQL, QSQLITE,... */
+  QString          mConnectName;
 #endif
 
   istringstream * mWebResult;

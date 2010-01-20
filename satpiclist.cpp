@@ -83,7 +83,9 @@ namespace satview {
     SatPicBuf * pBuf;
     while (it != mBufMap.end()) {
       pBuf = it->second;     
-      delete pBuf;
+      if ( pBuf && pBuf != pDummyBuf) {
+        delete pBuf;
+      }
       it->second = 0;
       it++;
     }
@@ -159,6 +161,12 @@ namespace satview {
     mDBName = db;
     mPicfilename = picname;
     DBCon.SetMethod(m);
+  }
+  
+  void
+  SatPicList::SetDBType (const string dbType)
+  {
+    DBCon.SetDBType (dbType);
   }
 
   void

@@ -43,9 +43,9 @@ win32:CONFIG(release, debug|release) {
 TEMPLATE = app
 
 unix {
-   QT += network sql
-   INCLUDEPATH += /usr/local/include
-   LIBPATH += /usr/local/lib
+   QT += core gui network sql
+   #INCLUDEPATH += /usr/local/include
+   #LIBPATH += /usr/local/lib
    DISTFILES += userman.txt userman.html
    LIBS += -lboost_program_options
 }

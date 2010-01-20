@@ -47,6 +47,7 @@ bool SetServerOutbound (string & servOut);
 bool SetPath (string & path);
 bool SetMinHours (unsigned long int & hours);
 bool SetMaxHours (unsigned long int & hours);
+bool SetDBType (string &dbtype);
 
 private:
 
