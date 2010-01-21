@@ -4,7 +4,11 @@
 #
 #
 
+CONFIG += debug_and_release
+
 SUBDIRS = viewer copier
 
 TEMPLATE = subdirs
+
+INSTALLDIR = bin
 

@@ -10,11 +10,17 @@
 # // but WITHOUT ANY WARRANTY; without even the implied warranty 
 # // of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 # //
-CONFIG += debug
+CONFIG += debug_and_release
+
+CONFIG(debug, debug|release) {
+  TARGET = copydbd
+}
+CONFIG(release, debug|release) {
+  TARGET = copydb
+}
+
 TEMPLATE = app
-TARGET = copydb
-MAKEFILE = Make.copydb
-VERSION = 0.2.0
+VERSION = 0.3.0
 DPENDPATH += .
 DISFILES += Doxyfile
 INCLUDEPATH += /usr/local/include 

@@ -1,42 +1,24 @@
 Linux
 -----
 
-This is a Qt4 project, so you should use qmake (version 4.x, not 3.x).
-You need to have qmake version 4. You also need Qt header files and libraries.
+type
 
-You can edit the file 'qmake.name', so that is has the correct name
-for your qmake version 4 in it. If you don't change 'qmake.name' it uses
-qmake-qt4.
+sh build.sh
 
-To build, type
-
-make all
-
-this should produce these executables:
-
-cloudtrack       - the "release" version
-cloudtrackd      - the "debug" version
-copydb           - the copydb utility
-
-and that's it.
+this will try to build the executables in the bin/ directory.
 
 Windows
 -------
 
 I used Qt Creator, with the Microsoft Visual C++ 2008 Express tool chain.
-Open the project file "cloud.pro" build from there.
-
-Creator will put the executable in the debug/ and release/ subdirectories
-and in the qcopy/debug and qcopy/release subdirectories.
+Open the project file "cloudtrack.pro" build from there.
 
 
 Prerequisits:
 -------------
 
 You need on Linux:
-Qt4.5   (Core, Gui, Sql, Network)
-libboost_program_options
+Qt4.6   (Core, Gui, Sql, Network)
 
 You need on Windows:
-Qt4.5  (Core, Gui, Network)
-WinSock2 (ws2_32.lib)
+Qt4.6  (Core, Gui, Sql, Network)
