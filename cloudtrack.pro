@@ -10,5 +10,4 @@ SUBDIRS = viewer copier
 
 TEMPLATE = subdirs
 
-INSTALLDIR = bin
 

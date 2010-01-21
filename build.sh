@@ -3,8 +3,8 @@
 # Build Script for drss
 #
 
-TARGET=cloudtrack
-DOT_PRO_FILE=$TARGET.pro
+PROJECT=cloudtrack
+DOT_PRO_FILE=$PROJECT.pro
 
 QM=`which qmake`
 QM4=`which qmake-qt4`
@@ -35,7 +35,7 @@ else
   then
     QMAKE=$QM4
   else
-    echo cannot find qmake for Qt4
+    echo "cannot find qmake for Qt4"
     exit 1
   fi
 fi
@@ -58,15 +58,29 @@ make clean
 
 make release
 
-if [ -e $TARGET ] 
+DIR_BIN=bin
+
+DIR_VIEWER=viewer
+DIR_COPIER=copier
+
+PGM_VIEWER=cloudtrack
+PGM_COPIER=copydb
+
+if [ -e $DIR_VIEWER/$PGM_VIEWER ]
 then
-  echo
-  echo successfully built $TARGET
-  echo
-  ls -l $TARGET
+  install $DIR_VIEWER/$PGM_VIEWER $DIR_BIN
 else
-  echo 
-  echo Could not build $TARGET
-  echo
+  echo "Failed to build $PGM_VIEWER"
 fi
+
+if [ -e $DIR_COPIER/$PGM_COPIER ]
+then
+  install $DIR_COPIER/$PGM_COPIER $DIR_BIN
+else
+  echo "Failed to build $PGM_COPIER"
+fi
+
+ls -l $DIR_BIN
+
+
 
