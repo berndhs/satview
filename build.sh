@@ -1,10 +1,30 @@
 #!/bin/sh
 # 
-# Build Script for drss
+# Build Script for cloudtrack
 #
+# //
+# //  Copyright (C) 2010 - Bernd H Stramm
+# //
+#
+# // This program is distributed under the terms of 
+# // the GNU General Public License version 3 
+# //
+# // This software is distributed in the hope that it will be useful, 
+# // but WITHOUT ANY WARRANTY; without even the implied warranty 
+# // of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+# //
 
 PROJECT=cloudtrack
 DOT_PRO_FILE=$PROJECT.pro
+
+DIR_BIN=bin
+
+DIR_VIEWER=viewer
+DIR_COPIER=copier
+
+PGM_VIEWER=cloudtrack
+PGM_COPIER=copydb
+
 
 QM=`which qmake`
 QM4=`which qmake-qt4`
@@ -58,13 +78,6 @@ make clean
 
 make release
 
-DIR_BIN=bin
-
-DIR_VIEWER=viewer
-DIR_COPIER=copier
-
-PGM_VIEWER=cloudtrack
-PGM_COPIER=copydb
 
 if [ -e $DIR_VIEWER/$PGM_VIEWER ]
 then
