@@ -64,9 +64,9 @@ ControlPanel::ControlPanel (QApplication *pA)
 
     ChangeStatusLabel (mStateStoppedText);
     bool loadok;
-    loadok = mStateStoppedPix.load(":/statusDone.png");
-    loadok &= mStateRunningPix.load(":/statusRun.png");
-    loadok &= mStateLoadingPix.load(":/statusLoad.png");
+    loadok = mStateStoppedPix.load(":/img/statusDone.png");
+    loadok &= mStateRunningPix.load(":/img/statusRun.png");
+    loadok &= mStateLoadingPix.load(":/img/statusLoad.png");
     if (!loadok) {
       exit(1);
     }

@@ -27,8 +27,8 @@ unix:INSTALLS += copydb
 DEFINES += DO_COPYDB=1
 
 FORMS += 
-SOURCES += dbconnect.cpp copydb.cpp cmdoptions.cpp
+SOURCES += ../src/dbconnect.cpp ../src/copydb.cpp ../src/cmdoptions.cpp
 
 
-HEADERS +=  dbconnect.h cmdoptions.h
+HEADERS +=  ../src/dbconnect.h ../src/cmdoptions.h
 

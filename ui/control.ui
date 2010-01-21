@@ -1523,7 +1523,7 @@ Viewer</string>
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap resource="cloudtrack.qrc">:/statusDone.png</pixmap>
+    <pixmap>:/statusDone.png</pixmap>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -1545,6 +1545,7 @@ Image</string>
   </widget>
  </widget>
  <resources>
+  <include location="../viewer.qrc"/>
   <include location="cloudtrack.qrc"/>
  </resources>
  <connections/>

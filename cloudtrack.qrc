@@ -1,9 +1,0 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource>
-  <file>gplv3-88x31.png</file>
-  <file>statusDone.png</file>
-  <file>statusLoad.png</file>
-  <file>statusRun.png</file>
-</qresource>
-</RCC>
-
