@@ -13,16 +13,16 @@
 
 CONFIG += qt debug_and_release
 RESOURCES += ../viewer.qrc
-MAKEFILE = Make.cloud
 
 unix:CONFIG(debug, debug|release) {
-  DEFINES += SATVIEW_DEBUG=1
+  DEFINES += DELIBERATE_DEBUG=1
   QMAKE_CXXFLAGS += -Wall
   TARGET = cloudtrackd
 }
 unix:CONFIG(release, debug|release) {
   DEFINES += SATVIEW_RELEASE
   DEFINES += QT_NO_DEBUG
+  DEFINES += DELIBERATE_DEBUG=0
   QMAKE_CFLAGS_RELEASE -= -g
   QMAKE_CXXFLAGS_RELEASE -= -g
   QMAKE_CXXFLAGS_RELEASE += -Wall
@@ -30,11 +30,12 @@ unix:CONFIG(release, debug|release) {
 }
 win32:CONFIG(debug, debug|release) {
   LIBS += -lQtNetworkd
-  DEFINES += SATVIEW_DEBUG=1
+  DEFINES += DELIBERATE_DEBUG=1
   TARGET = cloudtrackd
 }
 win32:CONFIG(release, debug|release) {
   DEFINES += SATVIEW_RELEASE
+  DEFINES ++ DELIBERATE_DEBUG=0
   LIBS += -lQtNetwork
   TARGET = cloudtrack
 }
@@ -44,15 +45,10 @@ TEMPLATE = app
 
 unix {
    QT += core gui network sql
-   #INCLUDEPATH += /usr/local/include
-   #LIBPATH += /usr/local/lib
    DISTFILES += userman.txt userman.html
-   LIBS += -lboost_program_options
 }
 win32 {
    QT += network
-   LIBPATH += $$quote(d:/bernd/software/boost140/lib)
-   INCLUDEPATH += $$quote(d:/bernd/software/boost140)
 }
 VERSION = 0.4.0
 
@@ -66,8 +62,9 @@ SOURCES += ../src/satpiclist.cpp ../src/satpicbuf.cpp \
 	../src/shapeframe.cpp \
 	../src/frametypes.cpp \
         ../src/checkpt.cpp \
+	../src/clioptions.cpp \
 	../src/cmdoptions.cpp \
-        ../src/clouddebug.cpp \
+        ../src/delib-debug.cpp \
 	../src/controlpanel.cpp 
 
 
@@ -82,7 +79,10 @@ HEADERS += ../src/satpicbuf.h ../src/satpiclist.h ../src/dbconnect.h  \
 	../src/shapeframe.h \
 	../src/textbox.h \
         ../src/checkpt.h \
+	../src/clioptions.h \
 	../src/cmdoptions.h \
-        ../src/clouddebug.h \
-	../src/berndsutil.h ../src/fault.h 
+        ../src/delib-debug.h \
+	../src/berndsutil.h \
+        ../src/fault.h 
+
 

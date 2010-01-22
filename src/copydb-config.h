@@ -38,9 +38,9 @@
 #else
 
 /* network interfaces - no more than 1 */
-#define SATVIEW_USE_QNET 0
+#define SATVIEW_USE_QNET 1
 #define SATVIEW_USE_WINSOCK 0
-#define SATVIEW_USE_GNUSOCK 1
+#define SATVIEW_USE_GNUSOCK 0
 
 /* direct SQL interfaces - no more than 1 */
 #define SATVIEW_USE_MYSQL 0

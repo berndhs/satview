@@ -3,8 +3,8 @@
 #include "version.h"
 #include "satview-defaults.h"
 #include "satview-debug.h"
-#include "cmdoptions.h"
-#include "clouddebug.h"
+#include "clioptions.h"
+#include "delib-debug.h"
 //
 //  Copyright (C) 2009 - Bernd H Stramm 
 //
@@ -60,11 +60,11 @@ main (int argc, char*argv[])
   bool versionOnly(false);
 
 
-  satview::UseMyOwnMsgHandler();
+  deliberate::UseMyOwnMessageHandler();
 
   QApplication App(argc, argv);
   
-  CmdOptions opt(satview::MyName());
+  CliOptions opt(satview::MyName().c_str());
   bool cliOk = opt.Parse (argc,argv);
   if (!cliOk) {
     cout << satview::MyName() << ":" << endl;
@@ -149,7 +149,6 @@ main (int argc, char*argv[])
     } while (again);
     exit(0);
   } catch (berndsutil::Fault &F) {
-   
     cout << F.String() << endl;
     exit (1);
   }

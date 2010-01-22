@@ -20,12 +20,6 @@
 #endif
 
 #include <string>
-#if SATVIEW_USE_MYSQL
-#include <cppconn/driver.h>
-#include <cppconn/exception.h>
-#include <cppconn/resultset.h>
-#include <cppconn/statement.h>
-#endif
 
 #if SATVIEW_USE_QNET || SATVIEW_USE_QSQL
 #include <QObject>
@@ -47,21 +41,6 @@
 #include <QStringList>
 #endif
 
-#if SATVIEW_USE_GNUSOCK
-#include <cc++/socket.h>
-#include <cc++/address.h>
-#endif
-
-#if SATVIEW_USE_WINSOCK
-  #ifndef WIN32_LEAN_AND_MEAN
-  #define WIN32_LEAN_AND_MEAN
-  #endif
-
-#include <windows.h>
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <iphlpapi.h>
-#endif
 
 #include "berndsutil.h"
 
@@ -82,7 +61,7 @@ class IndexRecord {
   string               remark;
   string               storetime;
 
-  string String() {
+  string String() const {
     return string (berndsutil::toString(ident)
                    + " " 
                    + picname + " " + remark + " " + storetime);
@@ -203,11 +182,6 @@ class DBConnection
   void  hex_to_chars (char * result, const char * buf, int numchars);
   void  chars_to_hex (string & result, const string &chars);
 
-#if SATVIEW_USE_MYSQL
-  sql::Connection* pDBCon;
-  sql::Driver    * pDBDriver;
-  sql::ResultSet * pIndexRes;
-#endif
 
 #if SATVIEW_USE_QSQL
   QSqlDatabase     mQDB;
@@ -230,20 +204,6 @@ class DBConnection
   bool                    mWaitForImage;
   
   QTimer                  mGetTimeout;
-#endif
-
-#if SATVIEW_USE_GNUSOCK
-  ost::SimpleTCPStream * pWebStream;
-#endif
-
-#if SATVIEW_USE_WINSOCK
-
-  WSADATA          mWsaData;
-  struct addrinfo* mWinAddr;
-  string           mWebPort;
-  bool             mWSAisup;
-  SOCKET           mWinSock;
-
 #endif
   
   static const int mWebBufMax = 8*1024*1024;

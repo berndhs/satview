@@ -12,54 +12,104 @@
 // of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
-#include <string>
-#include <boost/program_options.hpp>
+#include <QString>
+#include <QVariant>
+#include <QStringList>
+#include <map>
 
 using namespace std;
 
-namespace bpo = boost::program_options;
 
-namespace satview {
+namespace deliberate {
 
 
 class CmdOptions {
 
 public:
 
-CmdOptions (const string pgmname);
+enum OptType { Opt_None,
+               Opt_Int,
+               Opt_QStr,
+               Opt_Solo,
+               Opt_Bad
+             };
 
-bool Parse (int argc, char*argv[]);
+CmdOptions (const QString pgmname);
+CmdOptions ();
 
-void Usage ();
+virtual void Init (const QString pgmname);
+
+virtual bool Parse (int argc, char*argv[]);
+
+QStringList Arguments ();
+
+virtual void Usage ();
 
 bool WantHelp ();
 bool WantVersion ();
+
+void AddStrOption  (const QString longName, 
+                    const QString shortname, 
+                    const QString msg);
+void AddIntOption  (const QString longName, 
+                    const QString shortname, 
+                    const QString msg);
+void AddSoloOption (const QString longName, 
+                    const QString shortname, 
+                    const QString msg);
 
 /** @brief these SetSomething functions set the option variable
   * if it was specified on the command line, otherwise they leave
   * the parameter alone. The bool return says whether or not the 
   * parameter was changed
   */
-bool SetInterface (string & interface);
-bool SetImage (string &image);
-bool SetServerInbound (string & servIn);
-bool SetServerOutbound (string & servOut);
-bool SetPath (string & path);
-bool SetMinHours (unsigned long int & hours);
-bool SetMaxHours (unsigned long int & hours);
-bool SetDBType (string &dbtype);
+  
+bool SeenOpt (const QString name);
+bool SetStringOpt (const QString longName, QString & opt);
+bool SetIntOpt    (const QString longName, int & opt);
+bool SetSoloOpt   (const QString longName, bool & seenIt);
 
-private:
+protected:
 
-   string mPgm;
+   class Option {
+    
+    public:
+    
+       OptType  theType;
+       QVariant theValue;
+       QString  theMsg;
+       QString  longName;
+       QString  shortName;
+       bool     seenIt;
+   };
+
    
-   bpo::options_description             mDashOpts;
-   bpo::positional_options_description  mSimpleOpts;
-   bpo::variables_map                   mOptValues;
+   void PrintAll ();
    
-   string defaultWestImage;
-   string defaultEastImage;
+   void ParseLong (QString wd, char* argv[], int & pos, int posmax);
+   void ParseShort (QString wd, char* argv[], int & pos, int posmax);
    
+   typedef map <QString, Option*> OptValuesType;
+   typedef map <QString, QString> ShortToLongType;
+   
+   OptValuesType   mOptValues;
+   ShortToLongType mLongNameOf;
+   
+   QStringList   mArgs;
+   
+   
+   QString mPgm;
+   
+   bool    bad;
+   
+   Option * AddOption  (const QString longName, 
+                    const QString shortname, 
+                    const QString msg);
+   
+   static QString  trHelp;
+   static QString  trH;
+   static QString  trVersion;
+   static QString  trV;
 };
 
 

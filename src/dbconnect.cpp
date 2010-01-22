@@ -3,9 +3,6 @@
 
 #include <string.h>
 #include <stdio.h>
-#if SATVIEW_USE_MYSQL
-#include <cppconn/prepared_statement.h>
-#endif
 #if SATVIEW_USE_QNET
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkRequest>
@@ -53,20 +50,6 @@ namespace satview {
     mQMgr = new QNetworkAccessManager (this);
 
 #endif
-#if SATVIEW_USE_MYSQL
-    pDBCon = 0;
-    pDBDriver = 0;
-    pIndexRes = 0;
-#endif
-#if SATVIEW_USE_GNUSOCK
-    pWebStream = 0;
-#endif
-#if SATVIEW_USE_WINSOCK
-	mWSAisup = false;
-	mWebPort = "80";
-	mWinAddr = 0;
-	mWinSock = INVALID_SOCKET;
-#endif
 #if SATVIEW_USE_QSQL
    mDBType = "QMYSQL";
 #endif
@@ -111,12 +94,6 @@ namespace satview {
     /** @todo do something, in case they want to start on a 
      * different server
      */
-#if SATVIEW_USE_MYSQL
-    if (pIndexRes) {
-      delete pIndexRes;
-      pIndexRes = 0;
-    }
-#endif
 #if SATVIEW_USE_QSQL
     if (mIndexQuery.isActive()) {
       mIndexQuery.clear();
@@ -136,12 +113,6 @@ namespace satview {
   DBConnection::SetMethod (Method m)
   {
     Disconnect();
-#if SATVIEW_USE_MYSQL
-    if (pIndexRes) {
-      delete pIndexRes;
-      pIndexRes = 0;
-    }
-#endif
 #if SATVIEW_USE_QSQL
     if (mIndexQuery.isActive()) {
       mIndexQuery.clear();
@@ -178,22 +149,6 @@ namespace satview {
   DBConnection::ConnectDB_MYSQL (string server, string db, 
                                  string user, string pass)
   {
-#if SATVIEW_USE_MYSQL
-    if (!pDBDriver) {
-      pDBDriver = get_driver_instance(); 
-    }
-    try {
-       pDBCon = pDBDriver->connect(server, user, pass);
-    } catch (std::exception &e) {
-      std::cout << e.what() << __LINE__ << std::endl;
-       std::cout << " no DB driver, can't get images " << std::endl;
-	     pDBCon = 0;
-    }  
-    if (pDBCon) {
-      pDBCon->setSchema(db);
-      return true;
-    } 
-#endif
 #if SATVIEW_USE_QSQL
 
      OpenDB ();
@@ -249,25 +204,6 @@ namespace satview {
   bool
   DBConnection::Start_MYSQL_Index(unsigned long int min, unsigned long int max)
   {
-#if SATVIEW_USE_MYSQL
-    try {
-      string q_str = 
-	string ("SELECT ident, storetime, remark, picname FROM `satpics` WHERE `picname`=")
-        + string ("'") + mPicname + string ("'");
-      q_str.append (string(" AND `ident` >= ") + berndsutil::toString(min));
-      q_str.append (string(" AND `ident <= ") + berndsutil::toString(max));
-      if (!pDBCon) {
-        return false;
-      }
-      sql::Statement * pStmt = pDBCon->createStatement();
-      pIndexRes = pStmt->executeQuery (q_str);
-    } catch (sql::SQLException& e) {
-      std::cout << e.what() << __LINE__ << std::endl;
-      pIndexRes = 0;
-      return false;
-    }
-    return true;
-#endif
 #if SATVIEW_USE_QSQL
     if (mIndexQuery.isActive()) {
       mIndexQuery.clear();
@@ -298,70 +234,6 @@ namespace satview {
   {
 #if SATVIEW_USE_QNET
     return true;   // and pray that it works later
-#endif
-#if SATVIEW_USE_GNUSOCK
-     try {
-
-       ost::IPV4Host  myhost (mServer.c_str());
-       int the_port = 80;
-
-       pWebStream = new ost::SimpleTCPStream (myhost,the_port);
-       return pWebStream != 0; 
-     } catch (ost::Socket* psock) {
-       std::cout << " weirdo socket layer throws pointer " << psock << endl;
-       if (psock) {
-	 cout << " error number " << psock->getErrorNumber() << endl;
-         cout << " error msg " << psock->getErrorString() << endl;
-	 cout << "or maybe system error: " << endl;
-	 cout << psock->getSystemError() << endl;
-       }
-     } catch (std::exception &se) {
-       cout << se.what () << endl;
-       return false;
-     }
-#endif
-#if SATVIEW_USE_WINSOCK
-	 if (!mWSAisup) {
-	   int wsaErr = WSAStartup (MAKEWORD(2,2), &mWsaData);
-	   if (wsaErr == 0) {
-	     mWSAisup = true;
-	   }
-	 }
-	 if (!mWSAisup) {
-	   return false;
-	 }
-	 struct addrinfo * result = 0;
-	 struct addrinfo   hints;
-	 memset (&hints,0,sizeof(hints));
-	 hints.ai_family = AF_INET;
-	 hints.ai_socktype = SOCK_STREAM;
-	 hints.ai_protocol = IPPROTO_TCP;
-	 int stat = getaddrinfo (mServer.c_str(), mWebPort.c_str(), &hints, &result);
-	 if (stat != 0) {
-		 cout << "can't get address " << WSAGetLastError() << endl;
-	   WSACleanup();
-	   mWSAisup = false;
-	   return false;
-	 }
-	 mWinSock = socket (result->ai_family, result->ai_socktype, result->ai_protocol);
-	 if (mWinSock == INVALID_SOCKET) {
-	   cout << " error at Win socket: " << WSAGetLastError() << endl;
-       freeaddrinfo (result);
-	   WSACleanup();
-	   mWSAisup = false;
-	   return false;
-	 }
-	 stat = connect (mWinSock, result->ai_addr, static_cast<int>(result->ai_addrlen));
-	 if (stat == SOCKET_ERROR) {
-	   closesocket (mWinSock);
-	   mWinSock = INVALID_SOCKET;
-	   WSACleanup();
-	   mWSAisup = false;
-	   return false;
-	   // we could try the next address
-	 }
-     // if we get here, mWinSock has a valid socket address, and the socket is live
-	 return true;
 #endif
      return false;
   }
@@ -425,35 +297,9 @@ namespace satview {
        + string("Connection: Keep-Alive\n")
 			 +  string("\n\n\n");
     int numbytes = 0;
-#if SATVIEW_USE_GNUSOCK
-    numbytes = pWebStream->write (client_msg.c_str(), client_msg.length());
-#endif
-#if SATVIEW_USE_WINSOCK
-	int win_send_stat = send (mWinSock, client_msg.c_str(), client_msg.length(), 0);
-	if (win_send_stat == SOCKET_ERROR) {
-	   WSACleanup();
-	   mWSAisup = false;
-	   return false;
-	}
-	numbytes = client_msg.length();
-#endif
     if (numbytes > 0) {
        memset (mWebBuf, 0, mWebBufMax);
 	   numbytes = 0;
-#if SATVIEW_USE_GNUSOCK
-       numbytes = pWebStream->read (mWebBuf, mWebBufMax);
-#endif
-#if SATVIEW_USE_WINSOCK
-       int chunk_read = 0;
-	   int chunk_start = 0;
-	   int buf_remain = mWebBufMax;
-	   do {
-		  chunk_read = recv (mWinSock, mWebBuf+chunk_start, buf_remain, 0);
-		  chunk_start += chunk_read;
-		  buf_remain -= chunk_read;
-		  numbytes += chunk_read;
-	   } while (chunk_read > 0 && buf_remain > 0);
-#endif
        if (numbytes > 0) {
       	 mWebBytes = numbytes;
          mWebIndex = 0;
@@ -511,18 +357,6 @@ namespace satview {
   bool
   DBConnection::ReadIndexRec_MYSQL (IndexRecord &r)
   {
-#if SATVIEW_USE_MYSQL
-    if (!pIndexRes) {
-      return false;
-    }
-    if (pIndexRes->next()) {
-      r.storetime = pIndexRes->getString("storetime");
-      r.ident = pIndexRes->getInt("ident");
-      r.remark = pIndexRes->getString("remark");
-      r.picname = pIndexRes->getString("picname");
-      return true;
-    }
-#endif
 #if SATVIEW_USE_QSQL
       bool ok = mIndexQuery.next();
       if (!ok) {
@@ -546,38 +380,6 @@ namespace satview {
   size_t
   DBConnection::ReadImageData_MYSQL (IndexRecord &r, string & simage)
   {
-#if SATVIEW_USE_MYSQL
-    if (!pDBCon) {
-      return 0;
-    }
-    try {
-      string q_str = "SELECT ident, image FROM `satpics` WHERE ident="
-	+ berndsutil::toString(r.ident)
-        + " AND picname ='"
-        + mPicname
-        + "' ORDER BY ident DESC";
-
-      sql::Statement * pStmt = pDBCon->createStatement();
-      sql::ResultSet * pRes = pStmt->executeQuery (q_str);    
-      int image_index = pRes->findColumn("image");
-     
-      if (pRes) {
-        pRes->next();
-        simage = pRes->getString(image_index);
-	if (pStmt) {
-          delete pStmt;
-	}
-	if (pRes) {
-	  delete pRes;
-	}
-        return simage.length();
-      }
-     
-    } catch (sql::SQLException &e) {
-      std::cout << e.what() << __LINE__ <<  std::endl;
-      simage = "";    
-    }
-#endif
 #if SATVIEW_USE_QSQL
    QSqlQuery ImgQuery(mQDB);
    QString q_str ("SELECT ident, image FROM `satpics` WHERE ident=");
@@ -814,36 +616,10 @@ namespace satview {
       return false;
     }
     int numbytes = 0;
-#if SATVIEW_USE_GNUSOCK
-    numbytes = pWebStream->write (client_msg.c_str(), client_msg.length());
-#endif
-#if SATVIEW_USE_WINSOCK
-	int win_send_stat = send (mWinSock, client_msg.c_str(), client_msg.length(), 0);
-	if (win_send_stat == SOCKET_ERROR) {
-	   WSACleanup();
-	   mWSAisup = false;
-	   return false;
-	}
-	numbytes = client_msg.length();
-#endif
     if (numbytes > 0) {
       
       memset (mImgWebBuf, 0, mWebBufMax);
 	  numbytes = 0;
-#if SATVIEW_USE_GNUSOCK
-      numbytes = pWebStream->read (mImgWebBuf, mWebBufMax);
-#endif
-#if SATVIEW_USE_WINSOCK
-      int chunk_read = 0;
-	  int chunk_start = 0;
-	  int buf_remain = mWebBufMax;
-	  do {
-	    chunk_read = recv (mWinSock, mImgWebBuf+chunk_start, buf_remain, 0);
-	    chunk_start += chunk_read;
-	    buf_remain -= chunk_read;
-	    numbytes += chunk_read;
-	  } while (chunk_read > 0 && buf_remain > 0);
-#endif
        if (numbytes > 0) {
          // eat the header
          string wb(mImgWebBuf);
@@ -915,46 +691,6 @@ namespace satview {
   DBConnection::InsertRec_MYSQL (const IndexRecord &r,
                                  const string      &data)
   {
-#if SATVIEW_USE_MYSQL
-    bool ok(false);
-    if (!pDBCon) {
-      return 0;
-    }
-    sql::Statement *pStmt(0);
-    try {
-      string quote ("'");
-      string q_str = string
-       
-	("INSERT INTO `satpics` ( ident, picname, storetime, remark, image ) VALUES (?,?,?,?,?) ");
-
-      istringstream tmp_blob(data);
-      pStmt = pDBCon->createStatement();
-      pStmt->execute (string("USE " + mDBname));
-      sql::PreparedStatement *pPrep;
-      pPrep = pDBCon->prepareStatement(q_str);
-      pPrep->setUInt(1,r.ident);
-      pPrep->setString(2,r.picname);
-      pPrep->setNull(3,0);
-      pPrep->setString(4,r.remark);
-      pPrep->setBlob(5, &tmp_blob);
-      pPrep->execute();
-      ok = true;  // well, didn't crash
-    } catch (sql::SQLException &e) {
-      cout << " MySql insert failed " << e.what() << endl;
-      ok = false;
-    } catch (std::exception &e) {
-      cout << " exception caught " << e.what() << endl;
-      ok = false;
-    } catch (...) {
-      cout << " unknown exception for " << r.ident << endl;
-      ok = false;
-    }
-    
-    if (pStmt) {
-      delete pStmt;
-    }
-    return ok;
-#endif
 #if SATVIEW_USE_QSQL
     QSqlQuery InsertQuery(mQDB);
     QString q_str
