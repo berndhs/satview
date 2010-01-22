@@ -674,13 +674,14 @@ namespace satview {
 
   bool
   DBConnection::InsertRec (const IndexRecord &r, 
-                        const char* data)
+                        const char* data,
+                        const int   len)
   {
     switch (mMeth) {
     case Con_Web:
       return false;   // can't do it
     case Con_MySql:
-      return InsertRec_MYSQL(r, string(data));
+      return InsertRec_MYSQL(r, data, len);
     default:
       break;
     }
@@ -707,6 +708,35 @@ namespace satview {
     InsertQuery.bindValue (3,v3);
     quint64 len = data.length();
     QByteArray bytes (data.c_str(), len);
+    v4.setValue (bytes);
+    InsertQuery.bindValue(4,v4);
+    bool ok = InsertQuery.exec();
+    return ok;
+   
+#endif
+    return false;    
+  }
+  
+  bool
+  DBConnection::InsertRec_MYSQL (const IndexRecord &r,
+                                 const char *      data,
+                                 const int         len)
+  {
+#if SATVIEW_USE_QSQL
+    QSqlQuery InsertQuery(mQDB);
+    QString q_str
+  	("INSERT INTO `satpics` ( ident, picname, storetime, remark, image ) VALUES (?,?,?,?,?) ");
+	  InsertQuery.prepare(q_str);
+    QVariant v0, v1, v2, v3, v4;
+    v0.setValue(r.ident);
+    InsertQuery.bindValue (0,v0);
+    v1.setValue(QString(r.picname.c_str()));
+    InsertQuery.bindValue (1,v1);
+    v2.setValue (QString(r.storetime.c_str()));
+    InsertQuery.bindValue (2,v2);
+    v3.setValue (QString(r.remark.c_str()));
+    InsertQuery.bindValue (3,v3);
+    QByteArray bytes (data, len);
     v4.setValue (bytes);
     InsertQuery.bindValue(4,v4);
     bool ok = InsertQuery.exec();

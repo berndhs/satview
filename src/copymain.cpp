@@ -48,7 +48,6 @@ int
 main (int argc, char*argv[])
 {
   deliberate::UseMyOwnMessageHandler ();
-  QApplication App (argc, argv);
   string interface("web");
   CliOptions opts(argv[0]);
   opts.AddSoloOption ("outmysql","Q","destination server is MySql");
@@ -64,6 +63,11 @@ main (int argc, char*argv[])
      cout << argv[0] << "" << version << endl;
      exit(0);
   }
+  bool nodisplay = opts.SeenOpt ("nodisplay");
+  
+  QApplication App (argc, argv, !nodisplay);
+//  QApplication App (argc, argv);
+  CopyEngine * engine = new CopyEngine(&App, !nodisplay);
   
   opts.SetInterface (interface);
   opts.SetServerInbound (source_server);
@@ -112,8 +116,6 @@ main (int argc, char*argv[])
   } else if (opts.SeenOpt("outmysql")) {
     outType = CopyEngine::T_mysql;
   }
-  bool nodisplay = opts.SeenOpt ("nodisplay");
-  CopyEngine * engine = new CopyEngine(&App, !nodisplay);
   engine->SetSource (source_server.c_str(), source_path.c_str(),
                     inType, "weather","weather","quetzalcoatl");
   engine->SetDest   (dest_server.c_str(), dest_path.c_str(),

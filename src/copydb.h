@@ -24,7 +24,7 @@
 
 namespace satview {
 
-class CopyEngine : public QDialog , public Ui_CopyReport {
+class CopyEngine : public QObject , public Ui_CopyReport {
 
 Q_OBJECT
 
@@ -104,6 +104,8 @@ private:
   int         writefailed;
   QTextDocument   *progressMsg;
   QTextStream     *progressStream;
+  
+  QDialog         *gui;
   
   bool   dodisplay;
   bool   stopped;

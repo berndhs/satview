@@ -27,10 +27,8 @@ CopyEngine::CopyEngine (QApplication * pA, const bool dis)
 { 
   Init ();
   if (dis) {
-    show ();
-  } else {
-    hide ();
-  }
+    gui->show ();
+  } 
 }
 
 CopyEngine::~CopyEngine ()
@@ -39,11 +37,14 @@ CopyEngine::~CopyEngine ()
 void
 CopyEngine::Init ()
 {
-  setupUi (this);;
-  progressMsg = new QTextDocument (this);
-  progressMsg->clear();
-  messageBox->setDocument (progressMsg);
-  connect (doneButton, SIGNAL (clicked()), this, SLOT (Finish()));
+  if (dodisplay) {
+    gui = new QDialog;
+    setupUi (gui);;
+    progressMsg = new QTextDocument (gui);
+    progressMsg->clear();
+    messageBox->setDocument (progressMsg);
+    connect (doneButton, SIGNAL (clicked()), this, SLOT (Finish()));
+  }
   progressStream  = new QTextStream (stdout);
 }
 
@@ -79,13 +80,15 @@ CopyEngine::SetSource ( const QString server,
                   const QString pass)
 {
   SetConn (DBin, server, path, dbtype, db, user, pass);
-  QString displayName;
-  if (dbtype == T_sqlite) {
-    displayName = path + "/" + db;
-  } else {
-    displayName = server; 
+  if (dodisplay) {
+    QString displayName;
+    if (dbtype == T_sqlite) {
+      displayName = path + "/" + db;
+    } else {
+      displayName = server; 
+    }
+    sourceLine->setText (displayName);
   }
-  sourceLine->setText (displayName);
 }
 
 
@@ -98,13 +101,15 @@ CopyEngine::SetDest ( const QString server,
                   const QString pass)
 {
   SetConn (DBout, server, path, dbtype, db, user, pass);
-  QString displayName;
-  if (dbtype == T_sqlite) {
-    displayName = path + "/" + db;
-  } else {
-    displayName = server; 
+  if (dodisplay) {
+    QString displayName;
+    if (dbtype == T_sqlite) {
+      displayName = path + "/" + db;
+    } else {
+      displayName = server; 
+    }
+    destLine->setText (displayName);
   }
-  destLine->setText (displayName);
 }
 
 
@@ -142,7 +147,9 @@ CopyEngine::StartEngine (const QString picname,
            this, SLOT (ReceiveData (char *, quint64)));
   bool ok = DBin.LoadIndex (picname.toStdString(), false, too_old, too_recent);
   Status ("Copying...");
-  doneButton->setText (tr("Stop"));
+  if (dodisplay) {
+    doneButton->setText (tr("Stop"));
+  }
 }
 
 void
@@ -154,11 +161,15 @@ CopyEngine::StartCopy ()
 void
 CopyEngine::Status (const QString stat, const bool fini)
 {
-  statusLine->setText (stat);
+  if (dodisplay) {
+    statusLine->setText (stat);
+  }
   if (fini) {
-    doneButton->setText (tr("Done"));
-    disconnect (doneButton, SIGNAL (clicked()), this, SLOT (Finish()));
-    connect (doneButton, SIGNAL (clicked()), this, SLOT (Quit()));
+    if (dodisplay) {
+      doneButton->setText (tr("Done"));
+      disconnect (doneButton, SIGNAL (clicked()), this, SLOT (Finish()));
+      connect (doneButton, SIGNAL (clicked()), this, SLOT (Quit()));
+    }
     if (!dodisplay) {
       Quit ();
     }
@@ -190,7 +201,7 @@ CopyEngine::ReceiveData (char * data, quint64 len)
 {
   bool ok(false);
   if (len > 0) {
-    ok = DBout.InsertRec (currentRec, data);
+    ok = DBout.InsertRec (currentRec, data, len);
   }
   Report (currentRec, ok);
   StartNextCycle ();
@@ -225,8 +236,12 @@ CopyEngine::Finish ()
   newLine.append (tr("copied ok: "));
   newLine.append (QString::number(numcopied));
   newLine.append ("\n");
+  newLine.append (tr("failed to copy: "));
   newLine.append (QString::number(writefailed));
-  messageBox->append (newLine);
+  newLine.append ("\n");
+  if (dodisplay) {
+    messageBox->append (newLine);
+  }
 }
 
 void

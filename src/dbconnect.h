@@ -121,7 +121,7 @@ class DBConnection
   bool    ReadIndexRec  (IndexRecord &r);  // read the index entries
   size_t  ReadImageData (IndexRecord &r, string & data);    // fill in image data
   bool  InsertRec (const IndexRecord &r, const string &data);
-  bool  InsertRec (const IndexRecord &r, const char* data);
+  bool  InsertRec (const IndexRecord &r, const char* data, const int len);
 
 #if SATVIEW_USE_QSQL
   void  SetDBType (const string type);
@@ -176,6 +176,9 @@ class DBConnection
 
   bool  InsertRec_MYSQL (const IndexRecord &r,
                          const string      &data);
+  bool  InsertRec_MYSQL (const IndexRecord &r,
+                         const char        *data,
+                         const int          len);
  
   void  hex_to_chars (string & result, const string &hex);
   void  hex_to_chars (string & result, const char * buf, int numchars);
