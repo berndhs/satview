@@ -71,4 +71,7 @@
 
 #endif
 
+#define SATVIEW_SINGLEWIN 1
+
+
 #endif

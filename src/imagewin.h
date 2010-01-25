@@ -36,7 +36,8 @@ Q_OBJECT
 
   public:
 
-    ImageWin (ControlPanel * pControl);
+    ImageWin (ControlPanel * pControl, const bool standalone = false);
+    ImageWin (QWidget * parent, const bool standalone = false);
     ~ImageWin();
 
     void SetImage (QImage *pImg, FrameTag tag);

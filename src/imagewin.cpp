@@ -22,7 +22,7 @@ using namespace std;
 
 namespace satview {
 
-  ImageWin::ImageWin (ControlPanel * pCon)
+  ImageWin::ImageWin (ControlPanel * pCon, const bool standalone)
     :pControl(0),
      polyCount(0),
      hasclicked(0),
@@ -30,9 +30,31 @@ namespace satview {
      maxOldPoints(100)
   {
     pControl = pCon;
-    setupUi(this);
+    if (standalone) {   
+      setupUi(this);
+    } else {
+      setParent (pCon);
+    }
     updateTimer = new QTimer(this);
     connect (updateTimer, SIGNAL(timeout()), this, SLOT(update()));
+    updateTimer->start (100);
+  }
+  
+  ImageWin::ImageWin (QWidget * parent, const bool standalone)
+  :pControl (0),
+     polyCount(0),
+     hasclicked(0),
+     painter(0),
+     maxOldPoints(100)
+  {
+    pControl = dynamic_cast<ControlPanel*>(parent);   
+    if (standalone) {   
+      setupUi(this);
+    } else {
+      setParent (parent);
+    }
+    updateTimer = new QTimer (this);
+    connect (updateTimer, SIGNAL (timeout()), this, SLOT (update()));
     updateTimer->start (100);
   }
 

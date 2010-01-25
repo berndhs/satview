@@ -37,8 +37,9 @@ ControlPanel::ControlPanel (QApplication *pA)
 
     setupUi(this);
 
-    pDisplay = new ImageWin(this);
-
+#if SATVIEW_SINGLEWIN
+    pStaticDisplay = pDisplay;
+#else
     idtagBox->setReadOnly(true);
     dateBox->setReadOnly(true);
     mMethWebLabel = QString("Web");
@@ -49,7 +50,10 @@ ControlPanel::ControlPanel (QApplication *pA)
     SetIFLabel();
     staticDraw->setChecked(true);
     staticDraw->setEnabled(false);
-
+    
+    pDisplay = new ImageWin(this,true);
+#endif
+    
     /** @brief the runstate is context for the animation and winding features*/
     mRunState.timelimit = 0;
     mRunState.allway = false;
@@ -67,6 +71,10 @@ ControlPanel::ControlPanel (QApplication *pA)
     loadok = mStateStoppedPix.load(":/img/statusDone.png");
     loadok &= mStateRunningPix.load(":/img/statusRun.png");
     loadok &= mStateLoadingPix.load(":/img/statusLoad.png");
+    loadok &= imagePix.load (":/img/noimage.png");
+    
+    pDisplay->setPixmap(imagePix);
+    
     if (!loadok) {
       exit(1);
     }
@@ -77,7 +85,24 @@ ControlPanel::ControlPanel (QApplication *pA)
     connect (&updateTimer, SIGNAL(timeout()), this, SLOT(update()));
 
     /** and we have a whole bunch of buttons to connect */
+    ConnectButtons ();
+    
+    StartTimers ();
 
+}
+
+void
+ControlPanel::ConnectButtons ()
+{
+
+#if SATVIEW_SINGLEWIN    
+    connect (quitButton, SIGNAL(clicked()), this, SLOT(quit()));
+    connect (runForwardButton, SIGNAL(clicked()), this, SLOT(DoRunFwd()));
+    connect (forwardStepButton, SIGNAL(clicked()), this, SLOT(DoStepFwd()));
+    connect (stopButton, SIGNAL(clicked()), this, SLOT(DoStopMoving()));
+    connect (runBackButton, SIGNAL(clicked()), this, SLOT(DoRunBack()));
+    connect (backStepButton, SIGNAL(clicked()), this, SLOT(DoStepBack()));
+#else
     connect (versionButton, SIGNAL(clicked()), this, SLOT(ShowVersion()));
     connect (authorButton, SIGNAL(clicked()), this, SLOT(LinkToBernd()));
 
@@ -116,9 +141,7 @@ ControlPanel::ControlPanel (QApplication *pA)
     connect (finishPolygonButton, SIGNAL(clicked()),
 	     this, SLOT(FinishPolygon()));
     connect (saveFrameButton, SIGNAL(clicked()), this, SLOT(NotImplemented()));
-
-    StartTimers ();
-
+#endif
 }
 
 ControlPanel::~ControlPanel()
@@ -171,6 +194,11 @@ ControlPanel::quit()
   if (pDisplay) {
     pDisplay->quit();
   }
+  #if SATVIEW_SINGLEWIN
+  if (pStaticDisplay) {
+    pStaticDisplay->quit();
+  }
+  #endif
   SatPicList::Instance()->Ditch();
   if (pApp) {
     pApp->quit();
@@ -178,9 +206,9 @@ ControlPanel::quit()
 }
 
 void
-ControlPanel::DoAgain ()
+ControlPanel::DoAgain (bool doit)
 {
-  wantRerun = true;
+  wantRerun = doit;
   quit();
 }
 
@@ -714,9 +742,11 @@ ControlPanel::Remark ()
 string
 ControlPanel::SetRemark (string rm)
 {
+#if !SATVIEW_SINGLEWIN
   QString newremark(rm.c_str());
   commentBox->clear();
   commentBox->setPlainText(newremark);
+#endif
   mRemark = rm;
   return mRemark;
 }
@@ -731,9 +761,11 @@ string
 ControlPanel::SetIdentTag (string id)
 {
   /** should update the idtagBox field */
+#if !SATVIEW_SINGLEWIN
   idtagBox->clear();
   QString newtext (id.c_str());
   idtagBox->setPlainText(newtext);
+#endif
   mIdFancy = id;
   return mIdFancy;
 }
@@ -747,9 +779,11 @@ ControlPanel::Date ()
 string
 ControlPanel::SetDate (string dt)
 {
+#if !SATVIEW_SINGLEWIN
   QString newdate(dt.c_str());
   dateBox->clear();
   dateBox->setPlainText(newdate);
+#endif
   mDate = dt;
   return mDate;
 }
@@ -764,9 +798,11 @@ string
 ControlPanel::SetMinAge (string ma)
 {
   mMinHours = ma;
+#if !SATVIEW_SINGLEWIN
   QString age(ma.c_str());
   minHoursBox->clear();
   minHoursBox->setPlainText(age);
+#endif
   return mMinHours;
 }
 
@@ -786,9 +822,11 @@ string
 ControlPanel::SetMaxAge (string ma)
 {
   mMaxHours = ma;
+#if !SATVIEW_SINGLEWIN
   QString age(ma.c_str());
   maxHoursBox->clear();
   maxHoursBox->setPlainText(age);
+#endif
   return mMaxHours;
 }
 

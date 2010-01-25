@@ -52,7 +52,11 @@ win32 {
 }
 VERSION = 0.4.0
 
-FORMS += ../ui/control.ui ../ui/imagewin.ui ../ui/getstring.ui
+FORMS += \
+       ../ui/control.ui  \
+       ../ui/imagewin.ui \
+       ../ui/getstring.ui \
+       ../ui/singlewin.ui
 
 SOURCES += ../src/satpiclist.cpp ../src/satpicbuf.cpp \
 	../src/dbconnect.cpp ../src/version.cpp ../src/blob-image.cpp \

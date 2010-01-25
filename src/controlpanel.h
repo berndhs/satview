@@ -13,6 +13,7 @@
 //
 
 #include "ui_control.h"
+#include "ui_singlewin.h"
 #include "imagewin.h"
 #include "dbconnect.h"
 #include "satpiclist.h"
@@ -31,7 +32,13 @@ namespace satview {
    * rest of the programs.
    */
 
-  class ControlPanel : public QDialog, public Ui_ControlPanel {
+  class ControlPanel : public QDialog, 
+  #if SATVIEW_SINGLEWIN
+                       public Ui_SingleWin 
+  #else
+                       public Ui_ControlPanel 
+  #endif
+                       {
 
 Q_OBJECT
 
@@ -81,7 +88,7 @@ Q_OBJECT
     void update();
     void quit ();
     void show();
-    void DoAgain ();
+    void DoAgain (bool doit = true);
     
     void ShowImgAgain ();
 
@@ -167,6 +174,7 @@ Q_OBJECT
     };
 
     void StartTimers ();
+    void ConnectButtons ();
     void ShowPic (SatPicBuf *pBuf);
     void ShowIndexRec (SatPicBuf *pBuf);
     void ReallyShowPic();
@@ -186,7 +194,12 @@ Q_OBJECT
 
     QApplication  * pApp;
 
+#if SATVIEW_SINGLEWIN
+    ImageWin      * pStaticDisplay;
+#else
     ImageWin      * pDisplay;
+#endif
+
 
     QTimer        updateTimer;
     int           updateDelay;
@@ -210,6 +223,9 @@ Q_OBJECT
     QPixmap                mStateStoppedPix;
     QString                mStateLoadingText;
     QPixmap                mStateLoadingPix;
+    
+    QPixmap                imagePix;
+    
     string                 mDate;
     string                 mIdFancy;
     DBConnection::Method   mMeth;

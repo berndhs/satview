@@ -4,6 +4,7 @@
   <file>img/statusDone.png</file>
   <file>img/statusLoad.png</file>
   <file>img/statusRun.png</file>
+  <file>img/noimage.png</file>
 </qresource>
 </RCC>
 
