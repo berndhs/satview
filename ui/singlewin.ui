@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>480</height>
+    <height>400</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <x>0</x>
      <y>0</y>
      <width>216</width>
-     <height>481</height>
+     <height>400</height>
     </rect>
    </property>
    <property name="title">
@@ -989,7 +989,7 @@
      <x>221</x>
      <y>0</y>
      <width>640</width>
-     <height>480</height>
+     <height>400</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -1009,6 +1009,9 @@
    </property>
    <property name="text">
     <string/>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
    </property>
   </widget>
  </widget>
