@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>400</height>
+    <height>398</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -47,10 +47,10 @@
   <widget class="QPushButton" name="runForwardButton">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>85</y>
-     <width>180</width>
-     <height>48</height>
+     <x>1</x>
+     <y>5</y>
+     <width>200</width>
+     <height>60</height>
     </rect>
    </property>
    <property name="text">
@@ -73,10 +73,10 @@
   <widget class="QPushButton" name="forwardStepButton">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>145</y>
-     <width>180</width>
-     <height>48</height>
+     <x>1</x>
+     <y>76</y>
+     <width>200</width>
+     <height>60</height>
     </rect>
    </property>
    <property name="text">
@@ -87,9 +87,9 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>215</y>
-     <width>180</width>
-     <height>48</height>
+     <y>150</y>
+     <width>200</width>
+     <height>60</height>
     </rect>
    </property>
    <property name="palette">
@@ -515,9 +515,9 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>290</y>
-     <width>180</width>
-     <height>48</height>
+     <y>225</y>
+     <width>200</width>
+     <height>60</height>
     </rect>
    </property>
    <property name="text">
@@ -541,26 +541,13 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>350</y>
-     <width>180</width>
-     <height>48</height>
+     <y>295</y>
+     <width>200</width>
+     <height>60</height>
     </rect>
    </property>
    <property name="text">
     <string>Back</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="settingsButton">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>25</y>
-     <width>180</width>
-     <height>48</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Settings</string>
    </property>
   </widget>
  </widget>
