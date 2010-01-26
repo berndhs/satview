@@ -180,6 +180,7 @@ Q_OBJECT
     void ShowPic (SatPicBuf *pBuf);
     void ShowIndexRec (SatPicBuf *pBuf);
     void ReallyShowPic();
+    string TimeAndDate (time_t t);
     
     void ChangeStatusLabel (QString status);
 

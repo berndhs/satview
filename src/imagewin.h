@@ -41,6 +41,7 @@ Q_OBJECT
     ~ImageWin();
 
     void SetImage (QImage *pImg, FrameTag tag);
+    void SetText (QString txt) {textMessage = txt; }
 
     void mousePressEvent (QMouseEvent *pME);
     void paintEvent      (QPaintEvent *pPE);
@@ -58,12 +59,14 @@ Q_OBJECT
     void NotImplemented ();
 
   private:
+  
+    void DrawText (QPainter * paint);
 
     ControlPanel *pControl;
 
     QImage       *pCurImg;
     FrameTag      curTag;
-
+    QString       textMessage;
     ShapeFrame    currentFrame;
 
     ShapeList     shapes;

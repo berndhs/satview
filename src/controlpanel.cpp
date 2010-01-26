@@ -257,6 +257,7 @@ ControlPanel::ShowVersion()
 void
 ControlPanel::ChangeStatusLabel (QString status)
 {
+#if !SATVIEW_SINGLEWIN
   if (status == mStateRunningText) {
     runStatusLabel->setPixmap (mStateRunningPix);
   } else if (status == mStateLoadingText) {
@@ -265,6 +266,7 @@ ControlPanel::ChangeStatusLabel (QString status)
     runStatusLabel->setPixmap (mStateStoppedPix);
   }
   runStatusLabel->setText (status);
+#endif
 }
 
 void 
@@ -295,6 +297,17 @@ ControlPanel::ShowIndexRec (SatPicBuf *pBuf)
                      + string(" - ")
                      + berndsutil::toString(pBuf->Serial())).c_str() 
                     );
+  string plain = TimeAndDate (t);
+  SetDate (plain.c_str());
+  #if !SATVIEW_SINGLEWIN
+  SetPicname (pBuf->PicName().c_str());
+  SetRemark (pBuf->Remark().c_str());
+  #endif
+}
+
+string
+ControlPanel::TimeAndDate (time_t t)
+{
   struct tm theTime;
 #ifdef _MSC_VER
   localtime_s(&theTime,&t);
@@ -305,11 +318,7 @@ ControlPanel::ShowIndexRec (SatPicBuf *pBuf)
   char plain[datelen+sizeof(void*)];
   int len = strftime (plain, datelen, "%Y-%m-%d %H:%M:%S", &theTime);
   plain[len] = 0;
-  SetDate (plain);
-  #if !SATVIEW_SINGLEWIN
-  SetPicname (pBuf->PicName().c_str());
-  SetRemark (pBuf->Remark().c_str());
-  #endif
+  return string (plain);
 }
 
 void
@@ -321,6 +330,9 @@ ControlPanel::ReallyShowPic ()
   QImage    *pI   = mPicState.pImg;
   if (pDisplay) {
     pDisplay->SetImage (pI,FrameTag(pBuf->Ident()));
+    time_t t = pBuf->Ident();
+    string t_str = TimeAndDate (t);
+    pDisplay->SetText (QString(t_str.c_str()));
     pDisplay->update();
   }
   ShowIndexRec (pBuf);

@@ -185,6 +185,18 @@ namespace satview {
       // wait until paintevent to draw this thing
     }
   }
+  
+  void
+  ImageWin::DrawText (QPainter * paint) 
+  {
+    QColor col (255,0,0,255);
+    paint->setBrush (col);
+    QFont font = paint->font();
+    font.setPixelSize (40);
+    paint->setFont (font);
+    int flags = Qt::AlignLeft | Qt::TextSingleLine;
+    paint->drawText (QPoint(50,50), textMessage);
+  }
 
   void
   ImageWin::paintEvent (QPaintEvent *pPE)
@@ -194,6 +206,9 @@ namespace satview {
       painter = new QPainter (this);
     } else {
       painter->begin(this);
+    }\
+    if (textMessage.length() > 0 ) {
+      DrawText (painter);
     }
     if (hasclicked > 0) {
       painter->save();
