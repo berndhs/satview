@@ -83,6 +83,8 @@ Q_OBJECT
 
     void ShowVersion();
     void LinkToBernd();
+    
+    void ChangeSettings ();
 
     void NotImplemented ();
     void update();

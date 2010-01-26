@@ -96,12 +96,12 @@ ControlPanel::ConnectButtons ()
 {
 
 #if SATVIEW_SINGLEWIN    
-    connect (quitButton, SIGNAL(clicked()), this, SLOT(quit()));
     connect (runForwardButton, SIGNAL(clicked()), this, SLOT(DoRunFwd()));
     connect (forwardStepButton, SIGNAL(clicked()), this, SLOT(DoStepFwd()));
     connect (stopButton, SIGNAL(clicked()), this, SLOT(DoStopMoving()));
     connect (runBackButton, SIGNAL(clicked()), this, SLOT(DoRunBack()));
     connect (backStepButton, SIGNAL(clicked()), this, SLOT(DoStepBack()));
+    connect (settingsButton, SIGNAL (clicked()), this, SLOT (ChangeSettings ()));
 #else
     connect (versionButton, SIGNAL(clicked()), this, SLOT(ShowVersion()));
     connect (authorButton, SIGNAL(clicked()), this, SLOT(LinkToBernd()));
@@ -163,6 +163,12 @@ ControlPanel::StartTimers ()
     showTimer.start(currentDelay);
     updateTimer.start(updateDelay);
 
+}
+
+void
+ControlPanel::ChangeSettings ()
+{
+  qDebug () << " settings called ";
 }
 
 void
@@ -258,7 +264,7 @@ ControlPanel::ChangeStatusLabel (QString status)
   } else {
     runStatusLabel->setPixmap (mStateStoppedPix);
   }
- // runStatusLabel->setText (status);
+  runStatusLabel->setText (status);
 }
 
 void 
@@ -300,8 +306,10 @@ ControlPanel::ShowIndexRec (SatPicBuf *pBuf)
   int len = strftime (plain, datelen, "%Y-%m-%d %H:%M:%S", &theTime);
   plain[len] = 0;
   SetDate (plain);
+  #if !SATVIEW_SINGLEWIN
   SetPicname (pBuf->PicName().c_str());
   SetRemark (pBuf->Remark().c_str());
+  #endif
 }
 
 void
@@ -664,8 +672,10 @@ ControlPanel::GetBoxString (QPlainTextEdit *pBox)
 void
 ControlPanel::ReloadDB ()
 {
+#if !SATVIEW_SINGLEWIN
   mServer = GetBoxString(serverBox);
   mPicname = GetBoxString(picnameBox);
+#endif
   SatPicList::Instance()->SetServer(mServer);
   SatPicList::Instance()->SetFilename(mPicname);
   SatPicList::Instance()->SetMethod(mMeth);
@@ -689,6 +699,7 @@ ControlPanel::ReloadDB ()
 void
 ControlPanel::DoSwitchPicname ()
 {
+#if !SATVIEW_SINGLEWIN
   mPicname = "?";
   QString newval = picnameBox->toPlainText();
   QByteArray bytes = newval.toLatin1();
@@ -699,6 +710,7 @@ ControlPanel::DoSwitchPicname ()
   DoWindFwd(0,true);
   DoStepFwd();
   update();
+  #endif
 }
 
 string
@@ -711,8 +723,10 @@ string
 ControlPanel::SetServer (string sv)
 {
   QString newname(sv.c_str());
+  #if !SATVIEW_SINGLEWIN
   serverBox->clear();
   serverBox->setPlainText(newname);
+  #endif
   mServer = sv;
   return mServer;
 }
@@ -727,8 +741,10 @@ string
 ControlPanel::SetPicname (string pn)
 {
   QString newname(pn.c_str());
+  #if !SATVIEW_SINGLEWIN
   picnameBox->clear();
   picnameBox->setPlainText(newname);
+  #endif
   mPicname = pn;
   return mPicname;
 }
