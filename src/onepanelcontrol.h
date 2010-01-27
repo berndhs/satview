@@ -16,6 +16,8 @@
 #include "abstractcontrol.h"
 #include "ui_singlewin.h"
 #include <QPixmap>
+#include <QAction>
+#include <QMenuBar>
 
 namespace satview {
 
@@ -34,10 +36,16 @@ public slots:
     void DoRunFwd ()      { AbstractControl::DoRunFwd (0,true); }
 
     void DisplayPic (QImage *pImg);
+    
+    void Settings ();
 
 private:
 
+   void Additional ();
+   void ConnectThings ();
+
    QPixmap   imagePix;
+   QAction   *settingsAction;
 
 };
 

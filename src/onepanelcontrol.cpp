@@ -22,14 +22,7 @@ OnePanelControl::OnePanelControl (QApplication *pA)
     
   pDisplay->setPixmap(imagePix);
 
-  connect (stopButton, SIGNAL(clicked()), this, SLOT(DoStopMoving())); 
-  connect (runBackButton, SIGNAL(clicked()), this, SLOT(DoRunBack()));
-  connect (runForwardButton, SIGNAL(clicked()), this, SLOT(DoRunFwd())); 
-  connect (backStepButton, SIGNAL(clicked()), this, SLOT(DoStepBack()));
-  connect (forwardStepButton, SIGNAL(clicked()), this, SLOT(DoStepFwd()));
-    
-  connect (this, SIGNAL (ReallyShowPic (QImage*)), 
-             this, SLOT (DisplayPic (QImage*)));
+
 }
 
 void
@@ -44,6 +37,34 @@ OnePanelControl::DisplayPic (QImage *pImg)
     pDisplay->update();
   }
   update();
+}
+
+void
+OnePanelControl::ConnectThings ()
+{
+  connect (stopButton, SIGNAL(clicked()), this, SLOT(DoStopMoving())); 
+  connect (runBackButton, SIGNAL(clicked()), this, SLOT(DoRunBack()));
+  connect (runForwardButton, SIGNAL(clicked()), this, SLOT(DoRunFwd())); 
+  connect (backStepButton, SIGNAL(clicked()), this, SLOT(DoStepBack()));
+  connect (forwardStepButton, SIGNAL(clicked()), this, SLOT(DoStepFwd()));
+  connect (settingsAction, SIGNAL (triggered()), this, SLOT (Settings()));
+  connect (this, SIGNAL (ReallyShowPic (QImage*)), 
+             this, SLOT (DisplayPic (QImage*)));
+}
+
+void
+OnePanelControl::Additional ()
+{
+  settingsAction = new QAction (tr("Settings"),this);
+  QMenuBar * menuBar = new QMenuBar (this);
+  menuBar->addAction (settingsAction);
+  gridLayout->addWidget (menuBar);
+}
+
+void
+OnePanelControl::Settings ()
+{
+  qDebug () << " settings called";
 }
 
 }
