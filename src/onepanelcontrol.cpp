@@ -35,9 +35,12 @@ OnePanelControl::OnePanelControl (QApplication *pA)
 void
 OnePanelControl::DisplayPic (QImage *pImg)
 {
-qDebug() << " display " << pImg;
+  SatPicBuf *pBuf = mPicState.pBuf;
   if (pDisplay) {
     pDisplay->SetImage (pImg);
+    time_t t = pBuf->Ident();
+    string t_str = TimeAndDate (t);
+    pDisplay->SetText (QString(t_str.c_str()));
     pDisplay->update();
   }
   update();
