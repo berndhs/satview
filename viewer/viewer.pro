@@ -56,7 +56,7 @@ FORMS += \
        ../ui/control.ui  \
        ../ui/imagewin.ui \
        ../ui/getstring.ui \
-       ../ui/singlewin.ui
+       ../ui/onepanel.ui
 
 SOURCES += \  
         ../src/abstractcontrol.cpp \

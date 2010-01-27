@@ -79,7 +79,6 @@ AbstractControl::quit()
 void
 AbstractControl::show()
 {
-  QWidget::show();
 }
 
 bool
@@ -558,7 +557,6 @@ AbstractControl::ConMeth ()
 void
 AbstractControl::update ()
 {
-  QWidget::update();
 }
 
 

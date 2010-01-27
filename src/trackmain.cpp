@@ -143,7 +143,6 @@ main (int argc, char*argv[])
       App.exec();
       again = false;
       SatPicList::Destroy();
-      Control->hide();
       delete Control;
     } while (again);
     exit(0);

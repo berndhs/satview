@@ -17,12 +17,15 @@ namespace satview {
 
 OnePanelControl::OnePanelControl (QApplication *pA)
 {
-  setupUi (this);
+  mainWin = new QMainWindow;
+  qDebug () << " main win " << mainWin;
+  setupUi (mainWin);
   imagePix.load (":/img/noimage.png");
     
   pDisplay->setPixmap(imagePix);
-
-
+  Additional ();
+  ConnectThings ();
+  mainWin->show();
 }
 
 void
@@ -55,10 +58,8 @@ OnePanelControl::ConnectThings ()
 void
 OnePanelControl::Additional ()
 {
-  settingsAction = new QAction (tr("Settings"),this);
-  QMenuBar * menuBar = new QMenuBar (this);
-  menuBar->addAction (settingsAction);
-  gridLayout->addWidget (menuBar);
+  settingsAction = new QAction (tr("Settings"),mainWin);
+  menubar->addAction (settingsAction);
 }
 
 void

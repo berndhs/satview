@@ -14,13 +14,14 @@
 #include "imagewin.h"
 #include "dbconnect.h"
 #include "satpiclist.h"
+#include <QObject>
 #include <QWidget>
 #include <QApplication>
 #include "delib-debug.h"
 
 namespace satview {
 
-class AbstractControl : public QWidget {
+class AbstractControl : public QObject {
 
 Q_OBJECT
 

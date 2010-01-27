@@ -32,8 +32,10 @@ namespace satview  {
 TwoPanelControl::TwoPanelControl (QApplication *pA)
 {
     pApp = pA;
+    
+    myWindow = new QWidget;
 
-    setupUi(this);
+    setupUi(myWindow);
 
     idtagBox->setReadOnly(true);
     dateBox->setReadOnly(true);
@@ -57,7 +59,7 @@ TwoPanelControl::TwoPanelControl (QApplication *pA)
     
     pDisplay->setPixmap(imagePix);
     pDisplay->show();
-    
+    myWindow->show();
     if (!loadok) {
       exit(1);
     }

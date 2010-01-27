@@ -105,6 +105,8 @@ Q_OBJECT
 
     ImageWin      * pDisplay;
     
+    QWidget       *myWindow;
+    
     QTimer        updateTimer;
     int           updateDelay;
 

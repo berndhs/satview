@@ -32,9 +32,7 @@ namespace satview {
     pControl = pCon;
     if (standalone) {   
       setupUi(this);
-    } else {
-      setParent (pCon);
-    }
+    } 
     updateTimer = new QTimer(this);
     connect (updateTimer, SIGNAL(timeout()), this, SLOT(update()));
     updateTimer->start (100);

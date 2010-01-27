@@ -14,14 +14,15 @@
 
 
 #include "abstractcontrol.h"
-#include "ui_singlewin.h"
+#include "ui_onepanel.h"
 #include <QPixmap>
 #include <QAction>
 #include <QMenuBar>
+#include <QMainWindow>
 
 namespace satview {
 
-class OnePanelControl: public AbstractControl, public Ui_SingleWin {
+class OnePanelControl: public AbstractControl, public Ui_OnePanel {
 
 Q_OBJECT
 
@@ -44,6 +45,7 @@ private:
    void Additional ();
    void ConnectThings ();
 
+   QMainWindow  *mainWin;
    QPixmap   imagePix;
    QAction   *settingsAction;
 
