@@ -17,11 +17,6 @@
 
 #include <map>
 
-#if DO_COPYDB
-  // nothing
-#else
-#include "controlpanel.h"
-#endif
 
 #include "satpicbuf.h"
 #include "fault.h"
@@ -39,6 +34,7 @@ namespace satview {
  */
 
 
+class AbstractControl;
 
 class SatPicList
 #if SATVIEW_USE_QNET
@@ -92,7 +88,7 @@ Q_OBJECT
 
   unsigned long int   NumImages();
 
-  void SetControl (ControlPanel *dcon) { pDC = dcon; }
+  void SetControl (AbstractControl *dcon) { pDC = dcon; }
 
   SatPicBuf*  ToStart();
   SatPicBuf*  ToEnd();
@@ -137,7 +133,7 @@ Q_OBJECT
 
   PicMap_Type::iterator  mIt;
 
-  ControlPanel* pDC;
+  AbstractControl* pDC;
   bool ConnectDB (string server, string db, string user, string pass);
   void DisconnectDB ();
   void LoadDummy();

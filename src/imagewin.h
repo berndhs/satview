@@ -27,8 +27,7 @@
 
 namespace satview {
 
-  class ControlPanel;
-
+class AbstractControl;
 
 class ImageWin : public QLabel, public Ui_ImageBox {
 
@@ -36,11 +35,12 @@ Q_OBJECT
 
   public:
 
-    ImageWin (ControlPanel * pControl, const bool standalone = false);
+    ImageWin (AbstractControl * pControl, const bool standalone = false);
     ImageWin (QWidget * parent, const bool standalone = false);
     ~ImageWin();
 
     void SetImage (QImage *pImg, FrameTag tag);
+    void SetImage (QImage *pImg, const bool showit = true);
     void SetText (QString txt) {textMessage = txt; }
 
     void mousePressEvent (QMouseEvent *pME);
@@ -62,7 +62,7 @@ Q_OBJECT
   
     void DrawText (QPainter * paint);
 
-    ControlPanel *pControl;
+    AbstractControl *pControl;
 
     QImage       *pCurImg;
     FrameTag      curTag;

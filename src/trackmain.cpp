@@ -2,7 +2,6 @@
 #include "satpiclist.h"
 #include "version.h"
 #include "satview-defaults.h"
-#include "satview-debug.h"
 #include "clioptions.h"
 #include "delib-debug.h"
 //
@@ -58,6 +57,7 @@ main (int argc, char*argv[])
   unsigned long int minAge = 0;
   
   bool versionOnly(false);
+  bool onewindow (false);
 
 
   deliberate::UseMyOwnMessageHandler();
@@ -80,6 +80,7 @@ main (int argc, char*argv[])
   opt.SetMinHours(minAge);
   opt.SetMaxHours(maxAge);
   opt.SetDBType (dbType);
+  opt.SetMobile (onewindow);
 
   /** @brief some elementary command line, 2 choices of image names.
    * More later when we have time.
@@ -109,12 +110,19 @@ main (int argc, char*argv[])
     }
     bool again(false);
     do {
-      ControlPanel Control (&App);
-      Control.SetPicname(DefaultFile);
-      Control.SetServer(server);
-      Control.SetConMeth(conmeth);
-      Control.SetMinAge (minAge);
-      Control.SetMaxAge (maxAge);
+      AbstractControl  * Control(0);
+      if (onewindow) {
+      qDebug () << " one panel";
+        Control = new OnePanelControl (&App);
+      } else {
+      qDebug () << " two panel";
+        Control = new TwoPanelControl (&App);
+      }
+      Control->SetPicname(DefaultFile);
+      Control->SetServer(server);
+      Control->SetConMeth(conmeth);
+      Control->SetMinAge (minAge);
+      Control->SetMaxAge (maxAge);
       SatPicList::Instance()->SetPath (path);
       SatPicList::Instance()->SetDBType (dbType);
       SatPicList::Instance()->SetDBParams(method,
@@ -126,26 +134,17 @@ main (int argc, char*argv[])
       SatPicList::Instance()->SetMinAge(minAge);
       SatPicList::Instance()->SetMaxAge(maxAge);
       SatPicList::Instance()->LoadFromDB();
-      SatPicList::Instance()->SetControl (&Control);
+      SatPicList::Instance()->SetControl (Control);
       SatPicList::Instance()->Start();
-      Control.DoWindFwd(0,true);
-      Control.DoStepFwd();
-      Control.show();
+      Control->DoWindFwd(0,true);
+      Control->DoStepFwd();
+      Control->show();
       App.processEvents();
       App.exec();
-      again = Control.Again();
+      again = false;
       SatPicList::Destroy();
-      Control.hide();
-      if (again) {
-        DefaultFile = Control.Picname();
-        server = Control.Server();
-        conmeth = Control.ConMeth();
-        
-        Control.Reset();
-        #if 0
-        Control.Restart();
-        #endif
-      }
+      Control->hide();
+      delete Control;
     } while (again);
     exit(0);
   } catch (berndsutil::Fault &F) {

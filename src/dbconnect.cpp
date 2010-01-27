@@ -13,7 +13,7 @@
 
 #include <limits>
 
-#include "satview-debug.h"
+#include "delib-debug.h"
 #include "satview-defaults.h"
 
 #include <QDebug>

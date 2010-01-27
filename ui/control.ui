@@ -2,7 +2,7 @@
 <ui version="4.0">
  <author>Bernd Stramm</author>
  <class>ControlPanel</class>
- <widget class="QDialog" name="ControlPanel">
+ <widget class="QWidget" name="ControlPanel">
   <property name="geometry">
    <rect>
     <x>0</x>

@@ -13,6 +13,7 @@
 //
 
 #include "satpiclist.h"
+#include "abstractcontrol.h"
 #include <time.h>
 #include <iostream>
 #if SATVIEW_USE_QNET

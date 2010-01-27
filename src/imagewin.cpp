@@ -1,5 +1,5 @@
 #include "imagewin.h"
-#include "controlpanel.h"
+#include "abstractcontrol.h"
 #include "textbox.h"
 #include <string>
 #include <iostream>
@@ -22,7 +22,7 @@ using namespace std;
 
 namespace satview {
 
-  ImageWin::ImageWin (ControlPanel * pCon, const bool standalone)
+  ImageWin::ImageWin (AbstractControl * pCon, const bool standalone)
     :pControl(0),
      polyCount(0),
      hasclicked(0),
@@ -47,7 +47,7 @@ namespace satview {
      painter(0),
      maxOldPoints(100)
   {
-    pControl = dynamic_cast<ControlPanel*>(parent);   
+    pControl = dynamic_cast<AbstractControl*>(parent);   
     if (standalone) {   
       setupUi(this);
     } else {
@@ -98,12 +98,20 @@ namespace satview {
   void
   ImageWin::SetImage (QImage * pImg, FrameTag tag)
   {
-    pCurImg = pImg;
+    SetImage (pImg, false);
     curTag  = tag;
     currentFrame.SetTag(curTag);
-    QLabel::setPixmap(QPixmap::fromImage(*pImg));
     QLabel::update();
-    QLabel::show();
+  }
+  
+  void
+  ImageWin::SetImage (QImage * pImg, const bool showit)
+  {
+    pCurImg = pImg;
+    QLabel::setPixmap(QPixmap::fromImage(*pImg));
+    if (showit) {
+      QLabel::update();
+    }
   }
 
   void

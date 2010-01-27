@@ -59,7 +59,7 @@ namespace satview {
     
   private:
     unsigned long int  tagval;
-  };
+  }; // class Tag
 
   typedef Tag FrameTag;
   typedef Tag ShapeTag;

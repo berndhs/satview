@@ -39,6 +39,7 @@ CliOptions::CliOptions (QString pgmname)
   AddIntOption ("minhours","m", "minimum image age to consider");
   AddIntOption ("maxhours","M", "maximum image age to consider");
   AddStrOption ("image","i", "image name");
+  AddSoloOption ("onewindow","1","use single window GUI for mobile devices");
         
 }
 
@@ -91,6 +92,17 @@ CliOptions::SetDBType (string &dbtype)
   }
   if (seenMy) {
     dbtype = "QMYSQL";
+    return true;
+  }
+  return false;
+}
+
+bool
+CliOptions::SetMobile (bool & mobile)
+{
+  bool seenMobile = SeenOpt ("onewindow");
+  if (seenMobile) {
+    mobile = true;
     return true;
   }
   return false;

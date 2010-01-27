@@ -17,7 +17,8 @@
 #define SATVIEW_USE_FLTK 0
 #define SATVIEW_USE_SDL 0
 
-#include "controlpanel.h"
+#include "twopanelcontrol.h"
+#include "onepanelcontrol.h"
 
 
 

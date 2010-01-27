@@ -58,10 +58,17 @@ FORMS += \
        ../ui/getstring.ui \
        ../ui/singlewin.ui
 
-SOURCES += ../src/satpiclist.cpp ../src/satpicbuf.cpp \
-	../src/dbconnect.cpp ../src/version.cpp ../src/blob-image.cpp \
-	../src/imagewin.cpp \
-	../src/trackmain.cpp \
+SOURCES += \  
+        ../src/abstractcontrol.cpp \
+        ../src/twopanelcontrol.cpp \
+        ../src/onepanelcontrol.cpp \
+   	    ../src/trackmain.cpp \
+        ../src/satpiclist.cpp  \
+        ../src/satpicbuf.cpp \
+	      ../src/dbconnect.cpp \
+        ../src/version.cpp \
+        ../src/blob-image.cpp \
+	      ../src/imagewin.cpp \
 	../src/textbox.cpp \
 	../src/shapeframe.cpp \
 	../src/frametypes.cpp \
@@ -69,14 +76,21 @@ SOURCES += ../src/satpiclist.cpp ../src/satpicbuf.cpp \
 	../src/clioptions.cpp \
 	../src/cmdoptions.cpp \
         ../src/delib-debug.cpp \
-	../src/controlpanel.cpp 
+      
 
 
-HEADERS += ../src/satpicbuf.h ../src/satpiclist.h ../src/dbconnect.h  \
-	../src/version.h ../src/satview-config.h ../src/blob-image.h ../src/sjdatasrc.h \
-	../src/satview-defaults.h \
+HEADERS += ../src/satpicbuf.h \
+           ../src/satpiclist.h \
+           ../src/dbconnect.h  \
+	         ../src/version.h \
+	         ../src/satview-config.h \
+	         ../src/blob-image.h \
+	         ../src/sjdatasrc.h \
+         	../src/satview-defaults.h \
 	../src/satview-debug.h \
-	../src/controlpanel.h \
+	../src/abstractcontrol.h \
+	../src/onepanelcontrol.h \
+	../src/twopanelcontrol.h \
 	../src/trackmain.h \
 	../src/imagewin.h \
 	../src/frametypes.h \
