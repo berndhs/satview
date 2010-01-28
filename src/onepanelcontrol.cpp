@@ -25,6 +25,7 @@ OnePanelControl::OnePanelControl (QApplication *pA)
   pDisplay->setPixmap(imagePix);
   Additional ();
   ConnectThings ();
+  settingsMenu->hide();
   mainWin->show();
 }
 
@@ -60,12 +61,18 @@ OnePanelControl::Additional ()
 {
   settingsAction = new QAction (tr("Settings"),mainWin);
   menubar->addAction (settingsAction);
+  settingsMenu = new SettingsMenu (mainWin);
 }
 
 void
 OnePanelControl::Settings ()
 {
-  qDebug () << " settings called";
+  DoStopMoving ();
+  SettingsAction  action;
+  
+  action = settingsMenu->Exec();
+  qDebug () << "settings user wants " << action;
+  
 }
 
 }

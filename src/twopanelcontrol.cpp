@@ -93,7 +93,7 @@ TwoPanelControl::ConnectButtons ()
     connect (reloadImgButton, SIGNAL(clicked()),
                 this, SLOT(ShowImgAgain()));
     connect (stopButton, SIGNAL(clicked()), this, SLOT(DoStopMoving()));
-    stopButton->setEnabled(false);
+    stopButton->setEnabled(true);
 
     connect (runBackButton, SIGNAL(clicked()), this, SLOT(DoRunBack()));
     connect (backWeekButton, SIGNAL(clicked()), this, SLOT(DoRunBackWeek()));

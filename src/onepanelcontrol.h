@@ -14,6 +14,7 @@
 
 
 #include "abstractcontrol.h"
+#include "settingsmenu.h"
 #include "ui_onepanel.h"
 #include <QPixmap>
 #include <QAction>
@@ -48,6 +49,7 @@ private:
    QMainWindow  *mainWin;
    QPixmap   imagePix;
    QAction   *settingsAction;
+   SettingsMenu *settingsMenu;
 
 };
 

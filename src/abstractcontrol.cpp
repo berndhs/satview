@@ -99,7 +99,6 @@ AbstractControl::PicArrive (QImage * pImg)
 {
   mPicState.pImg = pImg;
   mPicState.waiting = false;
-  qDebug () << " emit Really PicArrive";
   emit ReallyShowPic(pImg);
 }
 
@@ -151,10 +150,8 @@ AbstractControl::ShowPic (SatPicBuf * pBuf)
     if (pI) {
       mPicState.waiting = false;
       mPicState.pImg = pI;
-      qDebug () << "emit Really";
       emit ReallyShowPic(mPicState.pImg);
     } else {
-      qDebug () << "emit ShowIndexRec";
       emit ShowIndexRec(pBuf);
     }
   }
@@ -183,7 +180,6 @@ AbstractControl::IndexWaitWakeup()
   SatPicBuf *pBuf = SatPicList::Instance()->Current();
   if (pBuf) {
     ShowPic(pBuf);
-    qDebug () << " emit IndexArrived";
     emit IndexArrived ();
   }
 }
@@ -385,8 +381,9 @@ AbstractControl::DoShowMove ()
       FwdSome();
     }
     showTimer.start(currentDelay);
-    qDebug() << " emit ShowMove";
-    emit ShowMove ();
+    if (mRunState.show) {
+      emit ShowMove ();
+    } 
   }
 }
 

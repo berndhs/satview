@@ -13,6 +13,7 @@
 //
 
 #include "abstractcontrol.h"
+#include "settingsmenu.h"
 #include "ui_control.h"
 #include <QTimer>
 #include <QPixmap>
@@ -106,6 +107,7 @@ Q_OBJECT
     ImageWin      * pDisplay;
     
     QWidget       *myWindow;
+    
     
     QTimer        updateTimer;
     int           updateDelay;
