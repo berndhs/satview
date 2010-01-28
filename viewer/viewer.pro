@@ -69,6 +69,7 @@ SOURCES += \
         ../src/version.cpp \
         ../src/blob-image.cpp \
 	      ../src/imagewin.cpp \
+	      ../src/settingsmenu.cpp \
 	../src/textbox.cpp \
 	../src/shapeframe.cpp \
 	../src/frametypes.cpp \
@@ -93,6 +94,7 @@ HEADERS += ../src/satpicbuf.h \
 	../src/twopanelcontrol.h \
 	../src/trackmain.h \
 	../src/imagewin.h \
+	../src/settingsmenu.h \
 	../src/frametypes.h \
 	../src/shapeframe.h \
 	../src/textbox.h \
