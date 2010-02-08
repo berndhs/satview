@@ -146,6 +146,7 @@ main (int argc, char*argv[])
       Control->DoWindFwd(0,true);
       Control->DoStepFwd();
       Control->show();
+      splash.raise();
       App.processEvents();
       App.exec();
       again = false;

@@ -19,5 +19,12 @@ Splash::Finish ()
   close();
 }
 
+void
+Splash::ToTop ()
+{
+  Qt::WindowFlags flags = this->windowFlags ();
+  flags |=  Qt::WindowStaysOnTopHint;
+  this->setWindowFlags (flags);
+}
 
 }

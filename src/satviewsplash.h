@@ -13,13 +13,13 @@ public:
 
   Splash (const QPixmap & pix);
   Splash ();
-  
 
 public slots:
 
   void Finish ();
   
 private:
+  void ToTop ();
 
   QPixmap pm;
 
