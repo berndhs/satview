@@ -5,12 +5,14 @@ namespace satview {
 Splash::Splash (const QPixmap & pix)
 {
   setPixmap (pix);
+  ToTop ();
 }
 
 Splash::Splash ()
 {
   pm.load (":/img/splash.png");
   setPixmap (pm);
+  ToTop ();
 }
 
 void
