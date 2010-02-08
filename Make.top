@@ -1,0 +1,52 @@
+#
+# top level makefile for cloudtrack
+#
+# //
+# //  Copyright (C) 2010 - Bernd H Stramm 
+# //
+# // This program is distributed under the terms of 
+# // the GNU General Public License version 3 
+# //
+# // This software is distributed in the hope that it will be useful, 
+# // but WITHOUT ANY WARRANTY; without even the implied warranty 
+# // of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+# //
+
+
+#QMAKE = `sh which_qmake.sh`
+QMAKE = qmake
+PROFILE_FILE = cloudtrack.pro
+EXEC_VIEW = cloudtrack
+EXEC_COPY = copydb
+DIR_VIEW = viewer
+DIR_COPY = copier
+
+EXEC = $(DIR_VIEW)/$(EXEC_VIEW) $(DIR_COPY)/$(EXEC_COPY)
+MAKE_Q = Makefile
+MAKEFILE = Make.top
+
+DESTDIR = $(HOME)/bin
+
+all:
+	sh build.sh
+
+$(MAKE_Q):
+	$(QMAKE) $(PROFILE_FILE)
+
+qt:
+	$(QMAKE) $(PROFILE_FILE)
+
+d: 
+	$(MAKE) -f $(MAKE_Q) debug
+
+r: 
+	$(MAKE) -f $(MAKE_Q) release
+  
+  
+clean:
+	if [ -e $(MAKE_Q) ]; then $(MAKE) -i -f $(MAKE_Q) clean; fi 
+	if [ -e $(MAKE_Q) ]; then $(RM) $(MAKE_Q)* ; fi 
+	$(RM) $(EXEC)
+  
+install:
+	install $(EXEC) $(DESTDIR)

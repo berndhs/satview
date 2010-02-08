@@ -15,6 +15,7 @@
 
 #include "abstractcontrol.h"
 #include "settingsmenu.h"
+#include "settingserver.h"
 #include "ui_onepanel.h"
 #include <QPixmap>
 #include <QAction>
@@ -40,6 +41,7 @@ public slots:
     void DisplayPic (QImage *pImg);
     
     void Settings ();
+    void Reload ();
 
 private:
 
@@ -50,6 +52,9 @@ private:
    QPixmap   imagePix;
    QAction   *settingsAction;
    SettingsMenu *settingsMenu;
+   QAction   *reloadAction;
+   
+   SettingServer setServer;
 
 };
 

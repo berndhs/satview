@@ -4,6 +4,7 @@
 #include "satview-defaults.h"
 #include "clioptions.h"
 #include "delib-debug.h"
+#include "satviewsplash.h"
 //
 //  Copyright (C) 2009 - Bernd H Stramm 
 //
@@ -61,8 +62,12 @@ main (int argc, char*argv[])
 
 
   deliberate::UseMyOwnMessageHandler();
-
+  
   QApplication App(argc, argv);
+  
+  satview::Splash splash ;
+  splash.show ();
+
   
   CliOptions opt(satview::MyName().c_str());
   bool cliOk = opt.Parse (argc,argv);
@@ -118,6 +123,8 @@ main (int argc, char*argv[])
       qDebug () << " two panel";
         Control = new TwoPanelControl (&App);
       }
+      QObject::connect (Control, SIGNAL (IndexArrived()),
+                        &splash, SLOT (Finish ()));
       Control->SetPicname(DefaultFile);
       Control->SetServer(server);
       Control->SetConMeth(conmeth);

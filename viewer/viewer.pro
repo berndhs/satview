@@ -50,13 +50,14 @@ unix {
 win32 {
    QT += network
 }
-VERSION = 0.4.0
+VERSION = 0.5.0
 
 FORMS += \
        ../ui/control.ui  \
        ../ui/imagewin.ui \
        ../ui/getstring.ui \
-       ../ui/onepanel.ui
+       ../ui/onepanel.ui \
+       ../ui/server.ui
 
 SOURCES += \  
         ../src/abstractcontrol.cpp \
@@ -70,6 +71,7 @@ SOURCES += \
         ../src/blob-image.cpp \
 	      ../src/imagewin.cpp \
 	      ../src/settingsmenu.cpp \
+	      ../src/settingserver.cpp \
 	../src/textbox.cpp \
 	../src/shapeframe.cpp \
 	../src/frametypes.cpp \
@@ -77,6 +79,7 @@ SOURCES += \
 	../src/clioptions.cpp \
 	../src/cmdoptions.cpp \
         ../src/delib-debug.cpp \
+        ../src/satviewsplash.cpp \
       
 
 
@@ -88,13 +91,14 @@ HEADERS += ../src/satpicbuf.h \
 	         ../src/blob-image.h \
 	         ../src/sjdatasrc.h \
          	../src/satview-defaults.h \
-	../src/satview-debug.h \
+	../src/delib-debug.h \
 	../src/abstractcontrol.h \
 	../src/onepanelcontrol.h \
 	../src/twopanelcontrol.h \
 	../src/trackmain.h \
 	../src/imagewin.h \
 	../src/settingsmenu.h \
+	../src/settingserver.h \
 	../src/frametypes.h \
 	../src/shapeframe.h \
 	../src/textbox.h \
@@ -103,6 +107,7 @@ HEADERS += ../src/satpicbuf.h \
 	../src/cmdoptions.h \
         ../src/delib-debug.h \
 	../src/berndsutil.h \
-        ../src/fault.h 
+        ../src/fault.h \
+        ../src/satviewsplash.h
 
 

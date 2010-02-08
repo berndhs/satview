@@ -5,6 +5,7 @@
   <file>img/statusLoad.png</file>
   <file>img/statusRun.png</file>
   <file>img/noimage.png</file>
+  <file>img/splash.png</file>
 </qresource>
 </RCC>
 

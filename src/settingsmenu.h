@@ -13,6 +13,7 @@
 //
 
 #include <QMenu>
+#include <QPoint>
 
 namespace satview {
 
@@ -27,7 +28,7 @@ public:
   SettingsMenu (QWidget *parent);
   
   
-  SettingsAction Exec ();
+  SettingsAction Exec (const QPoint here);
   
 private:
 

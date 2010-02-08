@@ -10,4 +10,6 @@ SUBDIRS = viewer copier
 
 TEMPLATE = subdirs
 
+MAKEFILE = Makefile
+
 

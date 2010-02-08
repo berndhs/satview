@@ -27,10 +27,10 @@ SettingsMenu::SettingsMenu (QWidget * parent)
 }
 
 SettingsAction
-SettingsMenu::Exec ()
+SettingsMenu::Exec (const QPoint here)
 {
   show ();
-  QAction * result = exec (QCursor::pos());
+  QAction * result = exec (here);
   hide ();
   qDebug () << " exec settings done " << result;
   if (result == changeServer) {
