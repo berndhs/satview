@@ -6,7 +6,7 @@
 
 CONFIG += debug_and_release
 
-SUBDIRS = viewer copier
+SUBDIRS = viewer copier import
 
 TEMPLATE = subdirs
 
