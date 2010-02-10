@@ -28,7 +28,9 @@ VERSION = 0.3.0
 DPENDPATH += .
 DEFINES += DO_COPYDB=1
 
-SOURCES += ../src/dbconnect.cpp \
+SOURCES += \
+           ../src/common.cpp \
+           ../src/dbconnect.cpp \
            ../src/copydb.cpp \
            ../src/copymain.cpp \
            ../src/clioptions.cpp \

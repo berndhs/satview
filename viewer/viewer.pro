@@ -60,6 +60,7 @@ FORMS += \
        ../ui/server.ui
 
 SOURCES += \  
+        ../src/common.cpp \
         ../src/abstractcontrol.cpp \
         ../src/twopanelcontrol.cpp \
         ../src/onepanelcontrol.cpp \

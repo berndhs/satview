@@ -25,7 +25,12 @@
   // don't do anything, it's done someplace else
   #warning "Compiling CopyDB version"
 #else
+namespace satview {
 
+
+bool SatviewMaemo ();
+
+}
 #ifdef _MSC_VER
 
 /* network interfaces - no more than one */
@@ -72,6 +77,8 @@
 #endif
 
 #define SATVIEW_SINGLEWIN 1
+
+
 
 
 #endif

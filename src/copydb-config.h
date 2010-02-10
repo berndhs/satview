@@ -65,4 +65,13 @@
 #endif
 #endif
 
+
+namespace satview {
+
+
+bool SatviewMaemo ();
+
+}
+
+
 #endif

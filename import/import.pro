@@ -29,6 +29,7 @@ DPENDPATH += .
 DEFINES += DO_COPYDB=1
 
 SOURCES += ../src/dbconnect.cpp \
+	   ../src/common.cpp \
            ../src/import.cpp \
            ../src/importmain.cpp \
            ../src/clioptions.cpp \

@@ -60,6 +60,7 @@ main (int argc, char*argv[])
   bool versionOnly(false);
   bool onewindow (false);
 
+  onewindow = satview::SatviewMaemo ();
 
   deliberate::UseMyOwnMessageHandler();
   
