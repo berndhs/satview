@@ -44,6 +44,7 @@ bool SetMinHours (unsigned long int & hours);
 bool SetMaxHours (unsigned long int & hours);
 bool SetDBType (string &dbtype);
 bool SetMobile (bool & mobile);
+bool SetBigScreen (bool & big);
 
 private:
 

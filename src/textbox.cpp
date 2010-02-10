@@ -33,13 +33,13 @@ namespace satview {
   void
   TextBox::SetDefault (QString def)
   {
-    textValueBox->setPlainText(def);
+    textValueBox->setText(def);
   }
 
   QString
   TextBox::GetText ()
   {
-    return textValueBox->toPlainText();
+    return textValueBox->text();
   }
 
   void

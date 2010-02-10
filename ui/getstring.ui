@@ -6,45 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>380</width>
-    <height>106</height>
+    <width>469</width>
+    <height>176</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QDialogButtonBox" name="buttonBox">
-   <property name="geometry">
-    <rect>
-     <x>140</x>
-     <y>50</y>
-     <width>221</width>
-     <height>41</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-   </property>
-  </widget>
-  <widget class="QPlainTextEdit" name="textValueBox">
-   <property name="geometry">
-    <rect>
-     <x>200</x>
-     <y>10</y>
-     <width>161</width>
-     <height>31</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QLabel" name="boxLabel">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>25</x>
      <y>10</y>
-     <width>171</width>
+     <width>81</width>
      <height>31</height>
     </rect>
    </property>
@@ -52,40 +26,30 @@
     <string>File Name</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="okButton">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>85</y>
+     <width>220</width>
+     <height>64</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Ok - Reload</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="textValueBox">
+   <property name="geometry">
+    <rect>
+     <x>125</x>
+     <y>15</y>
+     <width>321</width>
+     <height>61</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>getStringDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>getStringDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

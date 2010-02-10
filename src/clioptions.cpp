@@ -40,6 +40,7 @@ CliOptions::CliOptions (QString pgmname)
   AddIntOption ("maxhours","M", "maximum image age to consider");
   AddStrOption ("image","i", "image name");
   AddSoloOption ("onewindow","1","use single window GUI for mobile devices");
+  AddSoloOption ("twowindow","2","use multiple window GUI for large displays");
         
 }
 
@@ -103,6 +104,17 @@ CliOptions::SetMobile (bool & mobile)
   bool seenMobile = SeenOpt ("onewindow");
   if (seenMobile) {
     mobile = true;
+    return true;
+  }
+  return false;
+}
+
+bool
+CliOptions::SetBigScreen (bool & big)
+{
+  bool seenBig = SeenOpt ("twowindow");
+  if (seenBig) {
+    big = true;
     return true;
   }
   return false;

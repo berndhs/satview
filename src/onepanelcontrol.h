@@ -16,6 +16,7 @@
 #include "abstractcontrol.h"
 #include "settingsmenu.h"
 #include "settingserver.h"
+#include "textbox.h"
 #include "ui_onepanel.h"
 #include <QPixmap>
 #include <QAction>
@@ -40,6 +41,9 @@ public slots:
 
     void DisplayPic (QImage *pImg);
     
+    void NewPicname ();
+    void CloseNewPicname ();
+    void DoCallSwitch ();
     void Settings ();
     void Reload ();
 
@@ -50,6 +54,9 @@ private:
 
    QMainWindow  *mainWin;
    QPixmap   imagePix;
+   QAction   *picnameAction;
+   QByteArray newNameBytes;
+   TextBox   *picnameBox;
    QAction   *settingsAction;
    SettingsMenu *settingsMenu;
    QAction   *reloadAction;

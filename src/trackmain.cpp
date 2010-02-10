@@ -66,9 +66,6 @@ main (int argc, char*argv[])
   
   QApplication App(argc, argv);
   
-  satview::Splash splash ;
-  splash.show ();
-
   
   CliOptions opt(satview::MyName().c_str());
   bool cliOk = opt.Parse (argc,argv);
@@ -87,6 +84,9 @@ main (int argc, char*argv[])
   opt.SetMaxHours(maxAge);
   opt.SetDBType (dbType);
   opt.SetMobile (onewindow);
+  bool bigscreen = !onewindow;
+  opt.SetBigScreen (bigscreen);
+  onewindow = !bigscreen;
 
   /** @brief some elementary command line, 2 choices of image names.
    * More later when we have time.
@@ -101,6 +101,9 @@ main (int argc, char*argv[])
     opt.Usage();
     exit(0);
   }
+
+  satview::Splash splash ;
+  splash.show ();
 
 
   try {

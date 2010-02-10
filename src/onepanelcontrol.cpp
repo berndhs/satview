@@ -22,6 +22,7 @@ OnePanelControl::OnePanelControl (QApplication *pA)
   setupUi (mainWin);
   imagePix.load (":/img/noimage.png");
     
+  picnameBox = new TextBox (mainWin);
   pDisplay->setPixmap(imagePix);
   Additional ();
   ConnectThings ();
@@ -53,6 +54,7 @@ OnePanelControl::ConnectThings ()
   connect (backStepButton, SIGNAL(clicked()), this, SLOT(DoStepBack()));
   connect (forwardStepButton, SIGNAL(clicked()), this, SLOT(DoStepFwd()));
   connect (settingsAction, SIGNAL (triggered()), this, SLOT (Settings()));
+  connect (picnameAction, SIGNAL (triggered()), this, SLOT (NewPicname()));
   connect (reloadAction, SIGNAL (triggered()), this, SLOT (Reload()));
   connect (this, SIGNAL (ReallyShowPic (QImage*)), 
              this, SLOT (DisplayPic (QImage*)));
@@ -61,11 +63,50 @@ OnePanelControl::ConnectThings ()
 void
 OnePanelControl::Additional ()
 {
+  picnameBox->setWindowTitle (tr("Image Name"));
+  picnameBox->SetLabel ("");
+  picnameBox->SetDefault ("");
+  picnameAction = new QAction (tr("Image Name"), mainWin);
+  menubar->addAction (picnameAction);
   settingsAction = new QAction (tr("Settings"),mainWin);
   menubar->addAction (settingsAction);
   settingsMenu = new SettingsMenu (mainWin);
   reloadAction = new QAction (tr("Reload"), mainWin);
   menubar->addAction (reloadAction);
+}
+
+void
+OnePanelControl::NewPicname ()
+{
+  connect (picnameBox->okButton, SIGNAL (clicked()),
+           this, SLOT (DoCallSwitch ()));
+  connect (picnameBox, SIGNAL (accepted()),
+           this, SLOT (DoCallSwitch ()));
+  connect (picnameBox, SIGNAL (rejected()),
+           this, SLOT (CloseNewPicname()));
+  picnameBox->SetDefault (mPicname.c_str());
+  picnameBox->show ();
+}
+
+void
+OnePanelControl::CloseNewPicname ()
+{
+  disconnect (picnameBox->okButton, SIGNAL (clicked()),
+           this, SLOT (DoCallSwitch ()));
+  disconnect (picnameBox, SIGNAL (accepted()),
+           this, SLOT (DoCallSwitch ()));  
+  disconnect (picnameBox, SIGNAL (rejected()),
+           this, SLOT (CloseNewPicname()));
+  picnameBox->hide ();
+}
+
+void
+OnePanelControl::DoCallSwitch ()
+{
+  QString newname = picnameBox->GetText ();
+  newNameBytes = newname.toLatin1();
+  CloseNewPicname ();
+  AbstractControl::DoSwitchPicname (newNameBytes);
 }
 
 void

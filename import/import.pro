@@ -13,11 +13,11 @@
 CONFIG += qt app debug_and_release
 
 CONFIG(debug, debug|release) {
-  TARGET = importd
+  TARGET = dbimportd
   DEFINES += DELIBERATE_DEBUG=1
 }
 CONFIG(release, debug|release) {
-  TARGET = import
+  TARGET = dbimport
   DEFINES += DELIBERATE_DEBUG=0
 }
 
