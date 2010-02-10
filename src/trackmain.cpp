@@ -117,10 +117,8 @@ main (int argc, char*argv[])
     do {
       AbstractControl  * Control(0);
       if (onewindow) {
-      qDebug () << " one panel";
         Control = new OnePanelControl (&App);
       } else {
-      qDebug () << " two panel";
         Control = new TwoPanelControl (&App);
       }
       QObject::connect (Control, SIGNAL (IndexArrived()),

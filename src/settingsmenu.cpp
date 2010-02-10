@@ -32,7 +32,9 @@ SettingsMenu::Exec (const QPoint here)
   show ();
   QAction * result = exec (here);
   hide ();
+  #if DELIBERATE_DEBUG
   qDebug () << " exec settings done " << result;
+  #endif
   if (result == changeServer) {
     return ST_server;
   } else if (result == changeIF) {

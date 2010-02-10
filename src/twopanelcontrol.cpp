@@ -142,7 +142,9 @@ TwoPanelControl::TwoStartTimers ()
 void
 TwoPanelControl::ChangeSettings ()
 {
+  #if DELIBERATE_DEBUG
   qDebug () << " settings called ";
+  #endif
 }
 
 void
@@ -163,7 +165,9 @@ void
 TwoPanelControl::update()
 {
   if (DBWaiting()) {
+  #if DELIBERATE_DEBUG
     qDebug () << " something missing in update?" ;
+  #endif
   }
   this->AbstractControl::update();
 }

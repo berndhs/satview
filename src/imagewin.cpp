@@ -33,6 +33,7 @@ namespace satview {
     if (standalone) {   
       setupUi(this);
     } 
+    setScaledContents (true);
     updateTimer = new QTimer(this);
     connect (updateTimer, SIGNAL(timeout()), this, SLOT(update()));
     updateTimer->start (100);
@@ -51,6 +52,7 @@ namespace satview {
     } else {
       setParent (parent);
     }
+    setScaledContents (true);
     updateTimer = new QTimer (this);
     connect (updateTimer, SIGNAL (timeout()), this, SLOT (update()));
     updateTimer->start (100);

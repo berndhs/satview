@@ -19,7 +19,6 @@ OnePanelControl::OnePanelControl (QApplication *pA)
 {
   mainWin = new QMainWindow;
   pApp = pA;
-  qDebug () << " main win " << mainWin;
   setupUi (mainWin);
   imagePix.load (":/img/noimage.png");
     
@@ -78,7 +77,6 @@ OnePanelControl::Settings ()
   QPoint here = QCursor::pos();
   do {
     action = settingsMenu->Exec(here);
-    qDebug () << "settings user wants " << action;
     
     switch (action) {
     case ST_server:
@@ -90,7 +88,6 @@ OnePanelControl::Settings ()
       if (serv.length() > 0) {
         SetServer (serv.toStdString());
       }
-      qDebug () << "user wanted " << serv;
       break;
     default:
       break;
@@ -102,7 +99,6 @@ void
 OnePanelControl::Reload ()
 {
   ReloadDB ();
-  qDebug () << " reload ";
 }
 
 }

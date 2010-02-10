@@ -18,10 +18,14 @@ QMAKE = qmake
 PROFILE_FILE = cloudtrack.pro
 EXEC_VIEW = cloudtrack
 EXEC_COPY = copydb
+EXEC_IMPORT = import
 DIR_VIEW = viewer
 DIR_COPY = copier
+DIR_IMPORT = import
 
-EXEC = $(DIR_VIEW)/$(EXEC_VIEW) $(DIR_COPY)/$(EXEC_COPY)
+EXEC = $(DIR_VIEW)/$(EXEC_VIEW) \
+	$(DIR_COPY)/$(EXEC_COPY) \
+	$(DIR_IMPORT)/$(EXEC_IMPORT)
 MAKE_Q = Makefile
 MAKEFILE = Make.top
 

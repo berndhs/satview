@@ -119,10 +119,12 @@ protected:
                   pBuf(0)
                   {}
       void Debug() {
+           #if DELIBERATE_DEBUG
            qDebug() << " run state time limit " << timelimit;
            qDebug() << "     all " << allway << " show " << show 
                     << " back " << backwards << " stopped " << stopped;
            qDebug () << "    pBuf " << pBuf;
+           #endif
       }
     };
 
@@ -138,11 +140,13 @@ protected:
                  waiting = false; failed=false;
                  }
       void Debug () { 
+                 #if DELIBERATE_DEBUG
                  qDebug() << "-- Pic State-- ";
                  qDebug() << "pBuf " << pBuf;
                  qDebug() << "pImg " << pImg;
                  qDebug() << "waiting " << waiting;
                  qDebug() << "failed " << failed;
+                 #endif
                  }
     };
 
