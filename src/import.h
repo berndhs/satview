@@ -20,6 +20,9 @@
 #include <QApplication>
 #include <QTextDocument>
 #include <QTextStream>
+#include <QFileSystemModel>
+#include <QStringList>
+#include <QDir>
 #include <stdio.h>
 
 namespace satview {
@@ -73,6 +76,11 @@ private:
   void Status (const QString stat, const bool fini = false);
   
   void Report (const IndexRecord &rec, bool ok);
+  
+  bool GetFileIndexRec (IndexRecord & rec, QString &fname);
+  size_t ReadFileImageData (const QString filename, QByteArray & data);
+  
+  int  GetInputFiles ();
                   
   void SetConn   (DBConnection & con,
                   const QString server, 
@@ -87,11 +95,22 @@ private:
 
   QApplication *pApp;
   
-  QString      inPath;
+  QString           inPath;
+  QStringList       jpegFiles;
+  QStringList::iterator fileit;
+  
+  QFileSystemModel  filesys;
+  QDir              localDir;
+  
   DBConnection DBout;
+  
+  unsigned long int  tooOld;
+  unsigned long int  tooRecent;
+  QString            onlyPicname;
   
   IndexRecord  currentRec;
   char        dataBuf[8*1024*1024];
+  QByteArray  dataBytes;
   string      imageData;
   quint64     dataLen;
   

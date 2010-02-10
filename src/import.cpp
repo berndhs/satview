@@ -71,10 +71,23 @@ ImportEngine::Kind (const DBType t)
   return tp;
 }
 
+int
+ImportEngine::GetInputFiles ()
+{
+  QDir::Filters filter (QDir::Files | QDir::Readable);
+  filesys.setFilter (filter);
+  QStringList jpegNames;
+  jpegNames << "*_*.jpg" << "*_*.JPG" << "*_*.jpeg" << "*_*.JPEG";
+  localDir.setNameFilters (jpegNames);
+  jpegFiles.append (localDir.entryList (jpegNames, filter));
+  return jpegFiles.size();
+}
+
 void
 ImportEngine::SetSourceDir (const QString path)
 {
   inPath = path;
+  localDir.setPath (inPath);
   if (dodisplay) {
     QString displayName;
     displayName = path + "/";
@@ -131,12 +144,15 @@ ImportEngine::StartEngine (const QString picname,
                   const unsigned long int too_old,
                   const unsigned long int too_recent)
 {
-  connect (&DBin, SIGNAL (IndexArrival()), this, SLOT (StartImport ()));
-  connect (&DBin, SIGNAL (BlobArrival(char *, quint64)),
-           this, SLOT (ReceiveData (char *, quint64)));
+  onlyPicname = picname;
+  tooOld = too_old;
+  tooRecent = too_recent;
   connect (this, SIGNAL (HaveData (char *, quint64)),
            this, SLOT (ReceiveData (char *, quint64)));
-  bool ok = DBin.LoadIndex (picname.toStdString(), false, too_old, too_recent);
+  bool ok = GetInputFiles () >= 0;
+  if (ok) {
+    StartImport ();
+  }
   Status ("Importing...");
   if (dodisplay) {
     doneButton->setText (tr("Stop"));
@@ -146,6 +162,7 @@ ImportEngine::StartEngine (const QString picname,
 void
 ImportEngine::StartImport ()
 {
+  fileit = jpegFiles.begin();
   StartNextCycle ();
 }
 
@@ -160,6 +177,7 @@ ImportEngine::Status (const QString stat, const bool fini)
       doneButton->setText (tr("Done"));
       disconnect (doneButton, SIGNAL (clicked()), this, SLOT (Finish()));
       connect (doneButton, SIGNAL (clicked()), this, SLOT (Quit()));
+      doneButton->update ();
     }
     if (!dodisplay) {
       Quit ();
@@ -167,22 +185,65 @@ ImportEngine::Status (const QString stat, const bool fini)
   }
 }
 
+bool
+ImportEngine::GetFileIndexRec (IndexRecord & rec, QString & fname)
+{
+  if (fileit == jpegFiles.end()) {
+    return false;
+  }
+  bool fileGood(false);
+  do {
+    QString nextName = *fileit;
+    fileit++;
+    QString name = nextName.section ('_',0,0);
+    int namelen = name.length ();
+    QString rest = nextName.section ('_',1,1);
+    QString stamp = rest.section ('.',0,0);
+    unsigned long int ident = stamp.toULong ();
+    if (namelen > 0 && ident != 0) {
+      rec.ident = ident;
+      rec.picname = name.toStdString();
+      rec.remark = nextName.toStdString();
+      rec.storetime = "";
+      fname = nextName;
+      fileGood = true;
+    }
+  } while (!fileGood && fileit != jpegFiles.end());
+  return fileGood;
+}
+
+size_t
+ImportEngine::ReadFileImageData (const QString filename, 
+                                 QByteArray & data)
+{
+  QFile file (inPath + "/" + filename);
+  bool ok = file.open (QIODevice::ReadOnly);
+  if (ok) {
+    data = file.readAll ();
+    return data.size();
+  }
+  return 0;
+}
+
 void
 ImportEngine::StartNextCycle ()
 {
+
   if (stopped) {
     Status (tr("Stopped Import"), true);
     return;
   }
-  bool haverec = DBin.ReadIndexRec (currentRec);
+  QString filename;
+  bool haverec = GetFileIndexRec (currentRec, filename);
 
   if (!haverec) {
     Status (tr("Finished Import"), true);
     return;
   }
-  size_t imgSize = DBin.ReadImageData (currentRec, imageData);
+  
+  size_t imgSize = ReadFileImageData (filename, dataBytes);
   if (imgSize > 0) {
-    memcpy (dataBuf, imageData.c_str(), imgSize);
+    memcpy (dataBuf, dataBytes.data(), imgSize);
     emit HaveData (dataBuf, imgSize);
   }
 }
@@ -221,7 +282,6 @@ void
 ImportEngine::Finish ()
 {
   stopped = true;
-  DBin.Disconnect ();
   DBout.Disconnect ();
   QString newLine("\n");
   newLine.append (tr("copied ok: "));

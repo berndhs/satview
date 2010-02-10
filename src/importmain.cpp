@@ -69,7 +69,6 @@ main (int argc, char*argv[])
   ImportEngine * engine = new ImportEngine(&App, !nodisplay);
   
   opts.SetInterface (interface);
-  opts.SetServerInbound (source_server);
   opts.SetServerOutbound (dest_server);
   
   opts.SetMinHours (min_hours);
@@ -85,8 +84,11 @@ main (int argc, char*argv[])
   QString dpath (dest_path.c_str());
   opts.SetStringOpt ("outpath",dpath);
   dest_path = dpath.toStdString();
+  
+  QString srcPath (source_path.c_str());
+  opts.SetStringOpt ("path",srcPath);
 
-  cout << "Trying  -> " << dest_server << endl;
+  cout << "Trying " << srcPath.toStdString() << " -> " << dest_server << endl;
   cout << " newer than " << ctime(&dl) << " = "
        << max_hours << " hours (" 
        << max_age << " secs)" 
@@ -107,10 +109,10 @@ main (int argc, char*argv[])
   } else if (opts.SeenOpt("outmysql")) {
     outType = ImportEngine::T_mysql;
   }
-  engine->SetSourceDir (source_path.c_str());
+  engine->SetSourceDir (srcPath);
   engine->SetDest   (dest_server.c_str(), dest_path.c_str(),
                     outType, "weather", "weather","quetzalcoatl");
-  //engine->StartEngine ("",too_old,too_recent);
+  engine->StartEngine ("",too_old,too_recent);
 
   return App.exec ();
 }
