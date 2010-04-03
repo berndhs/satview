@@ -20,7 +20,7 @@ INSTALL_SYS=no
 if [ $# -gt 0 ]
 then
   D=$1
-  if [ -d $d ]
+  if [ -d $D ]
   then
     INSTALL_DIR=$D
     INSTALL_SYS=yes
@@ -32,9 +32,11 @@ fi
 
 DIR_VIEWER=viewer
 DIR_COPIER=copier
+DIR_IMPORT=import
 
 PGM_VIEWER=cloudtrack
 PGM_COPIER=copydb
+PGM_IMPORT=dbimport
 
 if [ ! -d $DIR_BIN ]
 then
@@ -63,10 +65,24 @@ then
 else
   echo "Failed to build $PGM_COPIER"
 fi
+
+
+if [ -e $DIR_IMPORT/$PGM_IMPORT ]
+then
+  install $DIR_IMPORT/$PGM_IMPORT $DIR_BIN
+  if [ $INSTALL_SYS == "yes" ]
+  then
+    install $DIR_IMPORT/$PGM_IMPORT $INSTALL_DIR
+  fi
+else
+  echo "Failed to build $PGM_IMPORT"
+fi
+
 ls -l $DIR_BIN
 if [ $INSTALL_SYS == "yes" ]
 then
   ls -l $INSTALL_DIR/$PGM_VIEWER
   ls -l $INSTALL_DIR/$PGM_COPIER
+  ls -l $INSTALL_DIR/$PGM_IMPORT
 fi
 
