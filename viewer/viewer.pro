@@ -14,6 +14,21 @@
 CONFIG += qt debug_and_release
 RESOURCES += ../viewer.qrc
 
+message("version $$QT_MAJOR_VERSION of $$QT_VERSION")
+greaterThan(QT_MAJOR_VERSION, 4) {
+  QT += widgets gui
+  CONFIG += c++11
+
+  message("QT_MAJOR_VERISON is big")
+} else {
+  message("QT_MAJOR_VERISON is less or equal 5")
+}
+
+UI_DIR = tmp/ui
+MOC_DIR = tmp/moc
+OBJECTS_DIR = tmp/obj
+RCC_DIR = tmp/rcc
+
 unix:CONFIG(debug, debug|release) {
   DEFINES += DELIBERATE_DEBUG=1
   QMAKE_CXXFLAGS += -Wall
@@ -35,7 +50,7 @@ win32:CONFIG(debug, debug|release) {
 }
 win32:CONFIG(release, debug|release) {
   DEFINES += SATVIEW_RELEASE
-  DEFINES ++ DELIBERATE_DEBUG=0
+  DEFINES += DELIBERATE_DEBUG=0
   LIBS += -lQtNetwork
   TARGET = cloudtrack
 }
@@ -57,7 +72,8 @@ FORMS += \
        ../ui/imagewin.ui \
        ../ui/getstring.ui \
        ../ui/onepanel.ui \
-       ../ui/server.ui
+       ../ui/server.ui \
+       ../ui/DebugLog.ui
 
 SOURCES += \  
         ../src/common.cpp \

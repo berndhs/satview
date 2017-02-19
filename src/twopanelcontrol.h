@@ -36,7 +36,7 @@ Q_OBJECT
 
   public:
 
-    TwoPanelControl (QApplication *pA);
+    TwoPanelControl (QGuiApplication *pA);
     ~TwoPanelControl ();
  
 

@@ -64,7 +64,7 @@ main (int argc, char*argv[])
 
   deliberate::UseMyOwnMessageHandler();
   
-  QApplication App(argc, argv);
+  QGuiApplication App(argc, argv);
   
   
   CliOptions opt(satview::MyName().c_str());

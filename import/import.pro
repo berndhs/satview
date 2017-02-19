@@ -12,6 +12,16 @@
 # //
 CONFIG += qt app debug_and_release
 
+UI_DIR = tmp/ui
+MOC_DIR = tmp/moc
+OBJECTS_DIR = tmp/obj
+RCC_DIR = tmp/rcc
+
+greaterThan(QT_MAJOR_VERSION, 4) {
+  QT += widgets gui core
+  CONFIG += c++11
+}
+
 CONFIG(debug, debug|release) {
   TARGET = dbimportd
   DEFINES += DELIBERATE_DEBUG=1

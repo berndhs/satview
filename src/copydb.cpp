@@ -19,7 +19,7 @@ using namespace std;
 
 namespace satview {
 
-CopyEngine::CopyEngine (QApplication * pA, const bool dis)
+CopyEngine::CopyEngine (QGuiApplication * pA, const bool dis)
 :pApp (pA),
  progressStream (0),
  dodisplay (dis),
@@ -49,7 +49,7 @@ CopyEngine::Init ()
 }
 
 void
-CopyEngine::SetApp (QApplication * pA)
+CopyEngine::SetApp (QGuiApplication * pA)
 {
   pApp = pA;
 }

@@ -29,7 +29,7 @@ using namespace std;
 
 namespace satview  {
 
-TwoPanelControl::TwoPanelControl (QApplication *pA)
+TwoPanelControl::TwoPanelControl (QGuiApplication *pA)
 {
     pApp = pA;
     

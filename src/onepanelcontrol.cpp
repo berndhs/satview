@@ -15,7 +15,7 @@
 namespace satview {
 
 
-OnePanelControl::OnePanelControl (QApplication *pA)
+OnePanelControl::OnePanelControl (QGuiApplication *pA)
 {
   mainWin = new QMainWindow;
   pApp = pA;

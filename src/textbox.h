@@ -28,7 +28,7 @@ Q_OBJECT
     void SetDefault (QString def);
     QString GetText ();
 
-    void exec();
+    int exec();
 
   private:
 

@@ -42,10 +42,10 @@ namespace satview {
     return textValueBox->text();
   }
 
-  void
+  int
   TextBox::exec ()
   {
-    this->QDialog::exec();
+    return this->QDialog::exec();
   }
 
 } // namespace

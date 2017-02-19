@@ -19,7 +19,8 @@ using namespace std;
 
 namespace satview {
 
-ImportEngine::ImportEngine (QApplication * pA, const bool dis)
+ImportEngine::ImportEngine (
+  QGuiApplication * pA, const bool dis)
 :pApp (pA),
  progressStream (0),
  dodisplay (dis),
@@ -49,7 +50,7 @@ ImportEngine::Init ()
 }
 
 void
-ImportEngine::SetApp (QApplication * pA)
+ImportEngine::SetApp (QGuiApplication * pA)
 {
   pApp = pA;
 }

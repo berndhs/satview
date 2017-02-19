@@ -16,7 +16,8 @@
 #include "satpiclist.h"
 #include <QObject>
 #include <QWidget>
-#include <QApplication>
+#include <QGuiApplication>
+#define QT_NO_PRINTER
 #include "delib-debug.h"
 
 namespace satview {
@@ -151,7 +152,7 @@ protected:
     };
 
   
-    QApplication  * pApp;
+    QGuiApplication  * pApp;
 
     QTimer        showTimer;
     int           showTimeDelay;

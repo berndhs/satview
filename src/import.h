@@ -17,7 +17,7 @@
 #include "ui_import.h"
 #include <QObject>
 #include <QDialog>
-#include <QApplication>
+#include <QGuiApplication>
 #include <QTextDocument>
 #include <QTextStream>
 #include <QFileSystemModel>
@@ -34,13 +34,13 @@ Q_OBJECT
 public:
 
   
-  ImportEngine (QApplication * pA, const bool dis = true);
+  ImportEngine (QGuiApplication * pA, const bool dis = true);
   ~ImportEngine ();
   
   
   enum DBType { T_none, T_mysql, T_sqlite, T_web };
   
-  void SetApp (QApplication * pA);
+  void SetApp (QGuiApplication * pA);
   
   void SetSourceDir (const QString path);  
                   
@@ -93,7 +93,7 @@ private:
 
   QString Kind (const DBType t);
 
-  QApplication *pApp;
+  QGuiApplication *pApp;
   
   QString           inPath;
   QStringList       jpegFiles;

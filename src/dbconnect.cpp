@@ -6,6 +6,8 @@
 #if SATVIEW_USE_QNET
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkRequest>
+#include <QUrl>
+#include <QUrlQuery>
 #endif
 #include "satpicbuf.h"
 #include "satpiclist.h"
@@ -264,15 +266,16 @@ namespace satview {
     url.setScheme("http");
     url.setHost(mServer.c_str());
     url.setPath(mPathOnServer.c_str());
-    url.setEncodedQuery("fn=index");     // setEncodedQuery adds the '?'
+    url.setQuery("fn=index",QUrl::StrictMode);     // setEncodedQuery adds the '?'
+    QUrlQuery uq (url);
     QString minmax;
     minmax.setNum(min);
-    url.addQueryItem("min",minmax);
+    uq.addQueryItem("min",minmax);
     minmax.setNum(max);
-    url.addQueryItem("max",minmax);
+    uq.addQueryItem("max",minmax);
     QNetworkRequest req;
     req.setRawHeader("User-Agent","Maxwell Smart");
-    req.setUrl(url);
+    req.setUrl(uq.toString());
     if (mQMgr) {
       if (mWaitForIndex || mWaitForImage) {  // one at a time !
         return false;
