@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 //
-//  Copyright (C) 2009 - Bernd H Stramm 
+//  Copyright (C) 2017 - Bernd H Stramm 
 //
 // This program is distributed under the terms of 
 // the GNU General Public License version 3 
@@ -21,7 +21,7 @@ namespace satview {
   std::string ProgramVersion("0.5.0pre");
 
   std::string ProgramName("CloudTrack");
-  std::string copyright ("Copyright (C) 2010 Bernd H Stramm");
+  std::string copyright ("Copyright (C) 2017 Bernd H Stramm");
    
   std::string Version ()
   { 

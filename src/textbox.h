@@ -1,7 +1,7 @@
 #ifndef TEXTBOX_H
 #define TEXTBOX_H
 //
-//  Copyright (C) 2009 - Bernd H Stramm 
+//  Copyright (C) 2017 - Bernd H Stramm
 //
 // This program is distributed under the terms of 
 // the GNU General Public License version 3 

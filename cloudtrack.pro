@@ -15,6 +15,8 @@ MOC_DIR = tmp/moc
 OBJECTS_DIR = tmp/obj
 RCC_DIR = tmp/rcc
 
+INCLUDEPATH += tmp/ui/
+
 SUBDIRS = viewer copier import
 
 TEMPLATE = subdirs

@@ -1,6 +1,6 @@
 
 # //
-# //  Copyright (C) 2009 - Bernd H Stramm
+# //  Copyright (C) 2017 - Bernd H Stramm
 # //
 #
 # // This program is distributed under the terms of 
@@ -28,6 +28,8 @@ UI_DIR = tmp/ui
 MOC_DIR = tmp/moc
 OBJECTS_DIR = tmp/obj
 RCC_DIR = tmp/rcc
+
+INCLUDEPATH += tmp/ui/
 
 unix:CONFIG(debug, debug|release) {
   DEFINES += DELIBERATE_DEBUG=1
