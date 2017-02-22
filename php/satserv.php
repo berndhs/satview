@@ -1,28 +1,45 @@
 <?php
 
 //
-//  Copyright (C) 2009 - Bernd H Stramm
+//  Copyright (C) 2017 - Bernd H Stramm
 //
-include_once ("../count.php");
+// include_once ("../count.php");
 
 
 function login ()
 {
     
     $the_host = "localhost";
-    $the_user = "bernd_weather";
-    $the_pass = "quetzalcoatl";
-    $the_db = "bernd_weather";
-    $con = mysql_connect($the_host, $the_user, $the_pass);
-    $ok = mysql_select_db($the_db,$con);
+    $the_user = "berndsat";
+    $the_pass = "";
+    $the_db = "satview";
+    $con = new mysqli ($the_host, $the_user, $the_pass,$the_db);
+//    $ok = mysql_select_db($the_db,$con);
+if ($con->connect_errno) {
+    // The connection failed. What do you want to do? 
+    // You could contact yourself (email?), log the error, show a nice page, etc.
+    // You do not want to reveal sensitive information
 
+    // Let's try this:
+    echo "Sorry, this website is experiencing problems.";
+
+    // Something you should not do on a public site, but this example will show you
+    // anyways, is print out MySQL error related information -- you might log this
+    echo "Error: Failed to make a MySQL connection, here is why: \n";
+    echo "Errno: " . $mysqli->connect_errno . "\n";
+    echo "Error: " . $mysqli->connect_error . "\n";
+    
+    // You might want to show them something nice, but we will simply exit
+    exit;
+}
     return $con;
 
 }
 
 function give_index($db_con, $imin, $imax)
 {
-    $query = "select ident, picname, storetime, remark from `satpics` where 1";
+   echo "we have give_index<br>";
+    $query = "select ident, picname, remark from `satpics` where 1";
     
     if ($imin != "") {
         $query .= " and ident >= " . $imin;
@@ -30,23 +47,26 @@ function give_index($db_con, $imin, $imax)
     if ($imax != "") {
         $query .= " and ident <= " . $imax;
     }
-    $result = mysql_query ($query,$db_con);
+    $result = $db_con->query ($query);
    
-    $nrows = mysql_num_rows($result);
+    $nrows = $result->num_rows;
+    echo "there are rows, $nrows <br>";
     if ($nrows > 0) {
       echo "SATVIEW-INDEX\r\n";
       $r = 0;
-      $fields = array("ident","picname","storetime","remark");
+      $fields = array("ident","picname","remark");
       while ($r<$nrows) {
-        $row_array = mysql_fetch_assoc($result);
+        $row_array = $result->fetch_assoc();
         echo "record " . $r . "\r\n";
+        var_dump($row_array);
         foreach ($fields as $f) {
           $rawval = trim($row_array[$f]);
+          var_dump($rawval);
           if (strlen($rawval) == 0) {
             $rawval = "0";
-        	}
-  	      $val = bin2hex($rawval);
-  	      echo $f . " - " . $val . "\r\n";
+          }
+  	  $val =  bin2hex($rawval);
+  	  //echo $f . " - " . $val . "\r\n";
         }
         $r++;
       }
@@ -57,20 +77,24 @@ function give_index($db_con, $imin, $imax)
 
 function give_image($db_con, $ident, $picname)
 {
-  $query = "select `image` from `satpics` where "
+  $query = "select `image`,`remark` from `satpics` where "
        . "`ident`='"
-    . mysql_real_escape_string($ident)
+    . $ident
     . "' and `picname`='"
-    . mysql_real_escape_string($picname)
+    . $picname
     . "'";
-  $res = mysql_query ($query, $db_con);
-  $nrows = mysql_num_rows($res);
+    $res = $db_con->query ($query);
+  $nrows = $res->num_rows;
+  
   if ($nrows > 0) {
-    $row_array = mysql_fetch_row($res); 
-    $len_array = mysql_fetch_lengths($res);
-    echo "SATVIEW-ITEM\r\n" ;
-    echo "LEN ". $len_array[0] . "\r\nx";
-    echo bin2hex($row_array[0]);
+    $row_array = $res->fetch_array();
+    $len = count($row_array[0]);
+//    echo "SATVIEW-ITEM\r\n" ;
+//    echo "LEN ". $len . "\r\n";
+    //var_dump($row_array);
+//    echo bin2hex($row_array[0]);
+header ("Content-type: image/jpg");
+     echo $row_array[0];
   } else {
   
       header ("HTTP/1.0 204 No Data\r\n",false,204);
@@ -94,11 +118,12 @@ header ("HTTP/1.1 400 Bad Request Format\r\n");
 $supported = array ("index","item");
 $funct= $_REQUEST["fn"];
 
-
 $was_ok = FALSE;
-if (in_array($funct,$supported)) {
+$yeah = in_array($funct,$supported);
+if ($yeah) {
   $con = login();
   if ($funct == "index") {
+    echo "it is INDEX!!<br>";
     $ndxmin = $_REQUEST["min"];
     $ndxmax = $_REQUEST["max"];
     
@@ -109,14 +134,15 @@ if (in_array($funct,$supported)) {
     $key2=  $_REQUEST["k2"];
     $real_k1 = pack('H*',$key1);
     $real_k2 = pack('H*',$key2);
-    give_image ($con,$real_k1,$real_k2);
+    give_image ($con,$key1,$key2);
     $was_ok=TRUE;
   }
   if ($con) {
-    mysql_close($con);
+    mysqli_close($con);
   }
 } else {
   $funct = "unknown funct";
+  echo $func . "<br>";
 }
 if (isset ($berndscounterisdefined)) {
    if ($berndscounterisdefined == "yesitis") {
