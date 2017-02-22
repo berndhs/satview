@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<?php
 
+<?php
 /****************************************************************
  * This file is distributed under the following license:
  *
@@ -25,32 +25,17 @@
 
 <html>
 <head>
-  <title>Satserv</title>
-  <style>
-   .control {
-      float:left;
-      width:9em;
-      height:100%;
-    }
-    .content {
-      float:right;
-      width:90%;
-      height:200mm;
-    }
-  </style>
+  <title>Control Part of saetserv</title>
+
+</head>
+<body>
 <style>
 .onImage {
   z: 100;
-  float: left;
 }
 </style>
-</head>
-<body>
-
 <button style="onImage" onclick="alert('do Fwd');">Next</button>   
-
 <br>
 <button style="onImage" onclick="alert('do Back');">Back</button>
-  <iframe class="content" src="satservContent.php" name="dataframe"></iframe>
- </body>
+</body>
 </html>
