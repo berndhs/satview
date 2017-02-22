@@ -21,7 +21,7 @@ if ($con->connect_errno) {
     // You do not want to reveal sensitive information
 
     // Let's try this:
-    echo "Sorry, this website is experiencing problems.";
+      header ("HTTP/1.0 204 Bad Data\r\n",false,204);
 
     // Something you should not do on a public site, but this example will show you
     // anyways, is print out MySQL error related information -- you might log this
