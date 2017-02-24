@@ -25,6 +25,7 @@
 
 <html>
 <head>
+  <?php include_once("debug.php"); DelibDebug::debug("start"); ?>
   <title>Satserv</title>
   <style>
    .control {
@@ -44,13 +45,15 @@
   float: left;
 }
 </style>
+<?php include_once ("satservContent.php"); ?>
 </head>
 <body>
+
 
 <button style="onImage" onclick="alert('do Fwd');">Next</button>   
 
 <br>
 <button style="onImage" onclick="alert('do Back');">Back</button>
-  <iframe class="content" src="satservContent.php" name="dataframe"></iframe>
+  <img src='data:image/jpeg;base64,'  <?php $picdata = take_content(); DelibDebug::debugNotice($picdata); imagejpeg($picdata);?> >
  </body>
 </html>

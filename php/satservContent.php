@@ -114,6 +114,18 @@ function give_index($db_con, $imin, $imax)
     }
 }
 
+function take_content ()
+{
+  $fl = fopen ("/home/bernd/public_html/daily/WCIR.JPG","r");
+  $data = "";
+  while (!feof($fl)) {
+    $data .= fread($fl,8192);
+    DelibDebug::debug("read 1 piece ");
+  }
+  fclose($fl);
+  return $data;
+}
+
 function give_image($db_con, $ident, $picname)
 {
   $query = "select `image`,`remark` from `satpics` where "
@@ -132,8 +144,7 @@ function give_image($db_con, $ident, $picname)
 //    echo "LEN ". $len . "\r\n";
     //var_dump($row_array);
 //    echo bin2hex($row_array[0]);
-header ("Content-type: image/jpg");
-     echo $row_array[0];
+     return ( $row_array[0]);
   } else {
   
       header ("HTTP/1.0 404 No Data\r\n",false,204);
@@ -155,6 +166,7 @@ header ("HTTP/1.1 400 Bad Request Format\r\n");
 function give_content($r) 
 {
   $req = $r;
+ // var_dump ($req);
   $supported = array ("index","item");
   $funct= $req["fn"];
 
@@ -176,8 +188,6 @@ function give_content($r)
       } else {
         $ndxmax = time() + 24 * 60 * 60;  // tomorrow
       }
-      echo "max is $ndxmax";
-      echo "<br>";
     
       give_index ($con,$ndxmin,$ndxmax);
       $was_ok=TRUE;
@@ -186,7 +196,10 @@ function give_content($r)
       $key2=  $req["k2"];
       $real_k1 = pack('H*',$key1);
       $real_k2 = pack('H*',$key2);
-      give_image ($con,$key1,$key2);
+    if ($con) {
+      mysqli_close($con);
+    }
+      return (give_image ($con,$key1,$key2));
       $was_ok=TRUE;
     }
     if ($con) {
@@ -206,6 +219,6 @@ function give_content($r)
     report_bad_request();
   }
 }
-header ("HTTP/1.1 200 OK\r\n");
-give_content($_REQUEST);
+//header ("HTTP/1.1 200 OK\r\n");
+//give_content($_REQUEST);
 ?>
