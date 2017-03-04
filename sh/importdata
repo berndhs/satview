@@ -1,0 +1,17 @@
+#!/bin/bash -x
+# this will work until 2017-07-14T02:40:00+00:00
+# after than the time stamp starts with 15 and the script 
+# needs to duplicate the outer loop
+
+date
+PHPSCRIPT=storeWithDate.php
+PARDIR=`pwd`
+cd data/daily
+for D in 14* ; do
+  cd $D
+  for F in *.JPG ; do
+    echo $D $F "  "
+    php ${PARDIR}/php/${PHPSCRIPT} $D $F
+  done
+  cd ..
+done
