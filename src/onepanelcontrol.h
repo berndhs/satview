@@ -31,7 +31,7 @@ Q_OBJECT
 
 public:
 
-  OnePanelControl (QGuiApplication *pA);
+  OnePanelControl (QApplication *pA);
   
 public slots:
 

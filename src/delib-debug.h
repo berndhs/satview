@@ -62,7 +62,7 @@
 
 #include <qapplication.h>
 #include <iostream>
-#include "ui_DebugLog.h"
+#include "/home/bernd/mywork/satview/satview/viewer/tmp/ui/ui_DebugLog.h"
 
 #include <QDebug>
 #include <QCloseEvent>

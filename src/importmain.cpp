@@ -29,7 +29,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-#include <QGuiApplication>
+#include <QApplication>
 
 
 unsigned long int secs_in_hour (60*60);
@@ -64,8 +64,8 @@ main (int argc, char*argv[])
   }
   bool nodisplay = opts.SeenOpt ("nodisplay");
   
-  QGuiApplication App (argc, argv, !nodisplay);
-//  QGuiApplication App (argc, argv);
+  QApplication App (argc, argv, !nodisplay);
+//  QApplication App (argc, argv);
   ImportEngine * engine = new ImportEngine(&App, !nodisplay);
   
   opts.SetInterface (interface);

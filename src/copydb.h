@@ -17,7 +17,7 @@
 #include "ui_copydb.h"
 #include <QObject>
 #include <QDialog>
-#include <QGuiApplication>
+#include <QApplication>
 #include <QTextDocument>
 #include <QTextStream>
 #include <stdio.h>
@@ -31,13 +31,13 @@ Q_OBJECT
 public:
 
   
-  CopyEngine (QGuiApplication * pA, const bool dis = true);
+  CopyEngine (QApplication * pA, const bool dis = true);
   ~CopyEngine ();
   
   
   enum DBType { T_none, T_mysql, T_sqlite, T_web };
   
-  void SetApp (QGuiApplication * pA);
+  void SetApp (QApplication * pA);
   
   void SetSource (const QString server, 
                   const QString path,
@@ -90,7 +90,7 @@ private:
 
   QString Kind (const DBType t);
 
-  QGuiApplication *pApp;
+  QApplication *pApp;
   
   DBConnection DBin;
   DBConnection DBout;

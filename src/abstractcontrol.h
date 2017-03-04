@@ -16,7 +16,7 @@
 #include "satpiclist.h"
 #include <QObject>
 #include <QWidget>
-#include <QGuiApplication>
+#include <QApplication>
 #define QT_NO_PRINTER
 #include "delib-debug.h"
 
@@ -152,7 +152,7 @@ protected:
     };
 
   
-    QGuiApplication  * pApp;
+    QApplication  * pApp;
 
     QTimer        showTimer;
     int           showTimeDelay;

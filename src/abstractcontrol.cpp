@@ -398,7 +398,7 @@ AbstractControl::CannotLoadMsg ()
 {
   QMessageBox msgBox;
   QTimer::singleShot(15000, &msgBox, SLOT(accept()));
-  string badmsg = "Cannot Load from Server '" + mServer
+  string badmsg = "Cannot Load from A-Server '" + mServer
      + "' using Method '" + mConMeth + "'";
   msgBox.setText(badmsg.c_str());
   msgBox.exec();

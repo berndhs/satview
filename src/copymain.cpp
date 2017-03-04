@@ -29,7 +29,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-#include <QGuiApplication>
+#include <QApplication>
 
 
 unsigned long int secs_in_hour (60*60);
@@ -66,8 +66,8 @@ main (int argc, char*argv[])
   bool nodisplay = opts.SeenOpt ("nodisplay");
   
 
-  QGuiApplication App (argc, argv, !nodisplay);
-//  QGuiApplication App (argc, argv);
+  QApplication App (argc, argv, !nodisplay);
+//  QApplication App (argc, argv);
   CopyEngine * engine = new CopyEngine(&App, !nodisplay);
   
   opts.SetInterface (interface);
@@ -118,9 +118,9 @@ main (int argc, char*argv[])
     outType = CopyEngine::T_mysql;
   }
   engine->SetSource (source_server.c_str(), source_path.c_str(),
-                    inType, "weather","weather","quetzalcoatl");
+                    inType, "satview","root","geronimo");
   engine->SetDest   (dest_server.c_str(), dest_path.c_str(),
-                    outType, "weather", "weather","quetzalcoatl");
+                    outType, "satview", "root","geronimo");
   engine->StartEngine ("",too_old,too_recent);
 
   return App.exec ();

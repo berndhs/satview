@@ -5,6 +5,7 @@
 #include "clioptions.h"
 #include "delib-debug.h"
 #include "satviewsplash.h"
+#include <QApplication>
 //
 //  Copyright (C) 2017 - Bernd H Stramm 
 //
@@ -64,7 +65,7 @@ main (int argc, char*argv[])
 
   deliberate::UseMyOwnMessageHandler();
   
-  QGuiApplication App(argc, argv);
+  QApplication App(argc, argv);
   
   
   CliOptions opt(satview::MyName().c_str());

@@ -29,7 +29,7 @@ using namespace std;
 
 namespace satview  {
 
-TwoPanelControl::TwoPanelControl (QGuiApplication *pA)
+TwoPanelControl::TwoPanelControl (QApplication *pA)
 {
     pApp = pA;
     
@@ -355,7 +355,7 @@ TwoPanelControl::ReloadDB ()
   if (!loadedok && !DBWaiting()) {
      QMessageBox msgBox;
      QTimer::singleShot(15000, &msgBox, SLOT(accept()));
-     string badmsg = "Cannot Load from Server '" + mServer
+     string badmsg = "Cannot Load from T-Server '" + mServer
        + "' using Method '" + mConMeth + "'";
      msgBox.setText(badmsg.c_str());
      msgBox.exec();

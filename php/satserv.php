@@ -25,7 +25,7 @@
 
 <html>
 <head>
-  <?php include_once("debug.php"); DelibDebug::debug("start"); ?>
+  <?php include_once("debug.php"); DelibDebug::open("/tmp/delibdebug.debug.log"); DelibDebug::debug("start"); ?>
   <title>Satserv</title>
   <style>
    .control {
